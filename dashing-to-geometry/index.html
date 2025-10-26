@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Dashing to Geometry</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            body {
+                font-family: 'Arial Black', Arial, sans-serif;
+                background: linear-gradient(180deg, #1a1a2e 0%, #0f3460 100%);
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                overflow: hidden;
+            }
+            .title {
+                font-size: 3em;
+                text-align: center;
+                margin-bottom: 20px;
+                text-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00;
+                animation: pulse 2s infinite;
+            }
+            @keyframes pulse {
+                0%, 100% { opacity: 1; }
+                50% { opacity: 0.7; }
+            }
+            .game-container {
+                position: relative;
+                width: 800px;
+                height: 400px;
+                background: #000;
+                border: 5px solid #00ff00;
+                box-shadow: 0 0 30px #00ff00;
+                overflow: hidden;
+            }
+            .ground {
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+                height: 80px;
+                background: linear-gradient(to bottom, #444 0%, #222 100%);
+                border-top: 3px solid #666;
+            }
+            .player {
+                position: absolute;
+                width: 40px;
+                height: 40px;
+                background: #ff3366;
+                bottom: 80px;
+                left: 200px;
+                transition: bottom 0.1s;
+                box-shadow: 0 0 15px #ff3366;
+            }
+            .player::before {
+                content: '▲';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-size: 20px;
+                color: white;
+            }
+            .spike {
+                position: absolute;
+                width: 30px;
+                height: 30px;
+                cursor: pointer;
+                font-size: 30px;
+                transition: all 0.1s;
+            }
+            .spike:hover {
+                transform: scale(1.2);
+                filter: drop-shadow(0 0 10px yellow);
+            }
+            .spike.active {
+                animation: shake 0.1s infinite;
+            }
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-2px); }
+                75% { transform: translateX(2px); }
+            }
+            .info-panel {
+                text-align: center;
+                margin-top: 20px;
+            }
+            .info-text {
+                font-size: 1.2em;
+                margin: 10px 0;
+            }
+            .player-name {
+                font-size: 2em;
+                color: #00ff00;
+                text-shadow: 0 0 10px #00ff00;
+                font-weight: bold;
+            }
+            .attempts {
+                font-size: 1.5em;
+                color: #ff3366;
+                margin: 10px 0;
+            }
+            .instruction {
+                font-size: 1em;
+                color: #aaa;
+                margin-top: 15px;
+            }
+            .taunt {
+                position: absolute;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                font-size: 1.5em;
+                color: #ffff00;
+                text-shadow: 0 0 10px #ffff00;
+                opacity: 0;
+                transition: opacity 0.3s;
+                pointer-events: none;
+                text-align: center;
+                max-width: 90%;
+            }
+            .taunt.show {
+                opacity: 1;
+            }
+            .obstacle {
+                position: absolute;
+                width: 40px;
+                height: 40px;
+                bottom: 80px;
+                background: #666;
+                box-shadow: 0 0 10px #666;
+            }
+            @keyframes moveObstacle {
+                from {
+                    left: 800px;
+                }
+                to {
+                    left: -40px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="title">DASHING TO GEOMETRY</div>
+
+        <div class="game-container" id="gameContainer">
+            <div class="taunt" id="taunt"></div>
+            <div class="player" id="player"></div>
+            <div class="ground"></div>
+        </div>
+
+        <div class="info-panel">
+            <div class="player-name">VS. RIOT</div>
+            <div class="info-text">The Best GD Player</div>
+            <div class="attempts" id="attempts">Attempts: 0</div>
+            <div class="instruction">Click on the spikes to try to hit Riot!</div>
+            <div class="instruction">(Spoiler: You can't win)</div>
+        </div>
+
+        <script>
+            const player = document.getElementById('player');
+            const gameContainer = document.getElementById('gameContainer');
+            const taunt = document.getElementById('taunt');
+            const attemptsDisplay = document.getElementById('attempts');
+
+            let attempts = 0;
+            let playerBottom = 80;
+            let isJumping = false;
+            let gameSpeed = 3;
+            let obstacleInterval;
+            let spikeCount = 0;
+
+            const taunts = [
+                "Too slow!",
+                "Riot never dies!",
+                "Not even close!",
+                "Is that all you got?",
+                "Riot dodges everything!",
+                "Nice try... NOT!",
+                "Git gud!",
+                "Impossible mode activated!",
+                "You'll never catch me!",
+                "Frame perfect dodge!",
+                "Riot's reflexes are too fast!",
+                "Maybe try slower?",
+                "SUPERHUMAN REFLEXES!",
+                "This is why Riot is #1!",
+                "Your spike placement is weak!"
+            ];
+
+            function showTaunt(message) {
+                taunt.textContent = message;
+                taunt.classList.add('show');
+                setTimeout(() => {
+                    taunt.classList.remove('show');
+                }, 1500);
+            }
+
+            function createSpike(x, y) {
+                const spike = document.createElement('div');
+                spike.className = 'spike';
+                spike.textContent = '▼';
+                spike.style.left = x + 'px';
+                spike.style.top = y + 'px';
+                spike.style.color = '#ff0000';
+
+                spike.addEventListener('click', function() {
+                    activateSpike(spike, x, y);
+                });
+
+                gameContainer.appendChild(spike);
+                spikeCount++;
+            }
+
+            function activateSpike(spike, x, y) {
+                attempts++;
+                attemptsDisplay.textContent = `Attempts: ${attempts}`;
+
+                spike.classList.add('active');
+                spike.style.color = '#ffff00';
+
+                // Check if player would be hit (they won't be because Riot is too good)
+                const playerRect = player.getBoundingClientRect();
+                const spikeRect = spike.getBoundingClientRect();
+
+                // Riot always dodges at the last moment
+                riotDodge();
+
+                setTimeout(() => {
+                    spike.remove();
+                    spikeCount--;
+                }, 500);
+
+                // Show random taunt
+                const randomTaunt = taunts[Math.floor(Math.random() * taunts.length)];
+                showTaunt(randomTaunt);
+            }
+
+            function riotDodge() {
+                if (!isJumping) {
+                    jump();
+                }
+            }
+
+            function jump() {
+                if (isJumping) return;
+
+                isJumping = true;
+
+                // Jump animation
+                let jumpHeight = 0;
+                const jumpInterval = setInterval(() => {
+                    jumpHeight += 5;
+                    playerBottom = 80 + jumpHeight;
+                    player.style.bottom = playerBottom + 'px';
+
+                    if (jumpHeight >= 100) {
+                        clearInterval(jumpInterval);
+                        fall();
+                    }
+                }, 20);
+            }
+
+            function fall() {
+                const fallInterval = setInterval(() => {
+                    playerBottom -= 5;
+                    player.style.bottom = playerBottom + 'px';
+
+                    if (playerBottom <= 80) {
+                        playerBottom = 80;
+                        player.style.bottom = '80px';
+                        clearInterval(fallInterval);
+                        isJumping = false;
+                    }
+                }, 20);
+            }
+
+            function createObstacle() {
+                const obstacle = document.createElement('div');
+                obstacle.className = 'obstacle';
+                obstacle.style.animation = `moveObstacle ${5 / gameSpeed}s linear`;
+                gameContainer.appendChild(obstacle);
+
+                // Make Riot jump over obstacles automatically
+                setTimeout(() => {
+                    if (!isJumping && Math.random() > 0.3) {
+                        jump();
+                    }
+                }, 3000);
+
+                setTimeout(() => {
+                    obstacle.remove();
+                }, 5000 / gameSpeed);
+            }
+
+            // Start spawning obstacles
+            obstacleInterval = setInterval(createObstacle, 2000);
+
+            // Allow clicking anywhere to place spikes
+            gameContainer.addEventListener('click', function(e) {
+                const rect = gameContainer.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                // Don't place spikes if clicking on existing spike
+                if (e.target.classList.contains('spike')) return;
+
+                // Limit number of spikes
+                if (spikeCount < 3) {
+                    createSpike(x, y);
+                } else {
+                    showTaunt("Too many spikes! Click them first!");
+                }
+            });
+
+            // Random Riot movements to make him seem alive
+            setInterval(() => {
+                if (!isJumping && Math.random() > 0.7) {
+                    jump();
+                }
+            }, 3000);
+
+            // Show initial message
+            setTimeout(() => {
+                showTaunt("Try to hit Riot if you can!");
+            }, 1000);
+        </script>
+    </body>
+</html>
