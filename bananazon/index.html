@@ -526,6 +526,85 @@
                     transform: translateX(0);
                 }
             }
+
+            /* Login Modal */
+            .login-modal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.6);
+                z-index: 3000;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .login-modal.show {
+                display: flex;
+            }
+
+            .login-content {
+                background: white;
+                padding: 40px;
+                border-radius: 8px;
+                width: 400px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            }
+
+            .login-content h2 {
+                margin-bottom: 20px;
+                color: #0f1111;
+            }
+
+            .login-input {
+                width: 100%;
+                padding: 10px;
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-size: 14px;
+            }
+
+            .login-input:focus {
+                outline: none;
+                border-color: #e77600;
+                box-shadow: 0 0 3px 2px rgba(228, 121, 17, 0.5);
+            }
+
+            .login-button {
+                width: 100%;
+                background-color: #ffd814;
+                border: 1px solid #fcd200;
+                border-radius: 8px;
+                padding: 12px;
+                cursor: pointer;
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+
+            .login-button:hover {
+                background-color: #f7ca00;
+            }
+
+            .login-close {
+                background-color: #e7e9ec;
+                border: 1px solid #adb1b8;
+                border-radius: 8px;
+                padding: 8px;
+                cursor: pointer;
+                font-size: 14px;
+                width: 100%;
+            }
+
+            .login-close:hover {
+                background-color: #d5d9d9;
+            }
+
+            .user-greeting {
+                font-size: 12px;
+            }
         </style>
     </head>
     <body>
@@ -550,8 +629,12 @@
                 </div>
 
                 <div style="display: flex; gap: 15px">
-                    <div class="nav-item" onclick="signIn()">
-                        Hello, Sign in<br /><strong>Account & Lists</strong>
+                    <div class="nav-item" onclick="signIn()" id="accountButton">
+                        <span id="userGreeting"
+                            >Hello, Sign in<br /><strong
+                                >Account & Lists</strong
+                            ></span
+                        >
                     </div>
                     <div class="nav-item" onclick="showOrders()">
                         Returns<br /><strong>& Orders</strong>
@@ -598,6 +681,37 @@
 
         <!-- Toast Notification -->
         <div class="toast" id="toast"></div>
+
+        <!-- Login Modal -->
+        <div
+            class="login-modal"
+            id="loginModal"
+            onclick="closeLoginModal(event)"
+        >
+            <div class="login-content" onclick="event.stopPropagation()">
+                <h2>Sign in to Bananazon</h2>
+                <input
+                    type="text"
+                    class="login-input"
+                    id="usernameInput"
+                    placeholder="Username"
+                    onkeypress="handleLoginKeypress(event)"
+                />
+                <input
+                    type="password"
+                    class="login-input"
+                    id="passwordInput"
+                    placeholder="Password"
+                    onkeypress="handleLoginKeypress(event)"
+                />
+                <button class="login-button" onclick="handleLogin()">
+                    Sign In
+                </button>
+                <button class="login-close" onclick="closeLoginModal()">
+                    Cancel
+                </button>
+            </div>
+        </div>
 
         <!-- Cart Overlay -->
         <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
@@ -1169,17 +1283,104 @@
                 alert(messages[category]);
             }
 
+            // User state
+            let currentUser = null;
+
             // Sign In
             function signIn() {
-                alert(
-                    "🔐 Sign In to Bananazon\n\nUsername: banana\nPassword: ••••••••\n\n✅ Successfully signed in as BananaLover2024!\n\nYour account benefits:\n• Unlimited banana browsing\n• Access to all bananas\n• Ability to buy bananas\n• Exclusive deals on... bananas!\n\nWelcome back! 🍌",
+                if (currentUser) {
+                    // Already signed in, show account info
+                    alert(
+                        `👤 Account: ${currentUser}\n\n✅ You're signed in!\n\nYour benefits:\n• Unlimited banana browsing\n• Access to all bananas\n• Ability to buy bananas\n• Exclusive deals on... bananas!\n\n🍌 Happy banana shopping!`,
+                    );
+                } else {
+                    // Show login modal
+                    document.getElementById("loginModal").classList.add("show");
+                    document.getElementById("usernameInput").focus();
+                }
+            }
+
+            // Handle login
+            function handleLogin() {
+                const username = document
+                    .getElementById("usernameInput")
+                    .value.trim();
+                const password = document.getElementById("passwordInput").value;
+
+                if (!username) {
+                    alert("Please enter a username!");
+                    return;
+                }
+
+                if (!password) {
+                    alert("Please enter a password!");
+                    return;
+                }
+
+                // "Log in" the user (no actual authentication, just store the username)
+                currentUser = username;
+
+                // Update the greeting
+                updateUserGreeting();
+
+                // Close modal
+                closeLoginModal();
+
+                // Clear inputs
+                document.getElementById("usernameInput").value = "";
+                document.getElementById("passwordInput").value = "";
+
+                // Show welcome message
+                showToast(
+                    `Welcome back, ${currentUser}! Looking for more bananas? 🍌`,
                 );
+
+                // Also show an alert
+                setTimeout(() => {
+                    alert(
+                        `🎉 Welcome back, ${currentUser}!\n\nLooking for more bananas?\n\nYour banana shopping experience just got even better!\n\n✨ Account benefits:\n• Unlimited banana browsing\n• Access to all bananas\n• Ability to buy bananas\n• Exclusive deals on... bananas!\n\nHappy shopping! 🍌`,
+                    );
+                }, 500);
+            }
+
+            // Update user greeting in header
+            function updateUserGreeting() {
+                const greetingElement = document.getElementById("userGreeting");
+                if (currentUser) {
+                    greetingElement.innerHTML = `Hello, ${currentUser}<br /><strong>Account & Lists</strong>`;
+                } else {
+                    greetingElement.innerHTML = `Hello, Sign in<br /><strong>Account & Lists</strong>`;
+                }
+            }
+
+            // Close login modal
+            function closeLoginModal(event) {
+                if (
+                    event &&
+                    event.target !== document.getElementById("loginModal")
+                ) {
+                    return;
+                }
+                document.getElementById("loginModal").classList.remove("show");
+            }
+
+            // Handle Enter key in login inputs
+            function handleLoginKeypress(event) {
+                if (event.key === "Enter") {
+                    handleLogin();
+                }
             }
 
             // Returns & Orders
             function showOrders() {
+                if (!currentUser) {
+                    alert("Please sign in to view your orders!");
+                    signIn();
+                    return;
+                }
+
                 alert(
-                    '📦 Your Orders\n\nRecent Orders:\n\n1. Single Banana - Delivered Dec 18\n   ⭐⭐⭐⭐⭐ "It was a banana"\n\n2. Mystery Banana Box - Arriving Dec 25\n   🎁 Tracking: BANANA-12345\n\n3. Organic Bananas - Delivered Dec 15\n   ⭐⭐⭐⭐⭐ "Very banana-like"\n\nAll orders are bananas. Did you expect anything else? 🍌📦',
+                    `📦 ${currentUser}'s Orders\n\nRecent Orders:\n\n1. Single Banana - Delivered Dec 18\n   ⭐⭐⭐⭐⭐ "It was a banana"\n\n2. Mystery Banana Box - Arriving Dec 25\n   🎁 Tracking: BANANA-12345\n\n3. Organic Bananas - Delivered Dec 15\n   ⭐⭐⭐⭐⭐ "Very banana-like"\n\nAll orders are bananas. Did you expect anything else? 🍌📦`,
                 );
             }
         </script>
