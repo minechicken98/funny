@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G̷l̴i̶t̸c̷h̴a̶z̵o̴n̸.com - E̵r̶r̷o̴r̶ ̸L̴o̶a̵d̸i̶n̶g̸</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #000;
+            color: #0f0;
+            overflow-x: hidden;
+        }
+
+        .glitch {
+            animation: glitch 1s infinite;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .shake {
+            animation: shake 0.3s;
+        }
+
+        .header {
+            background: #131921;
+            padding: 20px;
+            border-bottom: 2px solid #f00;
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(255, 0, 0, 0.1) 2px,
+                rgba(255, 0, 0, 0.1) 4px
+            );
+            pointer-events: none;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #0f0;
+            text-shadow: 2px 2px #f00, -2px -2px #0ff;
+            animation: glitch 0.5s infinite;
+        }
+
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            flex-direction: column;
+        }
+
+        .loading.show {
+            display: flex;
+        }
+
+        .spinner {
+            border: 5px solid #333;
+            border-top: 5px solid #0f0;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #c00;
+            color: #fff;
+            padding: 30px;
+            border: 3px solid #f00;
+            display: none;
+            z-index: 10000;
+            box-shadow: 0 0 20px #f00;
+        }
+
+        .error-popup.show {
+            display: block;
+            animation: glitch 0.2s infinite;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #0a0a0a;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: #1a1a1a;
+            border: 2px solid #0f0;
+            border-radius: 5px;
+            padding: 20px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: rotate(1deg);
+            border-color: #f00;
+            box-shadow: 0 0 20px #0f0;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(0, 255, 0, 0.03) 10px,
+                rgba(0, 255, 0, 0.03) 20px
+            );
+            animation: scan 8s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(50%); }
+        }
+
+        .product-img {
+            width: 100%;
+            height: 200px;
+            object-fit: contain;
+            filter: hue-rotate(90deg) saturate(3) contrast(1.2);
+            animation: imageGlitch 3s infinite;
+        }
+
+        @keyframes imageGlitch {
+            0%, 100% { filter: hue-rotate(0deg) saturate(1) contrast(1); }
+            25% { filter: hue-rotate(90deg) saturate(3) contrast(1.2); }
+            50% { filter: hue-rotate(180deg) saturate(2) contrast(0.8); }
+            75% { filter: hue-rotate(270deg) saturate(4) contrast(1.5); }
+        }
+
+        h3 {
+            color: #0f0;
+            margin: 10px 0;
+            text-shadow: 1px 1px #f00;
+        }
+
+        .price {
+            font-size: 24px;
+            color: #f00;
+            font-weight: bold;
+            margin: 10px 0;
+            animation: priceFlicker 2s infinite;
+        }
+
+        @keyframes priceFlicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .glitch-text {
+            position: relative;
+            display: inline-block;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin: 5px 0;
+            border: 2px solid #0f0;
+            background: #000;
+            color: #0f0;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:hover {
+            background: #0f0;
+            color: #000;
+            animation: glitch 0.3s;
+        }
+
+        button::after {
+            content: 'ERROR';
+            position: absolute;
+            top: -100%;
+            left: 0;
+            right: 0;
+            background: #f00;
+            color: #fff;
+            padding: 12px;
+            transition: top 0.3s;
+        }
+
+        button:active::after {
+            top: 0;
+        }
+
+        .banner {
+            background: #f00;
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            animation: glitch 2s infinite;
+        }
+
+        .corrupted {
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        .footer {
+            background: #131921;
+            color: #0f0;
+            padding: 40px;
+            text-align: center;
+            margin-top: 40px;
+            border-top: 2px solid #f00;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+
+        .static-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent 0px,
+                rgba(255, 255, 255, 0.03) 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 9998;
+            animation: staticMove 0.1s infinite;
+        }
+
+        @keyframes staticMove {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(2px); }
+        }
+
+        .cursor-glitch {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><text y="15" font-size="15">❌</text></svg>'), auto;
+        }
+    </style>
+</head>
+<body class="cursor-glitch">
+    <div class="static-overlay"></div>
+
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p style="margin-top: 20px; font-size: 20px;">L̴O̵A̶D̸I̷N̴G̶.̸.̵.̶</p>
+        <p style="margin-top: 10px; color: #f00;">ERROR: 0x7F9A2B3C</p>
+    </div>
+
+    <div class="error-popup" id="errorPopup">
+        <h2>SYSTEM ERROR</h2>
+        <p>An unexpected error has occurred.</p>
+        <p>Error Code: 0xDEADBEEF</p>
+        <button onclick="closeError()" style="margin-top: 15px; width: auto; padding: 10px 20px;">OK</button>
+    </div>
+
+    <div class="header glitch">
+        <h1>G̷L̴I̶T̸C̷H̴A̶Z̵O̴N̸</h1>
+        <p style="color: #f00;">System Status: CORRUPTED</p>
+    </div>
+
+    <div class="banner">
+        WARNING: DATABASE CORRUPTED - PRICES MAY VARY - PROCEED WITH CAUTION
+    </div>
+
+    <div class="container">
+        <h2 style="color: #0f0; margin: 20px 0; animation: glitch 1.5s infinite;">
+            F̴e̵a̶t̸u̷r̴e̶d̸ ̵P̶r̸o̷d̴u̶c̸t̷s̵
+        </h2>
+
+        <div class="grid" id="productGrid">
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=400&h=400&fit=crop" class="product-img" alt="ERROR">
+                <h3 class="glitch">P̴l̵a̶y̸S̷t̴a̶t̵i̴o̶n̸ ̵5̶</h3>
+                <div class="price" data-base="499.99">$499.99</div>
+                <p style="color: #888; text-decoration: line-through;">$699.99</p>
+                <p style="color: #0f0; margin: 10px 0;">STATUS: <span style="color: #f00;">OUT OF STOCK</span></p>
+                <button onclick="addToCart('PS5')">A̸D̶D̴ ̵T̶O̸ ̴C̶A̵R̸T̵</button>
+                <button onclick="buyNow('PS5')">B̷U̵Y̶ ̸N̴O̶W̸</button>
+            </div>
+
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1578303512597-81e6cc155b3e?w=400&h=400&fit=crop" class="product-img" alt="ERROR">
+                <h3 class="glitch">N̴i̵n̶t̴e̷n̸d̸o̶ ̵S̶w̷i̵t̸c̶h̵</h3>
+                <div class="price" data-base="299.99">$299.99</div>
+                <p style="color: #888; text-decoration: line-through;">$349.99</p>
+                <p style="color: #0f0; margin: 10px 0;">STATUS: <span style="color: #ff0;">MAYBE IN STOCK?</span></p>
+                <button onclick="addToCart('Switch')">A̸D̶D̴ ̵T̶O̸ ̴C̶A̵R̸T̵</button>
+                <button onclick="buyNow('Switch')">B̷U̵Y̶ ̸N̴O̶W̸</button>
+            </div>
+
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&h=400&fit=crop" class="product-img" alt="ERROR">
+                <h3 class="glitch">X̴b̵o̶x̸ ̷S̴e̶r̵i̴e̶s̸ ̵X̶</h3>
+                <div class="price" data-base="499.99">$499.99</div>
+                <p style="color: #888; text-decoration: line-through;">NULL</p>
+                <p style="color: #0f0; margin: 10px 0;">STATUS: <span style="color: #0f0;">ERROR</span></p>
+                <button onclick="addToCart('Xbox')">A̸D̶D̴ ̵T̶O̸ ̴C̶A̵R̸T̵</button>
+                <button onclick="buyNow('Xbox')">B̷U̵Y̶ ̸N̴O̶W̸</button>
+            </div>
+
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1592286927505-b47c072c6e64?w=400&h=400&fit=crop" class="product-img" alt="ERROR">
+                <h3 class="glitch">i̴P̵h̶o̸n̷e̴ ̵1̶5̸ ̷P̴r̶o̵</h3>
+                <div class="price" data-base="999.99">$999.99</div>
+                <p style="color: #888; text-decoration: line-through;">$1099.99</p>
+                <p style="color: #0f0; margin: 10px 0;">STATUS: <span style="color: #f00;">[REDACTED]</span></p>
+                <button onclick="addToCart('iPhone')">A̸D̶D̴ ̵T̶O̸ ̴C̶A̵R̸T̵</button>
+                <button onclick="buyNow('iPhone')">B̷U̵Y̶ ̸N̴O̶W̸</button>
+            </div>
+
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400&h=400&fit=crop" class="product-img" alt="ERROR">
+                <h3 class="glitch">M̴a̵c̶B̸o̷o̴k̶ ̵P̶r̸o̷</h3>
+                <div class="price" data-base="1999.99">$1999.99</div>
+                <p style="color: #888; text-decoration: line-through;">$ERROR</p>
+                <p style="color: #0f0; margin: 10px 0;">STATUS: <span style="color: #0ff;">UNDEFINED</span></p>
+                <button onclick="addToCart('MacBook')">A̸D̶D̴ ̵T̶O̸ ̴C̶A̵R̸T̵</button>
+                <button onclick="buyNow('MacBook')">B̷U̵Y̶ ̸N̴O̶W̸</button>
+            </div>
+
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=400&h=400&fit=crop" class="product-img" alt="ERROR">
+                <h3 class="glitch">S̴m̵a̶r̸t̷w̴a̶t̵c̴h̶</h3>
+                <div class="price" data-base="399.99">$399.99</div>
+                <p style="color: #888; text-decoration: line-through;">$399.99</p>
+                <p style="color: #0f0; margin: 10px 0;">STATUS: <span style="color: #f0f;">???</span></p>
+                <button onclick="addToCart('Watch')">A̸D̶D̴ ̵T̶O̸ ̴C̶A̵R̸T̵</button>
+                <button onclick="buyNow('Watch')">B̷U̵Y̶ ̸N̴O̶W̸</button>
+            </div>
+
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop" class="product-img" alt="ERROR">
+                <h3 class="glitch">H̴e̵a̶d̸p̷h̴o̶n̵e̴s̶</h3>
+                <div class="price" data-base="249.99">$249.99</div>
+                <p style="color: #888; text-decoration: line-through;">NaN</p>
+                <p style="color: #0f0; margin: 10px 0;">STATUS: <span style="color: #fff;">CORRUPTED</span></p>
+                <button onclick="addToCart('Headphones')">A̸D̶D̴ ̵T̶O̸ ̴C̶A̵R̸T̵</button>
+                <button onclick="buyNow('Headphones')">B̷U̵Y̶ ̸N̴O̶W̸</button>
+            </div>
+
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1585790050230-5dd28404f869?w=400&h=400&fit=crop" class="product-img" alt="ERROR">
+                <h3 class="glitch">T̴a̵b̶l̸e̷t̴</h3>
+                <div class="price" data-base="599.99">$599.99</div>
+                <p style="color: #888; text-decoration: line-through;">$undefined</p>
+                <p style="color: #0f0; margin: 10px 0;">STATUS: <span style="color: #f00;">CRITICAL ERROR</span></p>
+                <button onclick="addToCart('Tablet')">A̸D̶D̴ ̵T̶O̸ ̴C̶A̵R̸T̵</button>
+                <button onclick="buyNow('Tablet')">B̷U̵Y̶ ̸N̴O̶W̸</button>
+            </div>
+
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400&h=400&fit=crop" class="product-img" alt="ERROR">
+                <h3 class="glitch">K̴e̵y̶b̸o̷a̴r̶d̵</h3>
+                <div class="price" data-base="149.99">$149.99</div>
+                <p style="color: #888; text-decoration: line-through;">$149.99</p>
+                <p style="color: #0f0; margin: 10px 0;">STATUS: <span style="color: #0f0;">STOCK: -5</span></p>
+                <button onclick="addToCart('Keyboard')">A̸D̶D̴ ̵T̶O̸ ̴C̶A̵R̸T̵</button>
+                <button onclick="buyNow('Keyboard')">B̷U̵Y̶ ̸N̴O̶W̸</button>
+            </div>
+
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&h=400&fit=crop" class="product-img" alt="ERROR">
+                <h3 class="glitch">M̴o̵u̶s̸e̷</h3>
+                <div class="price" data-base="79.99">$79.99</div>
+                <p style="color: #888; text-decoration: line-through;">$ERROR</p>
+                <p style="color: #0f0; margin: 10px 0;">STATUS: <span style="color: #ff0;">LOADING...</span></p>
+                <button onclick="addToCart('Mouse')">A̸D̶D̴ ̵T̶O̸ ̴C̶A̵R̸T̵</button>
+                <button onclick="buyNow('Mouse')">B̷U̵Y̶ ̸N̴O̶W̸</button>
+            </div>
+
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=400&h=400&fit=crop" class="product-img" alt="ERROR">
+                <h3 class="glitch">W̴e̵b̶c̸a̷m̴</h3>
+                <div class="price" data-base="129.99">$129.99</div>
+                <p style="color: #888; text-decoration: line-through;">$999999.99</p>
+                <p style="color: #0f0; margin: 10px 0;">STATUS: <span style="color: #f00;">BUFFER OVERFLOW</span></p>
+                <button onclick="addToCart('Webcam')">A̸D̶D̴ ̵T̶O̸ ̴C̶A̵R̸T̵</button>
+                <button onclick="buyNow('Webcam')">B̷U̵Y̶ ̸N̴O̶W̸</button>
+            </div>
+
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1591488320449-011701bb6704?w=400&h=400&fit=crop" class="product-img" alt="ERROR">
+                <h3 class="glitch">S̴p̵e̶a̸k̷e̴r̶</h3>
+                <div class="price" data-base="199.99">$199.99</div>
+                <p style="color: #888; text-decoration: line-through;">$NULL</p>
+                <p style="color: #0f0; margin: 10px 0;">STATUS: <span style="color: #0ff;">STACK OVERFLOW</span></p>
+                <button onclick="addToCart('Speaker')">A̸D̶D̴ ̵T̶O̸ ̴C̶A̵R̸T̵</button>
+                <button onclick="buyNow('Speaker')">B̷U̵Y̶ ̸N̴O̶W̸</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <h2 style="color: #f00;">S̴Y̵S̶T̸E̷M̴ ̵F̶A̸I̷L̴U̶R̸E̵</h2>
+        <p style="margin-top: 10px;">© 2024 Glitchazon.com - All rights corrupted</p>
+        <p style="color: #f00; margin-top: 10px;">If you can read this, congratulations. The system is broken.</p>
+    </div>
+
+    <script>
+        // Show loading on page load
+        window.addEventListener('load', function() {
+            const loading = document.getElementById('loading');
+            loading.classList.add('show');
+            setTimeout(() => {
+                loading.classList.remove('show');
+            }, 2000);
+        });
+
+        // Random page shakes
+        setInterval(() => {
+            if (Math.random() < 0.1) {
+                document.body.classList.add('shake');
+                setTimeout(() => {
+                    document.body.classList.remove('shake');
+                }, 300);
+            }
+        }, 3000);
+
+        // Random error popups
+        setInterval(() => {
+            if (Math.random() < 0.05) {
+                showError();
+            }
+        }, 10000);
+
+        function showError() {
+            document.getElementById('errorPopup').classList.add('show');
+        }
+
+        function closeError() {
+            document.getElementById('errorPopup').classList.remove('show');
+        }
+
+        // Randomly change prices
+        setInterval(() => {
+            const prices = document.querySelectorAll('.price');
+            prices.forEach(priceEl => {
+                const basePrice = parseFloat(priceEl.getAttribute('data-base'));
+                const variation = (Math.random() - 0.5) * basePrice * 0.3;
+                const newPrice = basePrice + variation;
+                priceEl.textContent = '$' + newPrice.toFixed(2);
+            });
+        }, 3000);
+
+        // Add fake lag to buttons
+        function addToCart(product) {
+            const loading = document.getElementById('loading');
+            loading.classList.add('show');
+
+            setTimeout(() => {
+                loading.classList.remove('show');
+
+                const messages = [
+                    'ERROR: Item not found in database',
+                    'SUCCESS: Item added! (Maybe?)',
+                    'CRITICAL ERROR: Database corrupted',
+                    'WARNING: Cart may not exist',
+                    'Item added to cart... we think?',
+                    'ERROR 404: Cart not found',
+                    'Success! Your cart has been deleted.',
+                    'Item added to someone elses cart',
+                ];
+
+                alert(messages[Math.floor(Math.random() * messages.length)]);
+            }, Math.random() * 3000 + 1000);
+        }
+
+        function buyNow(product) {
+            const loading = document.getElementById('loading');
+            loading.classList.add('show');
+
+            setTimeout(() => {
+                loading.classList.remove('show');
+
+                const messages = [
+                    'ERROR: Payment processor not found',
+                    'SUCCESS: You have been charged $0.00',
+                    'CRITICAL: Card declined... or accepted? Unknown.',
+                    'Order placed! Shipping to: [CORRUPTED ADDRESS]',
+                    'Thank you! Your order will arrive in NULL days',
+                    'Payment failed successfully',
+                    'Congratulations! You bought nothing.',
+                    'ERROR: You already own this item (you dont)',
+                ];
+
+                alert(messages[Math.floor(Math.random() * messages.length)]);
+
+                if (Math.random() < 0.3) {
+                    setTimeout(() => showError(), 1000);
+                }
+            }, Math.random() * 4000 + 2000);
+        }
+
+        // Random screen glitches
+        setInterval(() => {
+            if (Math.random() < 0.15) {
+                document.body.style.filter = 'hue-rotate(' + Math.random() * 360 + 'deg)';
+                setTimeout(() => {
+                    document.body.style.filter = 'none';
+                }, 200);
+            }
+        }, 2000);
+
+        // Randomly corrupt text
+        setInterval(() => {
+            if (Math.random() < 0.1) {
+                const cards = document.querySelectorAll('.card');
+                const randomCard = cards[Math.floor(Math.random() * cards.length)];
+                randomCard.style.transform = 'rotate(' + (Math.random() * 10 - 5) + 'deg)';
+                setTimeout(() => {
+                    randomCard.style.transform = 'rotate(0deg)';
+                }, 500);
+            }
+        }, 4000);
+    </script>
+</body>
+</html>
