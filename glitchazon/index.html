@@ -360,6 +360,9 @@
 
             body.frozen {
                 overflow: hidden;
+                position: fixed;
+                width: 100%;
+                height: 100%;
             }
 
             .modal-popup {
@@ -373,7 +376,26 @@
                 z-index: 10001;
                 display: none;
                 min-width: 400px;
+                max-width: 90%;
+                max-height: 80vh;
+                overflow-y: auto;
                 box-shadow: 0 0 30px #0f0;
+            }
+
+            @media (max-width: 768px) {
+                .modal-popup {
+                    min-width: 300px;
+                    width: 90%;
+                    padding: 20px;
+                }
+
+                .modal-header {
+                    font-size: 16px;
+                }
+
+                .modal-content {
+                    font-size: 14px;
+                }
             }
 
             .modal-popup.show {
