@@ -105,6 +105,7 @@
                 align-items: center;
                 z-index: 9999;
                 flex-direction: column;
+                overflow: hidden;
             }
 
             .loading.show {
@@ -356,6 +357,74 @@
                     url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><text y="15" font-size="15">❌</text></svg>'),
                     auto;
             }
+
+            body.frozen {
+                overflow: hidden;
+            }
+
+            .modal-popup {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: #1a1a1a;
+                border: 3px solid #0f0;
+                padding: 30px;
+                z-index: 10001;
+                display: none;
+                min-width: 400px;
+                box-shadow: 0 0 30px #0f0;
+            }
+
+            .modal-popup.show {
+                display: block;
+                animation: glitch 0.5s infinite;
+            }
+
+            .modal-header {
+                color: #0f0;
+                font-size: 20px;
+                margin-bottom: 15px;
+                border-bottom: 2px solid #f00;
+                padding-bottom: 10px;
+            }
+
+            .modal-content {
+                color: #0f0;
+                margin: 15px 0;
+                line-height: 1.6;
+            }
+
+            .modal-close {
+                background: #f00;
+                color: #fff;
+                border: 2px solid #0f0;
+                padding: 10px 20px;
+                cursor: pointer;
+                font-weight: bold;
+                margin-top: 15px;
+                width: 100%;
+            }
+
+            .modal-close:hover {
+                background: #0f0;
+                color: #000;
+            }
+
+            .modal-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.8);
+                z-index: 10000;
+                display: none;
+            }
+
+            .modal-overlay.show {
+                display: block;
+            }
         </style>
     </head>
     <body class="cursor-glitch">
@@ -376,6 +445,96 @@
                 style="margin-top: 15px; width: auto; padding: 10px 20px"
             >
                 OK
+            </button>
+        </div>
+
+        <!-- Modal Overlay -->
+        <div class="modal-overlay" id="modalOverlay"></div>
+
+        <!-- Modal Popups -->
+        <div class="modal-popup" id="modal1">
+            <div class="modal-header">SYSTEM UPDATE REQUIRED</div>
+            <div class="modal-content">
+                Your system is out of date. Please install critical update
+                KB9999999.
+                <br /><br />
+                Failure to update may result in: DATA LOSS, SYSTEM CORRUPTION,
+                EXISTENTIAL DREAD
+            </div>
+            <button class="modal-close" onclick="closeModal('modal1')">
+                Remind Me Later (Never)
+            </button>
+        </div>
+
+        <div class="modal-popup" id="modal2">
+            <div class="modal-header">WARNING: LOW MEMORY</div>
+            <div class="modal-content">
+                Available RAM: -512 MB
+                <br /><br />
+                Your computer is running out of memory that doesn't exist.
+                <br />
+                Please download more RAM immediately.
+            </div>
+            <button class="modal-close" onclick="closeModal('modal2')">
+                Download RAM
+            </button>
+        </div>
+
+        <div class="modal-popup" id="modal3">
+            <div class="modal-header">VIRUS DETECTED</div>
+            <div class="modal-content">
+                32,768 viruses detected!
+                <br /><br />
+                Files infected: ALL OF THEM
+                <br />
+                Threat level: MAXIMUM OVERDRIVE
+                <br /><br />
+                Just kidding. Or are we?
+            </div>
+            <button class="modal-close" onclick="closeModal('modal3')">
+                Panic
+            </button>
+        </div>
+
+        <div class="modal-popup" id="modal4">
+            <div class="modal-header">CONNECTION LOST</div>
+            <div class="modal-content">
+                You have been disconnected from reality.
+                <br /><br />
+                Error: 404 - Reality Not Found
+                <br />
+                Please check your existence and try again.
+            </div>
+            <button class="modal-close" onclick="closeModal('modal4')">
+                Reconnect to Matrix
+            </button>
+        </div>
+
+        <div class="modal-popup" id="modal5">
+            <div class="modal-header">CONGRATULATIONS!</div>
+            <div class="modal-content">
+                You are the 1,000,000th visitor!
+                <br /><br />
+                Click below to claim your prize of absolutely nothing!
+                <br />
+                * Offer not valid in any dimension
+            </div>
+            <button class="modal-close" onclick="closeModal('modal5')">
+                Claim Nothing
+            </button>
+        </div>
+
+        <div class="modal-popup" id="modal6">
+            <div class="modal-header">ERROR 418</div>
+            <div class="modal-content">
+                I'm a teapot.
+                <br /><br />
+                The requested entity body is short and stout.
+                <br />
+                Tip me over and pour me out.
+            </div>
+            <button class="modal-close" onclick="closeModal('modal6')">
+                I'm a Teapot Too
             </button>
         </div>
 
@@ -635,8 +794,10 @@
             window.addEventListener("load", function () {
                 const loading = document.getElementById("loading");
                 loading.classList.add("show");
+                document.body.classList.add("frozen");
                 setTimeout(() => {
                     loading.classList.remove("show");
+                    document.body.classList.remove("frozen");
                 }, 2000);
             });
 
@@ -771,14 +932,54 @@
                 const loading = document.getElementById("loading");
                 loading.classList.add("show");
 
-                // Disable all interactions
+                // Disable all interactions AND scrolling
                 document.body.style.pointerEvents = "none";
+                document.body.classList.add("frozen");
 
                 setTimeout(() => {
                     loading.classList.remove("show");
                     document.body.style.pointerEvents = "auto";
+                    document.body.classList.remove("frozen");
                 }, 2000);
             }, 5000);
+
+            // Random modal popups
+            const modals = [
+                "modal1",
+                "modal2",
+                "modal3",
+                "modal4",
+                "modal5",
+                "modal6",
+            ];
+
+            function showRandomModal() {
+                const randomModal =
+                    modals[Math.floor(Math.random() * modals.length)];
+                document.getElementById(randomModal).classList.add("show");
+                document.getElementById("modalOverlay").classList.add("show");
+            }
+
+            function closeModal(modalId) {
+                document.getElementById(modalId).classList.remove("show");
+                document
+                    .getElementById("modalOverlay")
+                    .classList.remove("show");
+            }
+
+            // Show random modal every 8-15 seconds
+            function scheduleNextModal() {
+                const delay = Math.random() * 7000 + 8000; // 8-15 seconds
+                setTimeout(() => {
+                    showRandomModal();
+                    scheduleNextModal();
+                }, delay);
+            }
+
+            // Start the modal chaos after 10 seconds
+            setTimeout(() => {
+                scheduleNextModal();
+            }, 10000);
         </script>
     </body>
 </html>
