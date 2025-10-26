@@ -550,10 +550,10 @@
                 </div>
 
                 <div style="display: flex; gap: 15px">
-                    <div class="nav-item">
+                    <div class="nav-item" onclick="signIn()">
                         Hello, Sign in<br /><strong>Account & Lists</strong>
                     </div>
-                    <div class="nav-item">
+                    <div class="nav-item" onclick="showOrders()">
                         Returns<br /><strong>& Orders</strong>
                     </div>
                     <div
@@ -567,13 +567,27 @@
             </div>
 
             <div class="header-nav">
-                <div class="nav-item">All Bananas</div>
-                <div class="nav-item">Today's Deals</div>
-                <div class="nav-item">Fresh Bananas</div>
-                <div class="nav-item">Organic Bananas</div>
-                <div class="nav-item">Gift Bananas</div>
-                <div class="nav-item">Registry</div>
-                <div class="nav-item">Sell Bananas</div>
+                <div class="nav-item" onclick="showCategory('All Bananas')">
+                    All Bananas
+                </div>
+                <div class="nav-item" onclick="showCategory('Today\'s Deals')">
+                    Today's Deals
+                </div>
+                <div class="nav-item" onclick="showCategory('Fresh Bananas')">
+                    Fresh Bananas
+                </div>
+                <div class="nav-item" onclick="showCategory('Organic Bananas')">
+                    Organic Bananas
+                </div>
+                <div class="nav-item" onclick="showCategory('Gift Bananas')">
+                    Gift Bananas
+                </div>
+                <div class="nav-item" onclick="showCategory('Registry')">
+                    Registry
+                </div>
+                <div class="nav-item" onclick="showCategory('Sell Bananas')">
+                    Sell Bananas
+                </div>
             </div>
         </div>
 
@@ -1132,6 +1146,42 @@
                     search();
                 }
             });
+
+            // Category navigation
+            function showCategory(category) {
+                const messages = {
+                    "All Bananas":
+                        "🍌 Welcome to All Bananas!\n\nBrowsing through our entire collection of... bananas! Every single product is a banana. Surprise! 🎉",
+                    "Today's Deals":
+                        "💰 Today's Banana Deals!\n\n🍌 Single Banana - Now only $0.59!\n🍌 Overripe Bananas - Just $1.99!\n🍌 Mystery Banana Box - Save $5!\n\nEvery day is banana deal day!",
+                    "Fresh Bananas":
+                        "🌿 Fresh Bananas Section\n\nYou're already looking at fresh bananas! In fact, ALL our bananas are fresh. We only sell fresh bananas. Did we mention they're fresh?",
+                    "Organic Bananas":
+                        "🌱 Organic Bananas\n\nLooking for organic bananas? Great choice! We have:\n• Fresh Organic Bananas\n• Organic Fair Trade Bananas\n• Organically grown... bananas\n\nBasically all bananas but fancier! 🌿",
+                    "Gift Bananas":
+                        '🎁 Gift Bananas\n\n"Here\'s a banana!" - The perfect gift for any occasion!\n\n💝 Birthdays? Banana.\n💍 Weddings? Banana.\n🎓 Graduation? Believe it or not, banana.\n\nNothing says "I love you" like a banana! 🍌',
+                    Registry:
+                        "📝 Banana Registry\n\nCreate your banana wishlist today!\n\n\"We're registered at Bananazon!\"\n\nYour guests can buy you:\n• Bananas\n• More bananas\n• Even more bananas\n• (Spoiler: it's all bananas)",
+                    "Sell Bananas":
+                        "💼 Sell Your Bananas on Bananazon!\n\nDo you have bananas? We want them!\n\nRequirements:\n✅ Must be a banana\n✅ Should look like a banana\n✅ Bonus points if it's yellow\n\nStart your banana empire today! 🍌📈",
+                };
+
+                alert(messages[category]);
+            }
+
+            // Sign In
+            function signIn() {
+                alert(
+                    "🔐 Sign In to Bananazon\n\nUsername: banana\nPassword: ••••••••\n\n✅ Successfully signed in as BananaLover2024!\n\nYour account benefits:\n• Unlimited banana browsing\n• Access to all bananas\n• Ability to buy bananas\n• Exclusive deals on... bananas!\n\nWelcome back! 🍌",
+                );
+            }
+
+            // Returns & Orders
+            function showOrders() {
+                alert(
+                    '📦 Your Orders\n\nRecent Orders:\n\n1. Single Banana - Delivered Dec 18\n   ⭐⭐⭐⭐⭐ "It was a banana"\n\n2. Mystery Banana Box - Arriving Dec 25\n   🎁 Tracking: BANANA-12345\n\n3. Organic Bananas - Delivered Dec 15\n   ⭐⭐⭐⭐⭐ "Very banana-like"\n\nAll orders are bananas. Did you expect anything else? 🍌📦',
+                );
+            }
         </script>
     </body>
 </html>
