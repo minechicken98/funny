@@ -262,7 +262,7 @@
             let birdY = 250;
             let birdVelocity = 0;
             let gravity = 0.5;
-            let jumpStrength = -10;
+            let jumpStrength = -7;
             let gameActive = false;
             let score = 0;
             let highScore = localStorage.getItem("flappyHighScore") || 0;
@@ -301,8 +301,8 @@
             function jump() {
                 if (!gameActive) return;
 
-                // 15% chance to ignore the click (EVIL!)
-                if (Math.random() < 0.15) {
+                // 8% chance to ignore the click (EVIL!)
+                if (Math.random() < 0.08) {
                     console.log("Click ignored! Muhahaha!");
                     return;
                 }
