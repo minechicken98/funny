@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Futurazon - Tomorrow's Tech Today</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
+            color: white;
+        }
+        .header {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        h1 {
+            font-size: 2.5em;
+            background: linear-gradient(90deg, #00f5ff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .banner {
+            background: linear-gradient(135deg, #00f5ff, #ff00ff);
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,245,255,0.3);
+            transition: all 0.3s;
+            color: #1a1a2e;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(255,0,255,0.5);
+        }
+        .badge {
+            background: linear-gradient(135deg, #ff00ff, #00f5ff);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        h3 { color: #1a1a2e; margin: 10px 0; }
+        .price { font-size: 24px; color: #ff00ff; font-weight: bold; margin: 10px 0; }
+        .release { color: #667eea; font-weight: bold; margin: 5px 0; }
+        .specs { font-size: 14px; color: #555; margin: 10px 0; line-height: 1.6; }
+        button {
+            width: 100%;
+            padding: 12px;
+            margin: 5px 0;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-cart {
+            background: linear-gradient(135deg, #00f5ff, #00bfff);
+            color: white;
+        }
+        .btn-buy {
+            background: linear-gradient(135deg, #ff00ff, #ff00aa);
+            color: white;
+        }
+        button:hover { opacity: 0.9; }
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+            h1 { font-size: 1.8em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 FUTURAZON 🚀</h1>
+        <p>Tomorrow's Tech, Available for Pre-Order Today!</p>
+    </div>
+    
+    <div class="banner">
+        ⚡ SPECIAL: Pre-order ANY 2027 product and get FREE time-accelerated shipping! ⚡
+    </div>
+    
+    <div class="container">
+        <div class="grid">
+            <div class="card">
+                <span class="badge">PRE-ORDER 2027</span>
+                <h3>PlayStation 6 - Quantum Edition</h3>
+                <div class="price">$699.99</div>
+                <div class="release">📅 Ships: November 2027</div>
+                <div class="specs">
+                    🎮 16K Resolution @ 480fps<br>
+                    🧠 Quantum Processing Unit<br>
+                    💾 10TB Holographic SSD<br>
+                    🎯 Brain-Computer Interface Ready
+                </div>
+                <button class="btn-cart" onclick="alert('✅ Added to cart! Ships in 3 years! 🚀')">Pre-Order Now</button>
+                <button class="btn-buy" onclick="alert('🎉 Checkout complete! Your PS6 will arrive from the future!')">Buy Now</button>
+            </div>
+
+            <div class="card">
+                <span class="badge">PRE-ORDER 2026</span>
+                <h3>Nintendo Switch 3 Pro OLED</h3>
+                <div class="price">$449.99</div>
+                <div class="release">📅 Ships: March 2026</div>
+                <div class="specs">
+                    📱 12" Foldable OLED Screen<br>
+                    🌐 5G Cloud Gaming<br>
+                    🎮 Holographic Joy-Cons<br>
+                    ⚡ 15-Hour Battery Life
+                </div>
+                <button class="btn-cart" onclick="alert('✅ Added to cart! Your future Switch awaits! 🎮')">Pre-Order Now</button>
+                <button class="btn-buy" onclick="alert('🎉 Pre-order confirmed! See you in 2026!')">Buy Now</button>
+            </div>
+
+            <div class="card">
+                <span class="badge">PRE-ORDER 2026</span>
+                <h3>Meta Quest 4 Ultra</h3>
+                <div class="price">$899.99</div>
+                <div class="release">📅 Ships: June 2026</div>
+                <div class="specs">
+                    🥽 Neural Interface<br>
+                    👁️ 16K Per Eye Resolution<br>
+                    🎯 200° Field of View<br>
+                    🧠 Mind-Controlled Menus
+                </div>
+                <button class="btn-cart" onclick="alert('✅ Added! Future VR coming your way! 🥽')">Pre-Order Now</button>
+                <button class="btn-buy" onclick="alert('🎉 Order placed! Prepare to enter the metaverse!')">Buy Now</button>
+            </div>
+
+            <div class="card">
+                <span class="badge">PRE-ORDER 2027</span>
+                <h3>iPhone 20 Pro Max Ultra</h3>
+                <div class="price">$1,599.99</div>
+                <div class="release">📅 Ships: September 2027</div>
+                <div class="specs">
+                    📱 Holographic Display<br>
+                    🔋 7-Day Battery Life<br>
+                    🤖 Quantum AI Chip<br>
+                    📸 Time-Shift Camera
+                </div>
+                <button class="btn-cart" onclick="alert('✅ iPhone 20 added! Welcome to 2027! 📱')">Pre-Order Now</button>
+                <button class="btn-buy" onclick="alert('🎉 Thank you! Your holographic iPhone is reserved!')">Buy Now</button>
+            </div>
+
+            <div class="card">
+                <span class="badge">PRE-ORDER 2026</span>
+                <h3>Xbox Series Z</h3>
+                <div class="price">$599.99</div>
+                <div class="release">📅 Ships: October 2026</div>
+                <div class="specs">
+                    🎮 12K Cloud Streaming<br>
+                    ☁️ Zero Downloads Ever<br>
+                    🤖 AI Game Master<br>
+                    ⚡ Instant Play Technology
+                </div>
+                <button class="btn-cart" onclick="alert('✅ Xbox Series Z added to cart! 🎮')">Pre-Order Now</button>
+                <button class="btn-buy" onclick="alert('🎉 Pre-ordered! Gaming in 2026 will be amazing!')">Buy Now</button>
+            </div>
+
+            <div class="card">
+                <span class="badge">PRE-ORDER 2027</span>
+                <h3>Apple Vision Pro 2</h3>
+                <div class="price">$2,499.99</div>
+                <div class="release">📅 Ships: February 2027</div>
+                <div class="specs">
+                    👓 Neural Sync Technology<br>
+                    🔋 All-Day Battery<br>
+                    👁️ Retina 3D Display<br>
+                    🌟 Perfect Pass-Through Mode
+                </div>
+                <button class="btn-cart" onclick="alert('✅ Vision Pro 2 added! The future is clear! 👓')">Pre-Order Now</button>
+                <button class="btn-buy" onclick="alert('🎉 Reserved! See the future clearly in 2027!')">Buy Now</button>
+            </div>
+
+            <div class="card">
+                <span class="badge">PRE-ORDER 2026</span>
+                <h3>Tesla Cybertruck Phone</h3>
+                <div class="price">$1,999.99</div>
+                <div class="release">📅 Ships: December 2026</div>
+                <div class="specs">
+                    📱 Shaped Like a Cybertruck<br>
+                    ☀️ Solar Charging<br>
+                    🛡️ Indestructible Steel Body<br>
+                    😂 Yes, This Is Real (Not Really)
+                </div>
+                <button class="btn-cart" onclick="alert('✅ Cybertruck Phone added! Vroom vroom! 🚗📱')">Pre-Order Now</button>
+                <button class="btn-buy" onclick="alert('🎉 Order complete! Your truck-phone ships soon!')">Buy Now</button>
+            </div>
+
+            <div class="card">
+                <span class="badge">PRE-ORDER 2026</span>
+                <h3>Samsung Galaxy Fold 7</h3>
+                <div class="price">$1,399.99</div>
+                <div class="release">📅 Ships: August 2026</div>
+                <div class="specs">
+                    💳 Folds to Credit Card Size<br>
+                    🛡️ Finally Unbreakable Screen!<br>
+                    📷 AI Photo Enhancement<br>
+                    🔋 3-Day Battery
+                </div>
+                <button class="btn-cart" onclick="alert('✅ Galaxy Fold 7 in cart! Unfold the future! 📱')">Pre-Order Now</button>
+                <button class="btn-buy" onclick="alert('🎉 Pre-ordered! Folding phones perfected!')">Buy Now</button>
+            </div>
+
+            <div class="card">
+                <span class="badge">PRE-ORDER 2026</span>
+                <h3>AirPods Max 2 Neural</h3>
+                <div class="price">$799.99</div>
+                <div class="release">📅 Ships: May 2026</div>
+                <div class="specs">
+                    🧠 Neural Sync Technology<br>
+                    🎵 Mind-Reading AI<br>
+                    🔋 30-Hour Battery<br>
+                    🎯 Plays Songs You're Thinking Of
+                </div>
+                <button class="btn-cart" onclick="alert('✅ AirPods Max 2 added! We know what you want to hear! 🎧')">Pre-Order Now</button>
+                <button class="btn-buy" onclick="alert('🎉 Order placed! Your ears will thank you in 2026!')">Buy Now</button>
+            </div>
+
+            <div class="card">
+                <span class="badge">PRE-ORDER 2027</span>
+                <h3>Steam Deck 2 Pro</h3>
+                <div class="price">$899.99</div>
+                <div class="release">📅 Ships: April 2027</div>
+                <div class="specs">
+                    🎮 4K @ 120fps Gaming<br>
+                    🥽 VR-Ready<br>
+                    🔋 48-Hour Battery Life<br>
+                    💻 Runs Windows 12
+                </div>
+                <button class="btn-cart" onclick="alert('✅ Steam Deck 2 Pro added! Portable gaming perfected! 🎮')">Pre-Order Now</button>
+                <button class="btn-buy" onclick="alert('🎉 Pre-order complete! PC gaming anywhere, anytime!')">Buy Now</button>
+            </div>
+
+            <div class="card">
+                <span class="badge">PRE-ORDER 2026</span>
+                <h3>Google Pixel 12 Quantum</h3>
+                <div class="price">$1,099.99</div>
+                <div class="release">📅 Ships: October 2026</div>
+                <div class="specs">
+                    ⚛️ Quantum Processor<br>
+                    📸 Time-Shift Camera<br>
+                    🤖 AI That Finishes Sentences<br>
+                    🔮 Takes Photos in the Past
+                </div>
+                <button class="btn-cart" onclick="alert('✅ Pixel 12 Quantum added! Reality is optional! 📱')">Pre-Order Now</button>
+                <button class="btn-buy" onclick="alert('🎉 Ordered! Quantum computing in your pocket!')">Buy Now</button>
+            </div>
+
+            <div class="card">
+                <span class="badge">PRE-ORDER 2026</span>
+                <h3>Nintendo GameCube 2</h3>
+                <div class="price">$349.99</div>
+                <div class="release">📅 Ships: November 2026</div>
+                <div class="specs">
+                    🎮 Still a Cube (But Better!)<br>
+                    ✨ Holographic Games<br>
+                    🌀 Actually Spins When Loading<br>
+                    😊 Pure Nostalgia Overload
+                </div>
+                <button class="btn-cart" onclick="alert('✅ GameCube 2 added! The cube returns! 🎮')">Pre-Order Now</button>
+                <button class="btn-buy" onclick="alert('🎉 Pre-order complete! Nostalgia shipping soon!')">Buy Now</button>
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align: center; padding: 40px; color: white;">
+        <h2>🚀 Made with Future Tech by Futurazon 🚀</h2>
+        <p>© 2027, Futurazon.com, Inc. or its time-traveling affiliates</p>
+    </div>
+</body>
+</html>
