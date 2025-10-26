@@ -766,7 +766,7 @@
                 }
             }, 4000);
 
-            // Freeze page every 10 seconds for 2 seconds
+            // Freeze page every 5 seconds for 2 seconds
             setInterval(() => {
                 const loading = document.getElementById("loading");
                 loading.classList.add("show");
@@ -778,7 +778,7 @@
                     loading.classList.remove("show");
                     document.body.style.pointerEvents = "auto";
                 }, 2000);
-            }, 10000);
+            }, 5000);
         </script>
     </body>
 </html>
