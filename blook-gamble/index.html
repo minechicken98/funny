@@ -325,7 +325,7 @@
                 border-radius: 10px;
                 padding: 15px;
                 margin-top: 20px;
-                color: white;
+                color: black;
                 font-size: 12px;
             }
 
@@ -338,6 +338,7 @@
             .rates-list {
                 margin-top: 10px;
                 text-align: left;
+                color: #000;
             }
 
             .empty-inventory {
@@ -345,6 +346,21 @@
                 padding: 40px;
                 color: #999;
                 font-size: 18px;
+            }
+
+            .secret-fire {
+                position: fixed;
+                bottom: 10px;
+                right: 10px;
+                font-size: 12px;
+                cursor: pointer;
+                opacity: 0.3;
+                transition: opacity 0.3s;
+                z-index: 1000;
+            }
+
+            .secret-fire:hover {
+                opacity: 1;
             }
 
             @media (max-width: 768px) {
@@ -379,12 +395,36 @@
                 >
                     💰 Spin for Money!
                 </h2>
-                <canvas
-                    id="wheelCanvas"
-                    width="300"
-                    height="300"
-                    style="display: block; margin: 0 auto 20px"
-                ></canvas>
+                <div
+                    style="
+                        position: relative;
+                        width: 300px;
+                        margin: 0 auto 20px;
+                    "
+                >
+                    <div
+                        id="pointer"
+                        style="
+                            position: absolute;
+                            top: 10px;
+                            left: 50%;
+                            transform: translateX(-50%);
+                            z-index: 10;
+                            width: 0;
+                            height: 0;
+                            border-left: 10px solid transparent;
+                            border-right: 10px solid transparent;
+                            border-top: 20px solid #f00;
+                            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+                        "
+                    ></div>
+                    <canvas
+                        id="wheelCanvas"
+                        width="300"
+                        height="300"
+                        style="display: block"
+                    ></canvas>
+                </div>
                 <button
                     class="spin-button"
                     id="spinButton"
@@ -454,11 +494,14 @@
             </div>
         </div>
 
+        <div class="secret-fire" onclick="activateSecretFire()">🔥</div>
+
         <script>
             let money = 0;
             let inventory = {};
             let spinning = false;
             let hasSpun = false;
+            let secretFireActivated = false;
 
             const wheelPrizes = [10, 25, 50, 75, 100, 250, 500, 1000];
             const wheelColors = [
@@ -479,30 +522,90 @@
                     { name: "Blue Blook", emoji: "🔵" },
                     { name: "Green Blook", emoji: "🟢" },
                     { name: "Yellow Blook", emoji: "🟡" },
+                    { name: "White Blook", emoji: "⚪" },
+                    { name: "Black Blook", emoji: "⚫" },
+                    { name: "Pink Blook", emoji: "🩷" },
+                    { name: "Gray Blook", emoji: "🔘" },
+                    { name: "Soccer Blook", emoji: "⚽" },
+                    { name: "Basketball Blook", emoji: "🏀" },
+                    { name: "Apple Blook", emoji: "🍎" },
+                    { name: "Banana Blook", emoji: "🍌" },
+                    { name: "Grape Blook", emoji: "🍇" },
+                    { name: "Watermelon Blook", emoji: "🍉" },
                 ],
                 uncommon: [
                     { name: "Purple Blook", emoji: "🟣" },
                     { name: "Orange Blook", emoji: "🟠" },
                     { name: "Brown Blook", emoji: "🟤" },
+                    { name: "Pizza Blook", emoji: "🍕" },
+                    { name: "Burger Blook", emoji: "🍔" },
+                    { name: "Taco Blook", emoji: "🌮" },
+                    { name: "Ice Cream Blook", emoji: "🍦" },
+                    { name: "Donut Blook", emoji: "🍩" },
+                    { name: "Cookie Blook", emoji: "🍪" },
+                    { name: "Cake Blook", emoji: "🍰" },
+                    { name: "Candy Blook", emoji: "🍬" },
+                    { name: "Lollipop Blook", emoji: "🍭" },
+                    { name: "Chocolate Blook", emoji: "🍫" },
                 ],
                 rare: [
                     { name: "Star Blook", emoji: "⭐" },
                     { name: "Diamond Blook", emoji: "💎" },
                     { name: "Fire Blook", emoji: "🔥" },
+                    { name: "Lightning Blook", emoji: "⚡" },
+                    { name: "Snowflake Blook", emoji: "❄️" },
+                    { name: "Moon Blook", emoji: "🌙" },
+                    { name: "Sun Blook", emoji: "☀️" },
+                    { name: "Planet Blook", emoji: "🪐" },
+                    { name: "Rocket Blook", emoji: "🚀" },
+                    { name: "Alien Blook", emoji: "👽" },
+                    { name: "Ghost Blook", emoji: "👻" },
+                    { name: "Skull Blook", emoji: "💀" },
+                    { name: "Robot Blook", emoji: "🤖" },
                 ],
                 epic: [
                     { name: "Crown Blook", emoji: "👑" },
                     { name: "Trophy Blook", emoji: "🏆" },
                     { name: "Gem Blook", emoji: "💠" },
+                    { name: "Crystal Blook", emoji: "🔮" },
+                    { name: "Magic Blook", emoji: "✨" },
+                    { name: "Ninja Blook", emoji: "🥷" },
+                    { name: "Wizard Blook", emoji: "🧙" },
+                    { name: "Knight Blook", emoji: "🛡️" },
+                    { name: "Pirate Blook", emoji: "🏴‍☠️" },
+                    { name: "Vampire Blook", emoji: "🧛" },
+                    { name: "Angel Blook", emoji: "😇" },
+                    { name: "Devil Blook", emoji: "😈" },
+                    { name: "Thunder Blook", emoji: "⚡" },
                 ],
                 legendary: [
                     { name: "Dragon Blook", emoji: "🐉" },
                     { name: "Rainbow Blook", emoji: "🌈" },
                     { name: "Unicorn Blook", emoji: "🦄" },
+                    { name: "Phoenix Blook", emoji: "🔥🦅" },
+                    { name: "Kraken Blook", emoji: "🐙" },
+                    { name: "Griffin Blook", emoji: "🦅" },
+                    { name: "Pegasus Blook", emoji: "🦄" },
+                    { name: "Cerberus Blook", emoji: "🐺" },
+                    { name: "Hydra Blook", emoji: "🐍" },
+                    { name: "Leviathan Blook", emoji: "🐋" },
+                    { name: "Behemoth Blook", emoji: "🦣" },
+                    { name: "Chimera Blook", emoji: "🦁" },
+                    { name: "Basilisk Blook", emoji: "🐲" },
                 ],
                 mythical: [
                     { name: "Golden God Blook", emoji: "✨" },
                     { name: "Cosmic Blook", emoji: "🌌" },
+                    { name: "Celestial Blook", emoji: "🌟" },
+                    { name: "Divine Blook", emoji: "👼" },
+                    { name: "Eternal Blook", emoji: "♾️" },
+                    { name: "Infinity Blook", emoji: "🔱" },
+                    { name: "Supreme Blook", emoji: "🏅" },
+                    { name: "Omnipotent Blook", emoji: "🌠" },
+                    { name: "Transcendent Blook", emoji: "💫" },
+                    { name: "Primordial Blook", emoji: "🌀" },
+                    { name: "Void Blook", emoji: "🕳️" },
+                    { name: "Quantum Blook", emoji: "⚛️" },
                 ],
             };
 
@@ -510,11 +613,20 @@
             const canvas = document.getElementById("wheelCanvas");
             const ctx = canvas.getContext("2d");
 
-            function drawWheel() {
+            let currentRotation = 0;
+
+            function drawWheel(rotation = 0) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
                 const centerX = 150;
                 const centerY = 150;
                 const radius = 140;
                 const slices = wheelPrizes.length;
+
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(rotation);
+                ctx.translate(-centerX, -centerY);
 
                 for (let i = 0; i < slices; i++) {
                     const startAngle = (i * 2 * Math.PI) / slices;
@@ -540,22 +652,13 @@
                     ctx.restore();
                 }
 
+                ctx.restore();
+
                 // Draw center circle
                 ctx.beginPath();
                 ctx.arc(centerX, centerY, 20, 0, 2 * Math.PI);
                 ctx.fillStyle = "#333";
                 ctx.fill();
-
-                // Draw pointer (pointing down at top)
-                ctx.beginPath();
-                ctx.moveTo(centerX, 30);
-                ctx.lineTo(centerX - 10, 10);
-                ctx.lineTo(centerX + 10, 10);
-                ctx.fillStyle = "#f00";
-                ctx.fill();
-                ctx.strokeStyle = "#fff";
-                ctx.lineWidth = 2;
-                ctx.stroke();
             }
 
             drawWheel();
@@ -571,33 +674,56 @@
                 );
                 const prizeMoney = wheelPrizes[randomIndex];
 
-                // Calculate rotation - align prize with top pointer
+                // Calculate rotation to align the selected prize with the top pointer
                 const degreesPerSlice = 360 / wheelPrizes.length;
-                const targetDegree = -(
-                    randomIndex * degreesPerSlice +
-                    degreesPerSlice / 2
-                );
+                // In canvas: 0° = 3 o'clock, 90° = 6 o'clock, 180° = 9 o'clock, 270° = 12 o'clock (top)
+                // Pointer is at top (270° or -90°)
+                // Slice i center is at: (i + 0.5) * degreesPerSlice
+                const sliceCenterAngle =
+                    randomIndex * degreesPerSlice + degreesPerSlice / 2;
+                // We need to rotate the wheel so this slice center ends up at -90° (top)
+                // rotation + sliceCenterAngle = -90 (mod 360)
+                const targetDegree = -90 - sliceCenterAngle;
                 const spins = 5;
                 const totalRotation = 360 * spins + targetDegree;
 
-                canvas.style.transition =
-                    "transform 3s cubic-bezier(0.17, 0.67, 0.12, 0.99)";
-                canvas.style.transform = `rotate(${totalRotation}deg)`;
+                // Animate the wheel rotation
+                const startTime = Date.now();
+                const duration = 3000;
+                const startRotation = currentRotation;
 
-                setTimeout(() => {
-                    money += prizeMoney;
-                    updateMoneyDisplay();
-                    showReward(
-                        `You won $${prizeMoney}!`,
-                        "💰",
-                        "Cash Prize",
-                        "success",
-                    );
+                function animate() {
+                    const elapsed = Date.now() - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
 
-                    setTimeout(() => {
-                        spinning = false;
-                    }, 100);
-                }, 3000);
+                    // Easing function (ease-out)
+                    const easeProgress = 1 - Math.pow(1 - progress, 3);
+
+                    const rotation =
+                        startRotation +
+                        ((totalRotation * Math.PI) / 180) * easeProgress;
+                    currentRotation = rotation;
+                    drawWheel(rotation);
+
+                    if (progress < 1) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        money += prizeMoney;
+                        updateMoneyDisplay();
+                        showReward(
+                            `You won $${prizeMoney}!`,
+                            "💰",
+                            "Cash Prize",
+                            "success",
+                        );
+
+                        setTimeout(() => {
+                            spinning = false;
+                        }, 100);
+                    }
+                }
+
+                animate();
             }
 
             function updateMoneyDisplay() {
@@ -613,23 +739,29 @@
                 money -= cost;
                 updateMoneyDisplay();
 
-                // Roll for blook with RIGGED rates
-                const roll = Math.random() * 100;
+                // Roll for blook with RIGGED rates (unless secret fire is activated!)
                 let result = null;
                 let rarity = null;
 
-                if (roll < 0.001) {
+                if (secretFireActivated) {
+                    // 100% mythical rate!
                     rarity = "mythical";
-                } else if (roll < 0.011) {
-                    rarity = "legendary";
-                } else if (roll < 0.111) {
-                    rarity = "epic";
-                } else if (roll < 0.611) {
-                    rarity = "rare";
-                } else if (roll < 1.611) {
-                    rarity = "uncommon";
-                } else if (roll < 5.611) {
-                    rarity = "common";
+                } else {
+                    const roll = Math.random() * 100;
+
+                    if (roll < 0.001) {
+                        rarity = "mythical";
+                    } else if (roll < 0.011) {
+                        rarity = "legendary";
+                    } else if (roll < 0.111) {
+                        rarity = "epic";
+                    } else if (roll < 0.611) {
+                        rarity = "rare";
+                    } else if (roll < 1.611) {
+                        rarity = "uncommon";
+                    } else if (roll < 5.611) {
+                        rarity = "common";
+                    }
                 }
 
                 if (rarity) {
@@ -678,6 +810,24 @@
 
             function closeModal() {
                 document.getElementById("rewardModal").classList.remove("show");
+            }
+
+            function activateSecretFire() {
+                if (secretFireActivated) {
+                    alert("You already found the fire!");
+                    return;
+                }
+
+                secretFireActivated = true;
+                money += 10000;
+                updateMoneyDisplay();
+
+                alert(
+                    "Congrats you found the fire! You get 10000 dollars. You also unlocked a 100% chance to get mythic!",
+                );
+
+                // Hide the fire emoji after clicking
+                document.querySelector(".secret-fire").style.display = "none";
             }
 
             function updateInventory() {
