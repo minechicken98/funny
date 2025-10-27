@@ -265,7 +265,7 @@
 
                 #canvas {
                     width: 100% !important;
-                    height: auto !important;
+                    height: 500px !important;
                 }
             }
         </style>
@@ -484,8 +484,10 @@
                 e.preventDefault();
                 const rect = canvas.getBoundingClientRect();
                 const touch = e.touches[0];
-                lastX = touch.clientX - rect.left;
-                lastY = touch.clientY - rect.top;
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                lastX = (touch.clientX - rect.left) * scaleX;
+                lastY = (touch.clientY - rect.top) * scaleY;
                 isDrawing = true;
             }
 
@@ -495,8 +497,10 @@
 
                 const rect = canvas.getBoundingClientRect();
                 const touch = e.touches[0];
-                const x = touch.clientX - rect.left;
-                const y = touch.clientY - rect.top;
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                const x = (touch.clientX - rect.left) * scaleX;
+                const y = (touch.clientY - rect.top) * scaleY;
 
                 ctx.strokeStyle = currentColor;
                 ctx.lineWidth = brushSize;
