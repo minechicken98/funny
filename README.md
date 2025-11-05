@@ -1,4 +1,4 @@
-**Very Kool PAge by minechicken98 and with help from dallasread and doggodgcodes**
+**Very Cool Page by minechicken98 and with help from Claude Code and doggodgcodes**
 
 yippee
 
