@@ -40,7 +40,7 @@ const endZ = 5; // Blocks reach the player
 // Block class with 3D perspective
 class Block {
   constructor() {
-    this.size = 80;
+    this.size = 30;
     // Random position in 3D space
     this.x = (Math.random() - 0.5) * 6; // -3 to 3
     this.y = (Math.random() - 0.5) * 4; // -2 to 2
