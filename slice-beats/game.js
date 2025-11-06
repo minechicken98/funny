@@ -69,7 +69,6 @@ class Block {
       const leftGridPos = Math.floor(Math.random() * 6); // 0-5 (2 cols x 3 rows)
       this.gridX = leftGridPos % 2; // Column 0 or 1
       this.gridY = Math.floor(leftGridPos / 2); // Row 0, 1, or 2
-      console.log("RED block at column:", this.gridX, "row:", this.gridY);
     } else {
       // Blue blocks on right (columns 2-3)
       this.color = "#00a0ff";
@@ -77,7 +76,6 @@ class Block {
       const rightGridPos = Math.floor(Math.random() * 6); // 0-5 (2 cols x 3 rows)
       this.gridX = 2 + (rightGridPos % 2); // Column 2 or 3
       this.gridY = Math.floor(rightGridPos / 2); // Row 0, 1, or 2
-      console.log("BLUE block at column:", this.gridX, "row:", this.gridY);
     }
 
     // Target screen position
@@ -386,8 +384,8 @@ function checkCollisions() {
 }
 
 function updateUI() {
+  document.getElementById("combo").textContent = `${combo}x`;
   document.getElementById("score").textContent = `Score: ${score}`;
-  document.getElementById("combo").textContent = `Combo: ${combo}x`;
 }
 
 function drawSaber() {
@@ -438,15 +436,37 @@ function drawSaber() {
 }
 
 function drawBackground() {
-  // Clean background - no grid
+  // Neon gradient background
+  const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+  gradient.addColorStop(0, "#0a0015");
+  gradient.addColorStop(0.5, "#1a0030");
+  gradient.addColorStop(1, "#0a0015");
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Add some subtle neon accents
+  ctx.strokeStyle = "rgba(100, 50, 200, 0.15)";
+  ctx.lineWidth = 2;
+
+  // Horizontal neon lines for depth
+  for (let i = 0; i < 5; i++) {
+    const y = canvas.height * (0.2 + i * 0.15);
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(canvas.width, y);
+    ctx.stroke();
+  }
+
+  // Vertical accent lines
+  ctx.strokeStyle = "rgba(200, 50, 200, 0.1)";
+  ctx.beginPath();
+  ctx.moveTo(canvas.width / 2, 0);
+  ctx.lineTo(canvas.width / 2, canvas.height);
+  ctx.stroke();
 }
 
 function gameLoop() {
-  // Clear with fade effect
-  ctx.fillStyle = "rgba(10, 10, 20, 0.3)";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  // Draw background
+  // Clear completely (no fade trail effect)
   drawBackground();
 
   if (gameState === "playing") {

@@ -30,25 +30,29 @@
 
             #ui {
                 position: absolute;
-                top: 20px;
-                left: 20px;
+                top: 50%;
+                left: 50px;
+                transform: translateY(-50%);
                 color: white;
-                font-size: 24px;
-                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+                text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
                 z-index: 10;
                 pointer-events: none;
-            }
-
-            #score {
-                font-weight: bold;
-                font-size: 32px;
-                color: #ffd700;
+                text-align: left;
             }
 
             #combo {
-                font-size: 20px;
-                color: #ff6b6b;
-                margin-top: 10px;
+                font-weight: bold;
+                font-size: 72px;
+                color: #00ffff;
+                text-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+                margin-bottom: 10px;
+            }
+
+            #score {
+                font-size: 28px;
+                color: #ffffff;
+                font-weight: normal;
+                opacity: 0.9;
             }
 
             #gameOver {
@@ -132,8 +136,8 @@
     </head>
     <body>
         <div id="ui">
+            <div id="combo">0x</div>
             <div id="score">Score: 0</div>
-            <div id="combo">Combo: 0x</div>
         </div>
 
         <div id="startScreen">
