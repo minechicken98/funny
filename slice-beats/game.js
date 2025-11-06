@@ -69,6 +69,7 @@ class Block {
       const leftGridPos = Math.floor(Math.random() * 6); // 0-5 (2 cols x 3 rows)
       this.gridX = leftGridPos % 2; // Column 0 or 1
       this.gridY = Math.floor(leftGridPos / 2); // Row 0, 1, or 2
+      console.log("RED block at column:", this.gridX, "row:", this.gridY);
     } else {
       // Blue blocks on right (columns 2-3)
       this.color = "#00a0ff";
@@ -76,6 +77,7 @@ class Block {
       const rightGridPos = Math.floor(Math.random() * 6); // 0-5 (2 cols x 3 rows)
       this.gridX = 2 + (rightGridPos % 2); // Column 2 or 3
       this.gridY = Math.floor(rightGridPos / 2); // Row 0, 1, or 2
+      console.log("BLUE block at column:", this.gridX, "row:", this.gridY);
     }
 
     // Target screen position
