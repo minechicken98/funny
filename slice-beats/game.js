@@ -124,13 +124,21 @@ class Block {
       // Don't draw if not visible yet
       if (this.z < 0.1) return;
 
+      // Check if in hit zone
+      const inHitZone = this.z >= 0.7 && this.z <= 1.1;
+
       ctx.save();
       ctx.translate(pos.x, pos.y);
       ctx.rotate(this.rotation);
 
-      // Glow effect
-      ctx.shadowBlur = 20 * pos.scale;
-      ctx.shadowColor = this.color;
+      // Enhanced glow effect when in hit zone
+      if (inHitZone) {
+        ctx.shadowBlur = 35 * pos.scale;
+        ctx.shadowColor = this.color;
+      } else {
+        ctx.shadowBlur = 20 * pos.scale;
+        ctx.shadowColor = this.color;
+      }
 
       // Main block (cube-like with slight 3D effect)
       ctx.fillStyle = this.color;
@@ -153,6 +161,19 @@ class Block {
         pos.size * 0.3,
         pos.size * 0.3,
       );
+
+      // Add pulsing white border when in hit zone
+      if (inHitZone) {
+        const pulseAlpha = 0.5 + Math.sin(Date.now() / 100) * 0.3;
+        ctx.strokeStyle = `rgba(255, 255, 255, ${pulseAlpha})`;
+        ctx.lineWidth = 3;
+        ctx.strokeRect(
+          -pos.size / 2 - 2,
+          -pos.size / 2 - 2,
+          pos.size + 4,
+          pos.size + 4,
+        );
+      }
 
       // Draw direction arrow (larger and clearer)
       ctx.shadowBlur = 5;
@@ -426,16 +447,29 @@ function drawBackground() {
   ctx.strokeStyle = "rgba(0, 180, 255, 0.15)";
   ctx.lineWidth = 2;
 
-  // Draw the 4x3 grid at the hit zone
+  // Draw the 4x3 grid at the hit zone with enhanced visibility
   for (let col = 0; col < GRID_COLS; col++) {
     for (let row = 0; row < GRID_ROWS; row++) {
       const x = GRID_OFFSET_X + col * GRID_SPACING;
       const y = GRID_OFFSET_Y + row * GRID_SPACING;
 
-      ctx.strokeStyle = "rgba(100, 150, 255, 0.1)";
+      // Pulsing effect for hit zone grid
+      const pulseAlpha = 0.15 + Math.sin(Date.now() / 200) * 0.08;
+      ctx.strokeStyle = `rgba(0, 255, 200, ${pulseAlpha})`;
+      ctx.lineWidth = 2;
       ctx.strokeRect(x - 30, y - 30, 60, 60);
     }
   }
+
+  // Draw hit zone plane (subtle glowing rectangle)
+  const hitZonePulse = 0.08 + Math.sin(Date.now() / 300) * 0.04;
+  ctx.fillStyle = `rgba(0, 255, 200, ${hitZonePulse})`;
+  ctx.fillRect(
+    GRID_OFFSET_X - GRID_SPACING / 2 - 20,
+    GRID_OFFSET_Y - GRID_SPACING / 2 - 20,
+    GRID_COLS * GRID_SPACING + 40,
+    GRID_ROWS * GRID_SPACING + 40,
+  );
 
   // Draw perspective lines from center to grid positions
   ctx.strokeStyle = "rgba(0, 180, 255, 0.08)";
