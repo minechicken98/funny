@@ -75,8 +75,7 @@ class Block {
     this.color = Math.random() > 0.5 ? "#ff0040" : "#00a0ff";
     this.saberType = this.color === "#ff0040" ? "red" : "blue";
 
-    // Direction
-    this.direction = DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)];
+    // No direction needed - just dot notes
 
     this.sliced = false;
     this.sliceTime = 0;
@@ -96,7 +95,7 @@ class Block {
         part.y += part.vy;
         part.vx *= 0.96;
         part.vy += 0.5; // gravity
-        part.rotation += part.rotSpeed;
+        // Don't rotate sliced parts
         part.alpha -= 0.02;
       }
     }
@@ -175,13 +174,13 @@ class Block {
         );
       }
 
-      // Draw direction arrow (larger and clearer)
-      ctx.shadowBlur = 5;
+      // Draw white dot in center (dot note style)
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = "#ffffff";
       ctx.fillStyle = "#ffffff";
-      ctx.font = `bold ${pos.size * 0.6}px Arial`;
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText(this.direction.arrow, 0, 0);
+      ctx.beginPath();
+      ctx.arc(0, 0, pos.size * 0.2, 0, Math.PI * 2);
+      ctx.fill();
 
       ctx.restore();
     } else {
@@ -223,27 +222,12 @@ class Block {
       Math.pow(mouseX - pos.x, 2) + Math.pow(mouseY - pos.y, 2),
     );
 
-    // Need to be close and moving fast
+    // Need to be close and moving fast - no direction requirement
     if (distToMouse < pos.size * 0.9 && velocity > 8) {
-      // Calculate slice direction
       const dx = mouseX - lastMouseX;
       const dy = mouseY - lastMouseY;
-      const magnitude = Math.sqrt(dx * dx + dy * dy);
-
-      if (magnitude === 0) return false;
-
-      const sliceDirX = dx / magnitude;
-      const sliceDirY = dy / magnitude;
-
-      // Check if slice direction matches the arrow (with some tolerance)
-      const dotProduct =
-        sliceDirX * this.direction.dx + sliceDirY * this.direction.dy;
-
-      // Need at least 70% alignment with the arrow direction
-      if (dotProduct > 0.7) {
-        this.slice(dx, dy);
-        return true;
-      }
+      this.slice(dx, dy);
+      return true;
     }
 
     return false;
@@ -260,8 +244,7 @@ class Block {
         y: pos.y,
         vx: -3 - Math.random() * 2,
         vy: -4 - Math.random() * 2,
-        rotation: this.rotation,
-        rotSpeed: -0.15,
+        rotation: 0,
         alpha: 1,
         size: pos.size * 0.5,
       },
@@ -270,8 +253,7 @@ class Block {
         y: pos.y,
         vx: 3 + Math.random() * 2,
         vy: -4 - Math.random() * 2,
-        rotation: this.rotation,
-        rotSpeed: 0.15,
+        rotation: 0,
         alpha: 1,
         size: pos.size * 0.5,
       },
