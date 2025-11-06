@@ -59,9 +59,24 @@ class Block {
     this.baseSize = 50;
 
     // Pick a grid position (0-11 for 4x3 grid)
-    const gridPos = Math.floor(Math.random() * (GRID_COLS * GRID_ROWS));
-    this.gridX = gridPos % GRID_COLS;
-    this.gridY = Math.floor(gridPos / GRID_COLS);
+    // Left 6 positions (columns 0-1) for red, right 6 positions (columns 2-3) for blue
+    const isLeftSide = Math.random() > 0.5;
+
+    if (isLeftSide) {
+      // Red blocks on left (columns 0-1)
+      this.color = "#ff0040";
+      this.saberType = "red";
+      const leftGridPos = Math.floor(Math.random() * 6); // 0-5 (2 cols x 3 rows)
+      this.gridX = leftGridPos % 2; // Column 0 or 1
+      this.gridY = Math.floor(leftGridPos / 2); // Row 0, 1, or 2
+    } else {
+      // Blue blocks on right (columns 2-3)
+      this.color = "#00a0ff";
+      this.saberType = "blue";
+      const rightGridPos = Math.floor(Math.random() * 6); // 0-5 (2 cols x 3 rows)
+      this.gridX = 2 + (rightGridPos % 2); // Column 2 or 3
+      this.gridY = Math.floor(rightGridPos / 2); // Row 0, 1, or 2
+    }
 
     // Target screen position
     this.targetX = GRID_OFFSET_X + this.gridX * GRID_SPACING;
@@ -70,10 +85,6 @@ class Block {
     // Depth (z-axis: 0 = far away, 1 = at player)
     this.z = 0;
     this.speed = 0.008;
-
-    // Color (red or blue like Beat Saber)
-    this.color = Math.random() > 0.5 ? "#ff0040" : "#00a0ff";
-    this.saberType = this.color === "#ff0040" ? "red" : "blue";
 
     // No direction needed - just dot notes
 
@@ -425,49 +436,7 @@ function drawSaber() {
 }
 
 function drawBackground() {
-  // Draw Beat Saber style grid/track
-  ctx.strokeStyle = "rgba(0, 180, 255, 0.15)";
-  ctx.lineWidth = 2;
-
-  // Draw the 4x3 grid at the hit zone with enhanced visibility
-  for (let col = 0; col < GRID_COLS; col++) {
-    for (let row = 0; row < GRID_ROWS; row++) {
-      const x = GRID_OFFSET_X + col * GRID_SPACING;
-      const y = GRID_OFFSET_Y + row * GRID_SPACING;
-
-      // Pulsing effect for hit zone grid
-      const pulseAlpha = 0.15 + Math.sin(Date.now() / 200) * 0.08;
-      ctx.strokeStyle = `rgba(0, 255, 200, ${pulseAlpha})`;
-      ctx.lineWidth = 2;
-      ctx.strokeRect(x - 30, y - 30, 60, 60);
-    }
-  }
-
-  // Draw hit zone plane (subtle glowing rectangle)
-  const hitZonePulse = 0.08 + Math.sin(Date.now() / 300) * 0.04;
-  ctx.fillStyle = `rgba(0, 255, 200, ${hitZonePulse})`;
-  ctx.fillRect(
-    GRID_OFFSET_X - GRID_SPACING / 2 - 20,
-    GRID_OFFSET_Y - GRID_SPACING / 2 - 20,
-    GRID_COLS * GRID_SPACING + 40,
-    GRID_ROWS * GRID_SPACING + 40,
-  );
-
-  // Draw perspective lines from center to grid positions
-  ctx.strokeStyle = "rgba(0, 180, 255, 0.08)";
-  ctx.lineWidth = 1;
-
-  for (let col = 0; col < GRID_COLS; col++) {
-    for (let row = 0; row < GRID_ROWS; row++) {
-      const targetX = GRID_OFFSET_X + col * GRID_SPACING;
-      const targetY = GRID_OFFSET_Y + row * GRID_SPACING;
-
-      ctx.beginPath();
-      ctx.moveTo(canvas.width / 2, canvas.height / 2);
-      ctx.lineTo(targetX, targetY);
-      ctx.stroke();
-    }
-  }
+  // Clean background - no grid
 }
 
 function gameLoop() {
