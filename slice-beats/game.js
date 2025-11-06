@@ -87,7 +87,7 @@ class Block {
   update() {
     if (!this.sliced) {
       this.z += this.speed;
-      this.rotation += 0.01;
+      // Remove rotation - blocks stay still like Beat Saber
     } else {
       this.sliceTime++;
       // Animate slice parts
@@ -129,7 +129,7 @@ class Block {
 
       ctx.save();
       ctx.translate(pos.x, pos.y);
-      ctx.rotate(this.rotation);
+      // Don't rotate - keep blocks static like Beat Saber
 
       // Enhanced glow effect when in hit zone
       if (inHitZone) {
