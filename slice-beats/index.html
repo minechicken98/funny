@@ -242,10 +242,64 @@
 
         <div id="startScreen">
             <h1>🎵 SLICE BEATS 🎵</h1>
-            <p>Blocks will fly toward you from the distance!</p>
-            <p>Swipe your mouse in the direction of the arrow to slice them</p>
-            <p>← Swipe LEFT for left arrows | Swipe RIGHT for right arrows →</p>
-            <button id="startBtn">START GAME</button>
+            <p>Choose your song and start slicing!</p>
+            <div style="margin: 20px 0">
+                <h2
+                    style="font-size: 24px; margin-bottom: 15px; color: #00ffff"
+                >
+                    SELECT SONG:
+                </h2>
+                <button
+                    class="songBtn"
+                    data-song="Chocolate Party by Mine Chicken.mp3"
+                    data-difficulty="easy"
+                    style="
+                        display: block;
+                        width: 100%;
+                        margin: 10px auto;
+                        padding: 15px;
+                        font-size: 20px;
+                        background: linear-gradient(
+                            135deg,
+                            #00ff00 0%,
+                            #00aa00 100%
+                        );
+                        color: white;
+                        border: none;
+                        border-radius: 10px;
+                        cursor: pointer;
+                    "
+                >
+                    🍫 Choco Party
+                    <span style="font-size: 14px; opacity: 0.8">(EASY)</span>
+                </button>
+                <button
+                    class="songBtn"
+                    data-song="dumb saong.mp3"
+                    data-difficulty="expert"
+                    style="
+                        display: block;
+                        width: 100%;
+                        margin: 10px auto;
+                        padding: 15px;
+                        font-size: 20px;
+                        background: linear-gradient(
+                            135deg,
+                            #ff0000 0%,
+                            #aa0000 100%
+                        );
+                        color: white;
+                        border: none;
+                        border-radius: 10px;
+                        cursor: pointer;
+                    "
+                >
+                    🔥 Dumb Song
+                    <span style="font-size: 14px; opacity: 0.8"
+                        >(EXPERT - IMPOSSIBLE!)</span
+                    >
+                </button>
+            </div>
         </div>
 
         <div id="gameOver">

@@ -5,10 +5,9 @@ canvas.width = 1000;
 canvas.height = 700;
 
 // Audio setup
-const bgMusic = new Audio("Chocolate Party by Mine Chicken.mp3");
-bgMusic.loop = true;
-bgMusic.volume = 0.5;
+let bgMusic = null;
 let isMuted = false;
+let currentDifficulty = "easy";
 
 // Game state
 let gameState = "start"; // 'start', 'playing', 'gameover', 'win', 'paused'
@@ -34,6 +33,8 @@ const trailLength = 10;
 let blocks = [];
 let blockSpawnTimer = 0;
 let blockSpawnInterval = 60; // frames between spawns (will decrease over time)
+let baseSpawnInterval = 60; // Base spawn rate based on difficulty
+let minSpawnInterval = 25; // Minimum spawn rate based on difficulty
 let blocksSliced = 0; // Track total blocks sliced for difficulty scaling
 
 // Particles for effects
@@ -347,13 +348,38 @@ canvas.addEventListener("mousemove", (e) => {
   }
 });
 
-// Start button
-document.getElementById("startBtn").addEventListener("click", () => {
-  document.getElementById("startScreen").style.display = "none";
-  document.getElementById("pauseBtn").style.display = "block";
-  gameState = "playing";
-  bgMusic.play(); // Start music when game starts
-  resetGame();
+// Song selection buttons
+document.querySelectorAll(".songBtn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const songFile = btn.getAttribute("data-song");
+    const difficulty = btn.getAttribute("data-difficulty");
+
+    // Set up music
+    if (bgMusic) {
+      bgMusic.pause();
+      bgMusic.currentTime = 0;
+    }
+    bgMusic = new Audio(songFile);
+    bgMusic.loop = true;
+    bgMusic.volume = isMuted ? 0 : 0.5;
+
+    // Set difficulty
+    currentDifficulty = difficulty;
+    if (difficulty === "easy") {
+      baseSpawnInterval = 60;
+      minSpawnInterval = 30;
+    } else if (difficulty === "expert") {
+      baseSpawnInterval = 25;
+      minSpawnInterval = 10;
+    }
+
+    // Start game
+    document.getElementById("startScreen").style.display = "none";
+    document.getElementById("pauseBtn").style.display = "block";
+    gameState = "playing";
+    bgMusic.play();
+    resetGame();
+  });
 });
 
 // Restart button
@@ -422,7 +448,7 @@ function resetGame() {
   blocks = [];
   particles = [];
   blockSpawnTimer = 0;
-  blockSpawnInterval = 60; // Reset to starting difficulty
+  blockSpawnInterval = baseSpawnInterval; // Reset to starting difficulty based on song
   blocksSliced = 0;
   updateUI();
 }
@@ -454,7 +480,7 @@ function checkCollisions() {
       }
 
       // Increase difficulty every 10 blocks sliced
-      if (blocksSliced % 10 === 0 && blockSpawnInterval > 25) {
+      if (blocksSliced % 10 === 0 && blockSpawnInterval > minSpawnInterval) {
         blockSpawnInterval -= 3; // Spawn blocks faster
       }
 
