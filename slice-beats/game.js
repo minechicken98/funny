@@ -26,7 +26,8 @@ const trailLength = 10;
 // Blocks array
 let blocks = [];
 let blockSpawnTimer = 0;
-const blockSpawnInterval = 60; // frames between spawns
+let blockSpawnInterval = 60; // frames between spawns (will decrease over time)
+let blocksSliced = 0; // Track total blocks sliced for difficulty scaling
 
 // Particles for effects
 let particles = [];
@@ -361,6 +362,8 @@ function resetGame() {
   blocks = [];
   particles = [];
   blockSpawnTimer = 0;
+  blockSpawnInterval = 60; // Reset to starting difficulty
+  blocksSliced = 0;
   updateUI();
 }
 
@@ -378,6 +381,13 @@ function checkCollisions() {
       combo++;
       if (combo > maxCombo) maxCombo = combo;
       score += 10 * combo;
+      blocksSliced++;
+
+      // Increase difficulty every 10 blocks sliced
+      if (blocksSliced % 10 === 0 && blockSpawnInterval > 25) {
+        blockSpawnInterval -= 3; // Spawn blocks faster
+      }
+
       updateUI();
     }
   }
