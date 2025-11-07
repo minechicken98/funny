@@ -4,13 +4,19 @@ const ctx = canvas.getContext("2d");
 canvas.width = 1000;
 canvas.height = 700;
 
+// Audio setup
+const bgMusic = new Audio("auban.mp3");
+bgMusic.loop = true;
+bgMusic.volume = 0.5;
+
 // Game state
-let gameState = "start"; // 'start', 'playing', 'gameover'
+let gameState = "start"; // 'start', 'playing', 'gameover', 'win'
 let score = 0;
 let combo = 0;
 let maxCombo = 0;
 let missed = 0;
 const maxMissed = 10;
+const winScore = 10000;
 
 // Mouse tracking
 let mouseX = canvas.width / 2;
@@ -344,12 +350,20 @@ canvas.addEventListener("mousemove", (e) => {
 document.getElementById("startBtn").addEventListener("click", () => {
   document.getElementById("startScreen").style.display = "none";
   gameState = "playing";
+  bgMusic.play(); // Start music when game starts
   resetGame();
 });
 
 // Restart button
 document.getElementById("restartBtn").addEventListener("click", () => {
   document.getElementById("gameOver").style.display = "none";
+  gameState = "playing";
+  resetGame();
+});
+
+// Win restart button
+document.getElementById("winRestartBtn").addEventListener("click", () => {
+  document.getElementById("winScreen").style.display = "none";
   gameState = "playing";
   resetGame();
 });
@@ -382,6 +396,16 @@ function checkCollisions() {
       if (combo > maxCombo) maxCombo = combo;
       score += 10 * combo;
       blocksSliced++;
+
+      // Check for win condition
+      if (score >= winScore) {
+        gameState = "win";
+        document.getElementById("winScreen").style.display = "block";
+        document.getElementById("winScore").textContent =
+          `Final Score: ${score}`;
+        document.getElementById("winCombo").textContent =
+          `Max Combo: ${maxCombo}x`;
+      }
 
       // Increase difficulty every 10 blocks sliced
       if (blocksSliced % 10 === 0 && blockSpawnInterval > 25) {

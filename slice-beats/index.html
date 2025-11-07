@@ -132,6 +132,45 @@
             #startScreen button:hover {
                 transform: scale(1.1);
             }
+
+            #winScreen {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(0, 0, 0, 0.95);
+                padding: 40px 60px;
+                border-radius: 20px;
+                text-align: center;
+                color: white;
+                display: none;
+                z-index: 100;
+                border: 3px solid #00ff00;
+                box-shadow: 0 0 30px rgba(0, 255, 0, 0.5);
+            }
+
+            #winScreen h1 {
+                font-size: 56px;
+                margin-bottom: 20px;
+                color: #00ff00;
+                text-shadow: 0 0 30px rgba(0, 255, 0, 0.8);
+            }
+
+            #winScreen button {
+                margin-top: 20px;
+                padding: 15px 40px;
+                font-size: 20px;
+                background: linear-gradient(135deg, #00ff00 0%, #00aa00 100%);
+                color: white;
+                border: none;
+                border-radius: 10px;
+                cursor: pointer;
+                transition: transform 0.2s;
+            }
+
+            #winScreen button:hover {
+                transform: scale(1.1);
+            }
         </style>
     </head>
     <body>
@@ -153,6 +192,13 @@
             <div id="finalScore"></div>
             <div id="finalCombo"></div>
             <button id="restartBtn">PLAY AGAIN</button>
+        </div>
+
+        <div id="winScreen">
+            <h1>🎉 YOU WIN! 🎉</h1>
+            <div id="winScore"></div>
+            <div id="winCombo"></div>
+            <button id="winRestartBtn">PLAY AGAIN</button>
         </div>
 
         <canvas id="gameCanvas"></canvas>
