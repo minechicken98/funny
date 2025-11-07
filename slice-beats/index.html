@@ -171,9 +171,70 @@
             #winScreen button:hover {
                 transform: scale(1.1);
             }
+
+            #pauseBtn {
+                position: absolute;
+                top: 20px;
+                left: 20px;
+                padding: 10px 20px;
+                font-size: 18px;
+                background: rgba(255, 255, 255, 0.2);
+                color: white;
+                border: 2px solid rgba(255, 255, 255, 0.5);
+                border-radius: 8px;
+                cursor: pointer;
+                z-index: 50;
+                backdrop-filter: blur(5px);
+                transition: all 0.2s;
+                display: none;
+            }
+
+            #pauseBtn:hover {
+                background: rgba(255, 255, 255, 0.3);
+                transform: scale(1.05);
+            }
+
+            #pauseScreen {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(0, 0, 0, 0.9);
+                padding: 40px 60px;
+                border-radius: 20px;
+                text-align: center;
+                color: white;
+                display: none;
+                z-index: 100;
+            }
+
+            #pauseScreen h1 {
+                font-size: 48px;
+                margin-bottom: 20px;
+                color: #00ffff;
+                text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+            }
+
+            #pauseScreen button {
+                margin: 10px;
+                padding: 15px 40px;
+                font-size: 20px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border: none;
+                border-radius: 10px;
+                cursor: pointer;
+                transition: transform 0.2s;
+            }
+
+            #pauseScreen button:hover {
+                transform: scale(1.1);
+            }
         </style>
     </head>
     <body>
+        <button id="pauseBtn">⏸ PAUSE</button>
+
         <div id="ui">
             <div id="combo">0x</div>
             <div id="score">Score: 0</div>
@@ -199,6 +260,12 @@
             <div id="winScore"></div>
             <div id="winCombo"></div>
             <button id="winRestartBtn">PLAY AGAIN</button>
+        </div>
+
+        <div id="pauseScreen">
+            <h1>⏸ PAUSED</h1>
+            <button id="resumeBtn">RESUME</button>
+            <button id="quitBtn">QUIT TO MENU</button>
         </div>
 
         <canvas id="gameCanvas"></canvas>

@@ -10,7 +10,7 @@ bgMusic.loop = true;
 bgMusic.volume = 0.5;
 
 // Game state
-let gameState = "start"; // 'start', 'playing', 'gameover', 'win'
+let gameState = "start"; // 'start', 'playing', 'gameover', 'win', 'paused'
 let score = 0;
 let combo = 0;
 let maxCombo = 0;
@@ -349,6 +349,7 @@ canvas.addEventListener("mousemove", (e) => {
 // Start button
 document.getElementById("startBtn").addEventListener("click", () => {
   document.getElementById("startScreen").style.display = "none";
+  document.getElementById("pauseBtn").style.display = "block";
   gameState = "playing";
   bgMusic.play(); // Start music when game starts
   resetGame();
@@ -364,7 +365,35 @@ document.getElementById("restartBtn").addEventListener("click", () => {
 // Win restart button
 document.getElementById("winRestartBtn").addEventListener("click", () => {
   document.getElementById("winScreen").style.display = "none";
+  document.getElementById("pauseBtn").style.display = "block";
   gameState = "playing";
+  resetGame();
+});
+
+// Pause button
+document.getElementById("pauseBtn").addEventListener("click", () => {
+  if (gameState === "playing") {
+    gameState = "paused";
+    document.getElementById("pauseScreen").style.display = "block";
+    bgMusic.pause();
+  }
+});
+
+// Resume button
+document.getElementById("resumeBtn").addEventListener("click", () => {
+  document.getElementById("pauseScreen").style.display = "none";
+  gameState = "playing";
+  bgMusic.play();
+});
+
+// Quit to menu button
+document.getElementById("quitBtn").addEventListener("click", () => {
+  document.getElementById("pauseScreen").style.display = "none";
+  document.getElementById("pauseBtn").style.display = "none";
+  document.getElementById("startScreen").style.display = "block";
+  gameState = "start";
+  bgMusic.pause();
+  bgMusic.currentTime = 0;
   resetGame();
 });
 
