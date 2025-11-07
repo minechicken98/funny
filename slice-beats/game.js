@@ -8,6 +8,7 @@ canvas.height = 700;
 const bgMusic = new Audio("auban.mp3");
 bgMusic.loop = true;
 bgMusic.volume = 0.5;
+let isMuted = false;
 
 // Game state
 let gameState = "start"; // 'start', 'playing', 'gameover', 'win', 'paused'
@@ -383,7 +384,23 @@ document.getElementById("pauseBtn").addEventListener("click", () => {
 document.getElementById("resumeBtn").addEventListener("click", () => {
   document.getElementById("pauseScreen").style.display = "none";
   gameState = "playing";
-  bgMusic.play();
+  if (!isMuted) {
+    bgMusic.play();
+  }
+});
+
+// Mute/Unmute button
+document.getElementById("muteBtn").addEventListener("click", () => {
+  isMuted = !isMuted;
+  const muteBtn = document.getElementById("muteBtn");
+
+  if (isMuted) {
+    bgMusic.volume = 0;
+    muteBtn.textContent = "🔇 UNMUTE MUSIC";
+  } else {
+    bgMusic.volume = 0.5;
+    muteBtn.textContent = "🔊 MUTE MUSIC";
+  }
 });
 
 // Quit to menu button
