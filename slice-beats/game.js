@@ -5,7 +5,7 @@ canvas.width = 1000;
 canvas.height = 700;
 
 // Audio setup
-const bgMusic = new Audio("auban.mp3");
+const bgMusic = new Audio("Chocolate Party by Mine Chicken.mp3");
 bgMusic.loop = true;
 bgMusic.volume = 0.5;
 let isMuted = false;
