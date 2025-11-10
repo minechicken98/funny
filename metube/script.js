@@ -122,6 +122,27 @@ let currentView = "home";
 let currentVideo = null;
 let currentChannel = null;
 
+// Helper function to parse view count strings like "8.2M" to numbers
+function parseViewCount(viewStr) {
+  const num = parseFloat(viewStr);
+  if (viewStr.includes("M")) {
+    return num * 1000000;
+  } else if (viewStr.includes("K")) {
+    return num * 1000;
+  }
+  return num;
+}
+
+// Helper function to format numbers like 1000000 to "1M"
+function formatCount(num) {
+  if (num >= 1000000) {
+    return (num / 1000000).toFixed(1) + "M";
+  } else if (num >= 1000) {
+    return (num / 1000).toFixed(1) + "K";
+  }
+  return num.toString();
+}
+
 // Generate random colors for thumbnails
 function getRandomGradient() {
   const gradients = [
@@ -299,6 +320,23 @@ function openVideo(video) {
   hahaPlayer.style.display = "flex";
   realPlayer.style.display = "none";
 
+  // Initialize likes/dislikes for this video if not exists
+  if (!videoLikes[currentVideo]) {
+    const viewsNum = parseViewCount(video.views);
+    // Likes should be 2-10% of views
+    const likeCount = Math.floor(viewsNum * (0.02 + Math.random() * 0.08));
+    // Dislikes should be 1-5% of likes
+    const dislikeCount = Math.floor(likeCount * (0.01 + Math.random() * 0.04));
+
+    videoLikes[currentVideo] = {
+      likes: likeCount,
+      dislikes: dislikeCount,
+      userLiked: false,
+      userDisliked: false,
+    };
+    localStorage.setItem("videoLikes", JSON.stringify(videoLikes));
+  }
+
   // Update like/dislike counts and subscribe button
   updateLikeDislikeUI();
   updateSubscribeButton();
@@ -443,8 +481,8 @@ function updateLikeDislikeUI() {
   }
 
   const data = videoLikes[currentVideo];
-  likeCount.textContent = data.likes;
-  dislikeCount.textContent = data.dislikes;
+  likeCount.textContent = formatCount(data.likes);
+  dislikeCount.textContent = formatCount(data.dislikes);
 
   // Highlight if user liked/disliked
   likeBtn.style.background = data.userLiked ? "#065fd4" : "#3f3f3f";
