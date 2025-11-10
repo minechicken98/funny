@@ -530,7 +530,7 @@ document.getElementById("closeModal").addEventListener("click", () => {
 
 document.getElementById("submitUpload").addEventListener("click", () => {
   const fileInput = document.getElementById("videoFile");
-  const titleInput = document.getElementById("videoTitle");
+  const titleInput = document.getElementById("uploadVideoTitle");
 
   if (fileInput.files.length > 0 && titleInput.value) {
     const file = fileInput.files[0];
