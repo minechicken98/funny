@@ -5,7 +5,7 @@
 }
 
 body {
-    font-family: 'Roboto', Arial, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
     background: #0f0f0f;
     color: #fff;
 }
@@ -406,6 +406,40 @@ body {
     margin-bottom: 20px;
 }
 
+.comment-input-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.comment-input-box input {
+    flex: 1;
+    padding: 10px;
+    background: #3f3f3f;
+    border: none;
+    border-bottom: 2px solid #606060;
+    color: white;
+    font-size: 14px;
+}
+
+.comment-input-box input:focus {
+    outline: none;
+    border-bottom-color: #00aaff;
+}
+
+.comment-input-box button {
+    padding: 10px 20px;
+    background: #065fd4;
+    border: none;
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.comment-input-box button:hover {
+    background: #0873f5;
+}
+
 .comment {
     padding: 15px 0;
     border-bottom: 1px solid #3f3f3f;
@@ -418,6 +452,11 @@ body {
 
 .comment-text {
     color: #ddd;
+}
+
+#pageTitle {
+    margin-bottom: 20px;
+    font-size: 28px;
 }
 
 /* Scrollbar */
