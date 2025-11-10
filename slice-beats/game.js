@@ -40,62 +40,28 @@ let blocksSliced = 0; // Track total blocks sliced for difficulty scaling
 // Particles for effects
 let particles = [];
 
-// 4x3 grid positions (like Beat Saber)
-const GRID_COLS = 4;
-const GRID_ROWS = 3;
-const GRID_SPACING = 120;
-const GRID_OFFSET_X =
-  canvas.width / 2 - (GRID_COLS * GRID_SPACING) / 2 + GRID_SPACING / 2;
-const GRID_OFFSET_Y =
-  canvas.height / 2 - (GRID_ROWS * GRID_SPACING) / 2 + GRID_SPACING / 2;
+// Perspective settings
+const vanishingPointX = canvas.width / 2;
+const vanishingPointY = canvas.height / 2;
+const startZ = -5; // Blocks start far away
+const endZ = 5; // Blocks reach the player
 
-// Direction arrows (8 directions like Beat Saber)
-const DIRECTIONS = [
-  { name: "up", arrow: "↑", dx: 0, dy: -1 },
-  { name: "down", arrow: "↓", dx: 0, dy: 1 },
-  { name: "left", arrow: "←", dx: -1, dy: 0 },
-  { name: "right", arrow: "→", dx: 1, dy: 0 },
-  { name: "up-left", arrow: "↖", dx: -1, dy: -1 },
-  { name: "up-right", arrow: "↗", dx: 1, dy: -1 },
-  { name: "down-left", arrow: "↙", dx: -1, dy: 1 },
-  { name: "down-right", arrow: "↘", dx: 1, dy: 1 },
-];
-
-// Block class - Beat Saber style
+// Block class with 3D perspective
 class Block {
   constructor() {
-    // Much smaller size - like actual Beat Saber blocks
-    this.baseSize = 50;
+    this.size = 30;
+    // Random position in 3D space
+    this.x = (Math.random() - 0.5) * 6; // -3 to 3
+    this.y = (Math.random() - 0.5) * 4; // -2 to 2
+    this.z = startZ;
+    this.speed = 0.06 + Math.random() * 0.02;
 
-    // Pick a grid position (0-11 for 4x3 grid)
-    // Left 6 positions (columns 0-1) for red, right 6 positions (columns 2-3) for blue
-    const isLeftSide = Math.random() > 0.5;
+    // Color
+    this.colors = ["#ff0000", "#0066ff", "#ffff00", "#ff00ff", "#00ff00"];
+    this.color = this.colors[Math.floor(Math.random() * this.colors.length)];
 
-    if (isLeftSide) {
-      // Red blocks on left (columns 0-1)
-      this.color = "#ff0040";
-      this.saberType = "red";
-      const leftGridPos = Math.floor(Math.random() * 6); // 0-5 (2 cols x 3 rows)
-      this.gridX = leftGridPos % 2; // Column 0 or 1
-      this.gridY = Math.floor(leftGridPos / 2); // Row 0, 1, or 2
-    } else {
-      // Blue blocks on right (columns 2-3)
-      this.color = "#00a0ff";
-      this.saberType = "blue";
-      const rightGridPos = Math.floor(Math.random() * 6); // 0-5 (2 cols x 3 rows)
-      this.gridX = 2 + (rightGridPos % 2); // Column 2 or 3
-      this.gridY = Math.floor(rightGridPos / 2); // Row 0, 1, or 2
-    }
-
-    // Target screen position
-    this.targetX = GRID_OFFSET_X + this.gridX * GRID_SPACING;
-    this.targetY = GRID_OFFSET_Y + this.gridY * GRID_SPACING;
-
-    // Depth (z-axis: 0 = far away, 1 = at player)
-    this.z = 0;
-    this.speed = 0.008;
-
-    // No direction needed - just dot notes
+    // Direction arrow
+    this.direction = Math.random() > 0.5 ? "left" : "right";
 
     this.sliced = false;
     this.sliceTime = 0;

@@ -37,22 +37,18 @@
                 text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
                 z-index: 10;
                 pointer-events: none;
-                text-align: left;
-            }
-
-            #combo {
-                font-weight: bold;
-                font-size: 72px;
-                color: #00ffff;
-                text-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
-                margin-bottom: 10px;
             }
 
             #score {
-                font-size: 28px;
-                color: #ffffff;
-                font-weight: normal;
-                opacity: 0.9;
+                font-weight: bold;
+                font-size: 32px;
+                color: #ffd700;
+            }
+
+            #combo {
+                font-size: 20px;
+                color: #ff6b6b;
+                margin-top: 10px;
             }
 
             #gameOver {
@@ -307,20 +303,6 @@
             <div id="finalScore"></div>
             <div id="finalCombo"></div>
             <button id="restartBtn">PLAY AGAIN</button>
-        </div>
-
-        <div id="winScreen">
-            <h1>🎉 YOU WIN! 🎉</h1>
-            <div id="winScore"></div>
-            <div id="winCombo"></div>
-            <button id="winRestartBtn">PLAY AGAIN</button>
-        </div>
-
-        <div id="pauseScreen">
-            <h1>⏸ PAUSED</h1>
-            <button id="resumeBtn">RESUME</button>
-            <button id="muteBtn">🔊 MUTE MUSIC</button>
-            <button id="quitBtn">QUIT TO MENU</button>
         </div>
 
         <canvas id="gameCanvas"></canvas>

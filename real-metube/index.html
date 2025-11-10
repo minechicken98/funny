@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>MeTube - @minechicken98</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">▶</div>
+                <span class="logo-text">MeTube</span>
+            </div>
+        </div>
+
+        <div class="channel-header">
+            <div class="channel-banner"></div>
+            <div class="channel-info">
+                <div class="channel-avatar">MC</div>
+                <div class="channel-details">
+                    <h1>Mine Chicken</h1>
+                    <div class="channel-stats">@minechicken98 • Loading...</div>
+                </div>
+                <a
+                    href="https://youtube.com/@minechicken98"
+                    target="_blank"
+                    class="subscribe-btn"
+                >
+                    Subscribe on YouTube
+                </a>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2 class="section-title">Videos</h2>
+            <div id="videoGrid" class="video-grid">
+                <div class="loading">Loading videos...</div>
+            </div>
+        </div>
+
+        <div id="videoModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <div class="video-player" id="videoPlayer"></div>
+                <h2 class="video-title" id="modalVideoTitle"></h2>
+            </div>
+        </div>
+
+        <script src="script.js"></script>
+    </body>
+</html>

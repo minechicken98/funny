@@ -171,76 +171,13 @@ function generateVideoGrid() {
       userVideos.forEach((video, index) => {
         const card = createUserVideoCard(video, index);
         videoGrid.appendChild(card);
-      });
-      fakeVideos.forEach((video, index) => {
+    });
+
+    // Add fake videos
+    fakeVideos.forEach((video, index) => {
         const card = createFakeVideoCard(video, index);
         videoGrid.appendChild(card);
-      });
-      break;
-
-    case "trending":
-      pageTitle.textContent = "Trending";
-      // Show only fake videos
-      fakeVideos.forEach((video, index) => {
-        const card = createFakeVideoCard(video, index);
-        videoGrid.appendChild(card);
-      });
-      break;
-
-    case "library":
-      pageTitle.textContent = "My Uploads";
-      // Show only user videos
-      if (userVideos.length === 0) {
-        videoGrid.innerHTML =
-          '<p style="color: #aaa; font-size: 18px; padding: 40px;">No uploads yet. Click Upload to add your first video!</p>';
-      } else {
-        userVideos.forEach((video, index) => {
-          const card = createUserVideoCard(video, index);
-          videoGrid.appendChild(card);
-        });
-      }
-      break;
-
-    case "history":
-      pageTitle.textContent = "Watch History";
-      if (watchHistory.length === 0) {
-        videoGrid.innerHTML =
-          '<p style="color: #aaa; font-size: 18px; padding: 40px;">No watch history yet.</p>';
-      } else {
-        watchHistory.forEach((videoId) => {
-          const fakeVideo = fakeVideos.find((v) => v.title === videoId);
-          const userVideo = userVideos.find((v) => v.title === videoId);
-          if (fakeVideo) {
-            const card = createFakeVideoCard(fakeVideo, 0);
-            videoGrid.appendChild(card);
-          } else if (userVideo) {
-            const card = createUserVideoCard(userVideo, 0);
-            videoGrid.appendChild(card);
-          }
-        });
-      }
-      break;
-
-    case "liked":
-      pageTitle.textContent = "Liked Videos";
-      if (likedVideos.length === 0) {
-        videoGrid.innerHTML =
-          '<p style="color: #aaa; font-size: 18px; padding: 40px;">No liked videos yet.</p>';
-      } else {
-        likedVideos.forEach((videoId) => {
-          const fakeVideo = fakeVideos.find((v) => v.title === videoId);
-          const userVideo = userVideos.find((v) => v.title === videoId);
-          if (fakeVideo) {
-            const card = createFakeVideoCard(fakeVideo, 0);
-            videoGrid.appendChild(card);
-          } else if (userVideo) {
-            const card = createUserVideoCard(userVideo, 0);
-            videoGrid.appendChild(card);
-          }
-        });
-      }
-      break;
-  }
+    });
 }
 
 function createFakeVideoCard(video, index) {
@@ -319,23 +256,6 @@ function openVideo(video) {
 
   hahaPlayer.style.display = "flex";
   realPlayer.style.display = "none";
-
-  // Initialize likes/dislikes for this video if not exists
-  if (!videoLikes[currentVideo]) {
-    const viewsNum = parseViewCount(video.views);
-    // Likes should be 2-10% of views
-    const likeCount = Math.floor(viewsNum * (0.02 + Math.random() * 0.08));
-    // Dislikes should be 1-5% of likes
-    const dislikeCount = Math.floor(likeCount * (0.01 + Math.random() * 0.04));
-
-    videoLikes[currentVideo] = {
-      likes: likeCount,
-      dislikes: dislikeCount,
-      userLiked: false,
-      userDisliked: false,
-    };
-    localStorage.setItem("videoLikes", JSON.stringify(videoLikes));
-  }
 
   // Update like/dislike counts and subscribe button
   updateLikeDislikeUI();
@@ -636,18 +556,29 @@ window.onclick = function (event) {
   const uploadModal = document.getElementById("uploadModal");
   const playerModal = document.getElementById("playerModal");
 
-  if (event.target == uploadModal) {
-    uploadModal.style.display = "none";
-  }
-  if (event.target == playerModal) {
-    playerModal.style.display = "none";
-    const realPlayer = document.getElementById("realVideoPlayer");
-    realPlayer.pause();
-    realPlayer.src = "";
-  }
-};
+    if (event.target == uploadModal) {
+        uploadModal.style.display = 'none';
+    }
+    if (event.target == playerModal) {
+        playerModal.style.display = 'none';
+    }
+}
 
-// Search functionality
+// Update sidebar with user videos
+function updateSidebarVideos() {
+    const list = document.getElementById('myVideosList');
+    list.innerHTML = '';
+
+    userVideos.forEach((video, index) => {
+        const item = document.createElement('div');
+        item.className = 'sidebar-item';
+        item.textContent = `📹 ${video.title.substring(0, 20)}${video.title.length > 20 ? '...' : ''}`;
+        item.onclick = () => openUserVideo(video);
+        list.appendChild(item);
+    });
+}
+
+// Search functionality (just for show)
 document.getElementById("searchInput").addEventListener("keypress", (e) => {
   if (e.key === "Enter") {
     const query = e.target.value;
