@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=TikTok+Sans:opsz,wght@12..36,800');
+
 * {
     margin: 0;
     padding: 0;
@@ -5,7 +7,7 @@
 }
 
 body {
-    font-family: "Roboto", Arial, sans-serif;
+    font-family: "TikTok Sans", Segoe UI, Roboto, Arial, sans-serif;
     background: #0f0f0f;
     color: #fff;
 }
