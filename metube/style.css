@@ -459,6 +459,67 @@ body {
     font-size: 28px;
 }
 
+.channel-info-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #3f3f3f;
+    margin-bottom: 10px;
+}
+
+.channel-details {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.channel-icon-large {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #ff0000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.channel-details h3 {
+    font-size: 16px;
+    margin-bottom: 3px;
+}
+
+.channel-details p {
+    font-size: 12px;
+    color: #aaa;
+}
+
+.subscribe-button {
+    background: #ff0000;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.subscribe-button:hover {
+    background: #cc0000;
+}
+
+.subscribe-button.subscribed {
+    background: #3f3f3f;
+    color: white;
+}
+
+.subscribe-button.subscribed:hover {
+    background: #5f5f5f;
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
     width: 8px;

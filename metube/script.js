@@ -116,9 +116,11 @@ let likedVideos = JSON.parse(localStorage.getItem("likedVideos")) || [];
 let watchHistory = JSON.parse(localStorage.getItem("watchHistory")) || [];
 let videoComments = JSON.parse(localStorage.getItem("videoComments")) || {};
 let videoLikes = JSON.parse(localStorage.getItem("videoLikes")) || {};
+let subscriptions = JSON.parse(localStorage.getItem("subscriptions")) || [];
 
 let currentView = "home";
 let currentVideo = null;
+let currentChannel = null;
 
 // Generate random colors for thumbnails
 function getRandomGradient() {
@@ -271,9 +273,13 @@ function createUserVideoCard(video, index) {
 // Open fake video player with "haha."
 function openVideo(video) {
   currentVideo = video.title;
+  currentChannel = video.channel;
   const modal = document.getElementById("playerModal");
   const videoTitle = document.getElementById("videoTitle");
   const videoViews = document.getElementById("videoViews");
+  const channelName = document.getElementById("channelName");
+  const channelIcon = document.getElementById("channelIcon");
+  const subscriberCount = document.getElementById("subscriberCount");
   const hahaPlayer = document.querySelector(".haha");
   const realPlayer = document.getElementById("realVideoPlayer");
 
@@ -285,12 +291,17 @@ function openVideo(video) {
 
   videoTitle.textContent = video.title;
   videoViews.textContent = video.views;
+  channelName.textContent = video.channel;
+  channelIcon.textContent = "AI";
+  subscriberCount.textContent =
+    Math.floor(Math.random() * 5 + 1) + "M subscribers";
 
   hahaPlayer.style.display = "flex";
   realPlayer.style.display = "none";
 
-  // Update like/dislike counts
+  // Update like/dislike counts and subscribe button
   updateLikeDislikeUI();
+  updateSubscribeButton();
   loadComments();
 
   modal.style.display = "block";
@@ -298,9 +309,13 @@ function openVideo(video) {
 
 function openUserVideo(video) {
   currentVideo = video.title;
+  currentChannel = "My Channel";
   const modal = document.getElementById("playerModal");
   const videoTitle = document.getElementById("videoTitle");
   const videoViews = document.getElementById("videoViews");
+  const channelName = document.getElementById("channelName");
+  const channelIcon = document.getElementById("channelIcon");
+  const subscriberCount = document.getElementById("subscriberCount");
   const hahaPlayer = document.querySelector(".haha");
   const realPlayer = document.getElementById("realVideoPlayer");
 
@@ -312,14 +327,18 @@ function openUserVideo(video) {
 
   videoTitle.textContent = video.title;
   videoViews.textContent = "1";
+  channelName.textContent = "My Channel";
+  channelIcon.textContent = "ME";
+  subscriberCount.textContent = "0 subscribers";
 
   // For user videos, show the actual video
   hahaPlayer.style.display = "none";
   realPlayer.style.display = "block";
   realPlayer.src = video.url;
 
-  // Update like/dislike counts
+  // Update like/dislike counts and subscribe button
   updateLikeDislikeUI();
+  updateSubscribeButton();
   loadComments();
 
   modal.style.display = "block";
@@ -610,5 +629,88 @@ document.querySelectorAll(".chip").forEach((chip) => {
   });
 });
 
+// Subscription functionality
+function toggleSubscribe() {
+  if (!currentChannel) return;
+
+  const index = subscriptions.indexOf(currentChannel);
+
+  if (index > -1) {
+    // Unsubscribe
+    subscriptions.splice(index, 1);
+  } else {
+    // Subscribe
+    subscriptions.push(currentChannel);
+  }
+
+  localStorage.setItem("subscriptions", JSON.stringify(subscriptions));
+  updateSubscribeButton();
+  updateSubscriptionsList();
+}
+
+function updateSubscribeButton() {
+  const subscribeBtn = document.getElementById("subscribeBtn");
+
+  if (!currentChannel) return;
+
+  if (subscriptions.includes(currentChannel)) {
+    subscribeBtn.textContent = "Subscribed";
+    subscribeBtn.classList.add("subscribed");
+  } else {
+    subscribeBtn.textContent = "Subscribe";
+    subscribeBtn.classList.remove("subscribed");
+  }
+
+  // Don't show subscribe button for own channel
+  if (currentChannel === "My Channel") {
+    subscribeBtn.style.display = "none";
+  } else {
+    subscribeBtn.style.display = "block";
+  }
+}
+
+function updateSubscriptionsList() {
+  const list = document.getElementById("subscriptionsList");
+  list.innerHTML = "";
+
+  if (subscriptions.length === 0) {
+    list.innerHTML =
+      '<div class="sidebar-item" style="color: #aaa; font-size: 12px;">No subscriptions yet</div>';
+    return;
+  }
+
+  subscriptions.forEach((channel) => {
+    const item = document.createElement("div");
+    item.className = "sidebar-item";
+    item.textContent = channel;
+    item.onclick = () => {
+      // Filter videos by this channel
+      currentView = "subscriptions";
+      filterByChannel(channel);
+    };
+    list.appendChild(item);
+  });
+}
+
+function filterByChannel(channel) {
+  const videoGrid = document.getElementById("videoGrid");
+  const pageTitle = document.getElementById("pageTitle");
+  videoGrid.innerHTML = "";
+  pageTitle.textContent = channel;
+
+  const channelVideos = fakeVideos.filter((v) => v.channel === channel);
+
+  if (channelVideos.length === 0) {
+    videoGrid.innerHTML =
+      '<p style="color: #aaa; font-size: 18px; padding: 40px;">No videos from this channel.</p>';
+  } else {
+    channelVideos.forEach((video) => {
+      const card = createFakeVideoCard(video, 0);
+      videoGrid.appendChild(card);
+    });
+  }
+}
+
 // Initialize
 generateVideoGrid();
+updateSubscriptionsList();

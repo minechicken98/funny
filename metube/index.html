@@ -51,9 +51,9 @@
                 <div class="sidebar-item" data-view="liked">Liked Videos</div>
                 <hr />
                 <div class="sidebar-title">SUBSCRIPTIONS</div>
-                <div class="sidebar-item">AI Chef</div>
-                <div class="sidebar-item">Tech Regrets</div>
-                <div class="sidebar-item">Mystery Solver</div>
+                <div id="subscriptionsList">
+                    <!-- Subscriptions will be populated by JS -->
+                </div>
             </aside>
 
             <!-- Video Grid -->
@@ -93,6 +93,27 @@
                     </div>
                     <div class="video-info">
                         <h2 id="videoTitle">Video Title</h2>
+                        <div class="channel-info-bar">
+                            <div class="channel-details">
+                                <div
+                                    class="channel-icon-large"
+                                    id="channelIcon"
+                                >
+                                    AI
+                                </div>
+                                <div>
+                                    <h3 id="channelName">Channel Name</h3>
+                                    <p id="subscriberCount">1M subscribers</p>
+                                </div>
+                            </div>
+                            <button
+                                id="subscribeBtn"
+                                class="subscribe-button"
+                                onclick="toggleSubscribe()"
+                            >
+                                Subscribe
+                            </button>
+                        </div>
                         <div class="video-stats">
                             <span id="videoViews">999M views</span> •
                             <span>2 seconds ago</span>
