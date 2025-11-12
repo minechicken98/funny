@@ -16,9 +16,23 @@
                 overflow: hidden;
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                 display: flex;
+                flex-direction: column;
                 justify-content: center;
                 align-items: center;
                 height: 100vh;
+            }
+
+            .warning-banner {
+                background-color: #ff0000;
+                color: white;
+                text-align: center;
+                padding: 12px;
+                font-weight: bold;
+                font-size: 16px;
+                width: 100%;
+                position: fixed;
+                top: 0;
+                z-index: 1000;
             }
 
             #gameCanvas {
@@ -229,6 +243,10 @@
         </style>
     </head>
     <body>
+        <div class="warning-banner">
+            ⚠️ Slice Beats is currently not working. Please check back later! ⚠️
+        </div>
+
         <button id="pauseBtn">⏸ PAUSE</button>
 
         <div id="ui">
