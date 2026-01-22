@@ -351,8 +351,11 @@
 
         async function getAIAnswer(question) {
             if (!apiToken) {
+                console.log('No API token, using rule-based system');
                 return null; // Fall back to rule-based system
             }
+
+            console.log('Calling AI with question:', question);
 
             try {
                 const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -384,12 +387,15 @@ Answer (keep it very brief):`
                 });
 
                 if (!response.ok) {
-                    console.error('API error:', response.status);
+                    const errorText = await response.text();
+                    console.error('API error:', response.status, errorText);
                     return null;
                 }
 
                 const data = await response.json();
-                return data.content[0].text.trim();
+                const aiAnswer = data.content[0].text.trim();
+                console.log('AI response:', aiAnswer);
+                return aiAnswer;
             } catch (error) {
                 console.error('AI error:', error);
                 return null; // Fall back to rule-based system
@@ -456,9 +462,12 @@ Answer (keep it very brief):`
             // Try AI first, fall back to rule-based
             let answer;
             if (apiToken) {
+                console.log('API token present, attempting AI response');
                 answer = await getAIAnswer(question);
+                console.log('AI answer result:', answer);
             }
             if (!answer) {
+                console.log('Using rule-based answer');
                 answer = getAnswer(question);
             }
 
