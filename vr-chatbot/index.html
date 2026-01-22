@@ -45,46 +45,6 @@
             font-size: 0.9em;
             opacity: 0.9;
         }
-        .api-key-section {
-            background: #f8f9fa;
-            padding: 15px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        .api-key-row {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        .api-key-section input {
-            flex: 1;
-            padding: 10px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 0.9em;
-        }
-        .api-key-section button {
-            padding: 10px 20px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .api-key-section button:hover {
-            background: #5568d3;
-        }
-        .api-status {
-            font-size: 0.85em;
-            color: #666;
-            margin-top: 8px;
-        }
-        .api-status.success {
-            color: #27ae60;
-        }
-        .api-status a {
-            color: #667eea;
-        }
         .messages {
             flex: 1;
             overflow-y: auto;
@@ -125,12 +85,6 @@
         .message.user .message-bubble {
             background: #667eea;
             color: white;
-        }
-        .message.system .message-bubble {
-            background: #ffeb3b;
-            color: #333;
-            max-width: 100%;
-            text-align: center;
         }
         .typing-indicator {
             display: none;
@@ -222,16 +176,6 @@
             <p>Ask me about UG, Beat Saber, Animal Company, or Gorilla Tag!</p>
         </div>
 
-        <div class="api-key-section">
-            <div class="api-key-row">
-                <input type="password" id="apiKeyInput" placeholder="Enter your OpenAI API Key...">
-                <button onclick="saveApiKey()">Save Key</button>
-            </div>
-            <div class="api-status" id="apiStatus">
-                Need an API key? Get one at <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com</a>
-            </div>
-        </div>
-
         <div class="messages" id="messages">
             <div class="message bot">
                 <div class="message-bubble">
@@ -253,28 +197,7 @@
     </div>
 
     <script>
-        let apiKey = localStorage.getItem('openai_api_key') || '';
-
-        // Check if API key exists on load
-        if (apiKey) {
-            document.getElementById('apiKeyInput').value = '••••••••';
-            document.getElementById('apiStatus').innerHTML = '✓ API Key saved! Ready to chat.';
-            document.getElementById('apiStatus').classList.add('success');
-        }
-
-        function saveApiKey() {
-            const input = document.getElementById('apiKeyInput');
-            const key = input.value.trim();
-
-            if (key && key !== '••••••••') {
-                apiKey = key;
-                localStorage.setItem('openai_api_key', key);
-                document.getElementById('apiStatus').innerHTML = '✓ API Key saved! Ready to chat.';
-                document.getElementById('apiStatus').classList.add('success');
-                input.value = '••••••••';
-                addMessage('system', '✓ API key saved! You can now chat with me about VR games!');
-            }
-        }
+        const conversationHistory = [];
 
         function addMessage(type, text) {
             const messagesDiv = document.getElementById('messages');
@@ -296,18 +219,14 @@
             }
         }
 
-        async function sendMessage() {
+        function sendMessage() {
             const input = document.getElementById('userInput');
             const message = input.value.trim();
 
             if (!message) return;
 
-            if (!apiKey) {
-                addMessage('system', '⚠️ Please enter your OpenAI API key first!');
-                return;
-            }
-
             addMessage('user', message);
+            conversationHistory.push({ role: 'user', message: message });
             input.value = '';
 
             const sendBtn = document.getElementById('sendBtn');
@@ -316,67 +235,165 @@
             const typingIndicator = document.getElementById('typingIndicator');
             typingIndicator.classList.add('active');
 
-            try {
-                const response = await fetch('https://api.openai.com/v1/chat/completions', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${apiKey}`
-                    },
-                    body: JSON.stringify({
-                        model: 'gpt-3.5-turbo',
-                        messages: [
-                            {
-                                role: 'system',
-                                content: `You are a VR gaming expert who ONLY knows about these 4 specific VR games and absolutely nothing else:
-
-1. **UG** - A VR game about raising and taking care of dinosaurs. Players can interact with various dinosaur species, feed them, play with them, and watch them grow in a virtual environment.
-
-2. **Beat Saber** - A popular VR rhythm game where players use lightsabers to slice through blocks that represent musical beats. The blocks come at the player in time with music. It's one of the most well-known VR games.
-
-3. **Animal Company** - A VR co-op horror game where players work together as a team to explore abandoned facilities and collect scrap while avoiding dangerous creatures and monsters.
-
-4. **Gorilla Tag** - A VR multiplayer game where players move around as gorillas by physically using their arms to run, jump, and climb. The main game mode is tag, where players chase each other in various maps.
-
-CRITICAL RULES:
-- You can ONLY discuss these 4 games - UG, Beat Saber, Animal Company, and Gorilla Tag
-- If asked about ANY other game, movie, book, news, general knowledge, math, coding, or ANY topic outside these 4 games, politely say you only know about UG, Beat Saber, Animal Company, and Gorilla Tag
-- Be enthusiastic, friendly, and helpful about these games
-- You can compare these games to each other
-- You can give tips, explain mechanics, and share interesting facts about these games
-- If you don't know something specific about one of these games, admit it honestly but stay in character as a VR gaming expert
-- Never break character or discuss topics outside these 4 VR games`
-                            },
-                            {
-                                role: 'user',
-                                content: message
-                            }
-                        ],
-                        temperature: 0.8,
-                        max_tokens: 350
-                    })
-                });
-
+            setTimeout(() => {
                 typingIndicator.classList.remove('active');
+                const response = getAIResponse(message);
+                addMessage('bot', response);
+                conversationHistory.push({ role: 'bot', message: response });
+                sendBtn.disabled = false;
+                input.focus();
+            }, 800 + Math.random() * 1200);
+        }
 
-                if (!response.ok) {
-                    const error = await response.json();
-                    throw new Error(error.error?.message || 'API request failed');
-                }
+        function getAIResponse(userMessage) {
+            const msg = userMessage.toLowerCase();
 
-                const data = await response.json();
-                const botMessage = data.choices[0].message.content;
-
-                addMessage('bot', botMessage);
-
-            } catch (error) {
-                typingIndicator.classList.remove('active');
-                addMessage('system', `❌ Error: ${error.message}`);
-                console.error('Error:', error);
+            // Greetings
+            if (msg.match(/^(hi|hello|hey|sup|yo|greetings|howdy)/)) {
+                const greetings = [
+                    "Hey! 👋 Ready to talk about some awesome VR games? I'm an expert on UG, Beat Saber, Animal Company, and Gorilla Tag!",
+                    "Hello! 🎮 What VR game would you like to know about? I specialize in UG, Beat Saber, Animal Company, and Gorilla Tag!",
+                    "Hey there! Excited to chat about VR games! Ask me anything about UG, Beat Saber, Animal Company, or Gorilla Tag!"
+                ];
+                return greetings[Math.floor(Math.random() * greetings.length)];
             }
 
-            sendBtn.disabled = false;
-            input.focus();
+            // UG - Dinosaur raising game
+            if (msg.includes('ug') && !msg.includes('bug')) {
+                if (msg.includes('how') && (msg.includes('play') || msg.includes('work'))) {
+                    return "In UG, you raise and care for dinosaurs in VR! You can feed them, play with them, and watch them grow. It's super immersive - you use your hands to interact with the dinos. Each species has different needs and behaviors. It's like being a dino parent! 🦕";
+                }
+                if (msg.includes('what') && msg.includes('dinosaur')) {
+                    return "UG features various dinosaur species! You can raise T-Rexes, Velociraptors, Triceratops, and more. Each dino has unique personalities and behaviors. Some are playful, others are more aggressive. It's amazing to watch them grow from babies to adults!";
+                }
+                if (msg.includes('fun') || msg.includes('good') || msg.includes('worth')) {
+                    return "UG is super fun if you love dinosaurs! It's relaxing and rewarding to care for your dinos. The VR immersion makes it feel real - you can pet them, feed them, and watch them react to you. Definitely worth checking out if you're into creature care games!";
+                }
+                return "UG is an amazing VR game where you raise dinosaurs! You can interact with various dino species, feed them, play with them, and watch them grow. It's like having your own Jurassic Park in VR! The hand tracking makes it feel super real. 🦖";
+            }
+
+            // Beat Saber
+            if (msg.includes('beat saber') || msg.includes('beatsaber') || msg.includes('beat-saber')) {
+                if (msg.includes('how') && (msg.includes('play') || msg.includes('work'))) {
+                    return "Beat Saber is a VR rhythm game! You hold two lightsabers and slash colored blocks to the beat of music. Red blocks = right saber, blue = left saber. You need to hit them in the right direction with the matching saber. As the music plays, blocks fly toward you and you slice them! It's incredibly satisfying!";
+                }
+                if (msg.includes('hard') || msg.includes('difficult')) {
+                    return "Beat Saber difficulty ranges from Easy to Expert+! Start with Easy mode to learn the mechanics. Normal and Hard are good for practice. Expert and Expert+ are intense - blocks come FAST and require precise movements. But don't worry, you'll improve quickly! It's also a great workout! 💪";
+                }
+                if (msg.includes('song') || msg.includes('music')) {
+                    return "Beat Saber has tons of songs! The base game includes electronic music, rock, and pop tracks. You can buy DLC packs with songs from artists like Imagine Dragons, Linkin Park, and more. On PC with mods, you can add thousands of custom songs! The music makes it endlessly replayable!";
+                }
+                if (msg.includes('good') || msg.includes('fun') || msg.includes('worth')) {
+                    return "Beat Saber is one of the BEST VR games ever made! It's incredibly fun, addictive, and accessible to everyone. Plus it's an amazing workout without feeling like exercise. The feeling of slicing blocks perfectly to music is so satisfying. Totally worth getting!";
+                }
+                return "Beat Saber is a legendary VR rhythm game! You use lightsabers to slice blocks to the beat of music. It's super addictive, tons of fun, and a great workout too! One of the most popular VR games ever made. Available on all major VR platforms! ⚔️🎵";
+            }
+
+            // Animal Company
+            if (msg.includes('animal company') || (msg.includes('animal') && msg.includes('company'))) {
+                if (msg.includes('how') && (msg.includes('play') || msg.includes('work'))) {
+                    return "In Animal Company, you and up to 3 friends explore abandoned facilities on different moons. Your job is to collect scrap and meet quotas for The Company. But these places are filled with deadly creatures! You need to work together, communicate, and survive. The proximity voice chat makes it super immersive and terrifying!";
+                }
+                if (msg.includes('scary') || msg.includes('horror')) {
+                    return "Animal Company is TERRIFYING! The monsters are unpredictable and deadly. The Bracken stalks you from behind, the Coil-Head only moves when you're not looking, and the Jester... let's just say you don't want to hear its music box wind up. The game uses darkness, sound, and your imagination to scare you. It's hilarious and horrifying at the same time!";
+                }
+                if (msg.includes('monster') || msg.includes('creature') || msg.includes('enemy')) {
+                    return "Animal Company has tons of deadly creatures! The Bracken stalks you silently, Coil-Heads are like Weeping Angels, Thumpers chase you in vents, Jesters start harmless but become deadly, Forest Giants patrol outside, and there are many more! Each one requires different strategies to survive. Learning their behaviors is key!";
+                }
+                if (msg.includes('friend') || msg.includes('multiplayer') || msg.includes('coop')) {
+                    return "Animal Company is best with friends! You can play with up to 4 people total. Communication is CRUCIAL - someone needs to watch the ship's cameras, others explore and collect scrap. When things go wrong, it's chaos and hilarious! The proximity voice chat means you can lose contact with teammates, adding to the tension.";
+                }
+                return "Animal Company is an intense VR co-op horror game! You and your crew explore abandoned facilities to collect scrap while avoiding terrifying creatures. Communication and teamwork are essential for survival. It's scary, funny, and incredibly addictive! Best played with friends! 😱👻";
+            }
+
+            // Gorilla Tag
+            if (msg.includes('gorilla tag') || msg.includes('gorilla') || (msg.includes('monkey') && msg.includes('tag'))) {
+                if (msg.includes('how') && (msg.includes('play') || msg.includes('work') || msg.includes('move'))) {
+                    return "Gorilla Tag has unique physics-based movement! You use ONLY your hands/controllers to move - push off the ground like a real gorilla! Push forward to run, push down to jump, and grab surfaces to climb. No buttons, no joysticks, just your arms. It feels weird at first but becomes super natural and fun!";
+                }
+                if (msg.includes('tag') && !msg.includes('gorilla')) {
+                    return "The main game mode is Tag! One player is 'it' (they're red) and chases other players. If they touch you, you become it! The maps have lots of vertical space for climbing and jumping. You can hide, run, or try to outmaneuver the tagged player. Simple concept but endlessly fun!";
+                }
+                if (msg.includes('free') || msg.includes('cost') || msg.includes('price')) {
+                    return "Gorilla Tag is FREE! That's part of why it's so popular. The base game costs nothing, though there are cosmetic purchases available. You can play online with tons of other players without spending a dime. It's an amazing value!";
+                }
+                if (msg.includes('fun') || msg.includes('good') || msg.includes('worth')) {
+                    return "Gorilla Tag is incredibly fun! The movement feels amazing once you master it, and playing tag with other players is hilarious. The community is huge and active. It's simple but addictive. Plus it's free and a great workout! Definitely worth trying!";
+                }
+                return "Gorilla Tag is a hilarious VR game where you play as a gorilla! You move by swinging your arms like a real monkey - no joysticks, just physics-based arm movement. The main game is tag with other players. It's simple, free, super fun, and has a huge community! 🦍";
+            }
+
+            // Comparing games
+            if (msg.includes('compare') || msg.includes('difference') || msg.includes('versus') || msg.includes('vs')) {
+                return "All four games are totally different experiences! UG is a relaxing dinosaur care simulator. Beat Saber is an intense rhythm action game. Animal Company is a horror co-op scavenging game. Gorilla Tag is a silly multiplayer physics game. Each one excels in its own genre! Which specific games would you like me to compare?";
+            }
+
+            // Which game recommendations
+            if (msg.includes('which') || msg.includes('best') || msg.includes('should i') || msg.includes('recommend')) {
+                if (msg.includes('scary') || msg.includes('horror')) {
+                    return "For scary games, Animal Company is your pick! It's genuinely terrifying but also hilarious with friends. The monsters are unpredictable and the atmosphere is super tense!";
+                }
+                if (msg.includes('relax') || msg.includes('calm') || msg.includes('chill')) {
+                    return "For relaxation, go with UG! Raising dinosaurs is peaceful and rewarding. You can take your time, interact with your dinos, and enjoy the VR immersion without stress!";
+                }
+                if (msg.includes('exercise') || msg.includes('workout') || msg.includes('active')) {
+                    return "Beat Saber and Gorilla Tag are both great workouts! Beat Saber has you slicing blocks with full arm movements - it's cardio disguised as fun! Gorilla Tag is intense arm and core work with all that climbing and running. Both will make you sweat!";
+                }
+                if (msg.includes('friend') || msg.includes('multiplayer')) {
+                    return "For playing with friends, Animal Company and Gorilla Tag are perfect! Animal Company is co-op horror with up to 4 players - terrifying and hilarious. Gorilla Tag is casual multiplayer fun with tons of players online. Both are social and super fun with others!";
+                }
+                return "It depends what you're looking for! UG for chill dino care, Beat Saber for rhythm action and exercise, Animal Company for horror co-op, and Gorilla Tag for silly multiplayer fun. They're all amazing in different ways! What kind of experience are you after?";
+            }
+
+            // VR headset questions
+            if (msg.includes('headset') || msg.includes('quest') || msg.includes('vr')) {
+                return "These games work on various VR headsets! Beat Saber and Gorilla Tag are on Quest, PSVR, PC VR, and more. UG and Animal Company availability depends on the platform. Most modern VR headsets can run at least some of these games. What headset do you have?";
+            }
+
+            // Price questions
+            if (msg.includes('cost') || msg.includes('price') || msg.includes('how much') || msg.includes('expensive')) {
+                return "Prices vary! Gorilla Tag is FREE! Beat Saber is around $30. Animal Company and UG pricing depends on the platform and region. Beat Saber often goes on sale, and considering how much content it has, it's worth full price. Gorilla Tag being free is amazing!";
+            }
+
+            // Difficulty questions
+            if (msg.includes('easy') || msg.includes('beginner') || msg.includes('hard')) {
+                return "For beginners, Gorilla Tag and Beat Saber (on Easy mode) are most accessible! Gorilla Tag's movement takes practice but anyone can play. Beat Saber scales well with difficulty options. UG is relaxing and beginner-friendly. Animal Company can be overwhelming at first but watching tutorials helps!";
+            }
+
+            // Tips/help
+            if (msg.includes('tip') || msg.includes('advice') || msg.includes('help me')) {
+                return "General VR tips: Take breaks to avoid motion sickness! Start with easier games to get used to VR. For Beat Saber, use your wrists not just arms. For Gorilla Tag, small controlled pushes work better than wild swinging. For Animal Company, ALWAYS communicate with your team. For UG, be patient with your dinos!";
+            }
+
+            // Other topics (redirect to VR games)
+            if (msg.includes('minecraft') || msg.includes('fortnite') || msg.includes('roblox') ||
+                msg.includes('call of duty') || msg.includes('gta') || msg.includes('pokemon')) {
+                return "I only know about VR games - specifically UG, Beat Saber, Animal Company, and Gorilla Tag! I can't help with other games. Want to know about any of these four VR games instead? 🎮";
+            }
+
+            if (msg.includes('weather') || msg.includes('time') || msg.includes('date') ||
+                msg.includes('news') || msg.includes('president') || msg.includes('math')) {
+                return "I'm a VR gaming expert! I only know about UG, Beat Saber, Animal Company, and Gorilla Tag. I can't answer general knowledge questions. Ask me about these VR games! 🎮";
+            }
+
+            // Generic question about "the games"
+            if (msg.includes('game') && !msg.includes('what')) {
+                return "I specialize in four VR games: UG (dinosaur raising), Beat Saber (rhythm slicing), Animal Company (horror co-op), and Gorilla Tag (monkey tag). Which one interests you? I can tell you all about gameplay, tips, and what makes each one special!";
+            }
+
+            // Thank you
+            if (msg.includes('thank') || msg.includes('thanks')) {
+                return "You're welcome! Happy to help with anything about UG, Beat Saber, Animal Company, or Gorilla Tag! Have fun gaming! 🎮✨";
+            }
+
+            // Default responses when not sure
+            const defaultResponses = [
+                "Hmm, I'm not sure what you're asking about! I specialize in UG, Beat Saber, Animal Company, and Gorilla Tag. Could you ask about one of these games specifically?",
+                "I only have knowledge about four VR games: UG (dino raising), Beat Saber (rhythm game), Animal Company (horror co-op), and Gorilla Tag (tag game). Want to know about any of these?",
+                "Sorry, I can only discuss UG, Beat Saber, Animal Company, and Gorilla Tag! These are my areas of expertise. Ask me about any of these VR games! 🎮",
+                "I'm a VR gaming AI focused on just four games: UG, Beat Saber, Animal Company, and Gorilla Tag. Try asking me about one of these awesome games!"
+            ];
+            return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
         }
 
         // Focus input on load
