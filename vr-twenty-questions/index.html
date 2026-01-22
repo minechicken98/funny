@@ -262,7 +262,7 @@
 
         <div class="game-status">
             <div class="questions-left">Questions Left: <span id="questionsLeft">20</span></div>
-            <div class="hint" id="gameHint">Ask me yes/no questions to figure out what I'm thinking of!</div>
+            <div class="hint" id="gameHint">Ask me yes/no questions like "Is it from UG?" or "Does it have teeth?"</div>
         </div>
 
         <div id="resultArea"></div>
@@ -524,7 +524,7 @@ Answer (be creative but brief):`
             input.value = '';
 
             if (questionsAsked >= 20) {
-                document.getElementById('gameHint').textContent = "Out of questions! Make your final guess!";
+                document.getElementById('gameHint').textContent = "Out of questions! Time to make your guess!";
             }
 
             updateUI();
