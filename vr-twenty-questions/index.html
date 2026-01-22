@@ -57,15 +57,17 @@
             margin-top: 10px;
         }
         .question-area {
+            display: flex;
+            gap: 15px;
+            align-items: center;
             margin-bottom: 25px;
         }
         .question-input {
-            width: 100%;
+            flex: 1;
             padding: 15px;
             font-size: 1.1em;
             border: 2px solid #ddd;
             border-radius: 10px;
-            margin-bottom: 15px;
             outline: none;
         }
         .question-input:focus {
@@ -196,10 +198,10 @@
         .ai-thinking {
             color: #667eea;
             font-style: italic;
-            padding: 15px;
+            padding: 10px 15px;
             background: #f0f4ff;
             border-radius: 10px;
-            margin: 10px 0;
+            white-space: nowrap;
         }
         .api-modal {
             display: none;
@@ -507,12 +509,12 @@ Answer (be creative but brief):`
                 document.getElementById('askBtn').disabled = true;
                 document.getElementById('guessBtn').disabled = true;
 
-                // Show loading message at top of conversation
-                const conversationDiv = document.getElementById('conversation');
+                // Show loading message next to input
+                const questionArea = document.querySelector('.question-area');
                 const loadingDiv = document.createElement('div');
                 loadingDiv.id = 'loadingIndicator';
                 loadingDiv.innerHTML = '<div class="ai-thinking">🤔 AI is thinking<span class="loading"></span></div>';
-                conversationDiv.insertBefore(loadingDiv, conversationDiv.firstChild);
+                questionArea.appendChild(loadingDiv);
 
                 answer = await getAIAnswer(question);
                 console.log('AI answer result:', answer);
