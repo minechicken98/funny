@@ -367,21 +367,25 @@
                     },
                     body: JSON.stringify({
                         model: 'claude-3-5-sonnet-20241022',
-                        max_tokens: 100,
+                        max_tokens: 150,
+                        temperature: 0.8,
                         messages: [{
                             role: 'user',
                             content: `You are playing 20 questions. The secret character is "${currentCharacter.name}" from the game "${currentCharacter.game}".
 Character details: Type: ${currentCharacter.type}, Traits: ${currentCharacter.traits.join(', ')}.
 
 Rules:
-- Answer ONLY with "Yes! ✓", "No ✗", or brief uncertain responses like "Maybe? 🤔"
-- Be accurate to the character's traits
-- Don't reveal the character name
-- If asked about specific character names, say "No cheating!"
+- Be creative and fun with your responses! Add personality and flair.
+- You can use emojis, exclamations, and playful language.
+- Answer with variations like "Yes! ✓", "Absolutely! ✓", "Nope! ✗", "Not quite! ✗", "Hmm, maybe? 🤔", "Sort of! 🤷", etc.
+- Be accurate to the character's traits but make it entertaining.
+- Don't reveal the character name directly.
+- If asked about specific character names, respond playfully like "Hey, no cheating! 😤" or "Nice try! 😏"
+- Keep responses brief (1-2 sentences max) but make them memorable.
 
 Question: ${question}
 
-Answer (keep it very brief):`
+Answer (be creative but brief):`
                         }]
                     })
                 });
