@@ -258,18 +258,27 @@
                 return greetings[Math.floor(Math.random() * greetings.length)];
             }
 
-            // UG - Dinosaur raising game
+            // UG - Dinosaur hatching and raising game
             if (msg.includes('ug') && !msg.includes('bug')) {
                 if (msg.includes('how') && (msg.includes('play') || msg.includes('work'))) {
-                    return "In UG, you raise and care for dinosaurs in VR! You can feed them, play with them, and watch them grow. It's super immersive - you use your hands to interact with the dinos. Each species has different needs and behaviors. It's like being a dino parent! 🦕";
+                    return "In UG, you start by hatching your dino egg! Once hatched, you feed your dino and level it up as it grows. You can also battle massive titans like the Triskeletops and Magmadon! It's super immersive - you use your hands to interact with everything. It's like being a dino trainer! 🦕";
                 }
-                if (msg.includes('what') && msg.includes('dinosaur')) {
-                    return "UG features various dinosaur species! You can raise T-Rexes, Velociraptors, Triceratops, and more. Each dino has unique personalities and behaviors. Some are playful, others are more aggressive. It's amazing to watch them grow from babies to adults!";
+                if (msg.includes('what') && (msg.includes('dinosaur') || msg.includes('dino'))) {
+                    return "UG has both real and fictional dinosaurs! There are classic species plus unique creatures like the Mammothor, Newbiesaur, and Grugadon. Each dino has different abilities and stats. You hatch them from eggs, feed them, and level them up to make them stronger!";
+                }
+                if (msg.includes('titan') || msg.includes('boss')) {
+                    return "UG has epic titan battles! You can fight massive bosses like the Triskeletops and Magmadon. These are huge challenges that test your dino's strength and your skills. Defeating titans is super rewarding and a big part of the game!";
+                }
+                if (msg.includes('hatch') || msg.includes('egg')) {
+                    return "Hatching is how you get your dino in UG! You start with a dino egg and wait for it to hatch. Once it hatches, you can start feeding and raising your new companion. It's exciting to see what dino you'll get!";
+                }
+                if (msg.includes('level') || msg.includes('grow')) {
+                    return "In UG, you level up your dino by feeding it and taking care of it! As your dino levels up, it gets stronger and can take on tougher challenges like the titan bosses. Watching your dino grow from a hatchling to a powerful creature is super satisfying!";
                 }
                 if (msg.includes('fun') || msg.includes('good') || msg.includes('worth')) {
-                    return "UG is super fun if you love dinosaurs! It's relaxing and rewarding to care for your dinos. The VR immersion makes it feel real - you can pet them, feed them, and watch them react to you. Definitely worth checking out if you're into creature care games!";
+                    return "UG is super fun if you love dinosaurs and creature raising! You hatch eggs, feed and level up your dinos, and battle epic titans. The fictional dinos like Mammothor and Grugadon add unique variety. Definitely worth checking out if you're into creature games!";
                 }
-                return "UG is an amazing VR game where you raise dinosaurs! You can interact with various dino species, feed them, play with them, and watch them grow. It's like having your own Jurassic Park in VR! The hand tracking makes it feel super real. 🦖";
+                return "UG is an awesome VR game where you hatch dino eggs, feed and level up your dinosaurs, and battle massive titans like Triskeletops and Magmadon! The game has both real and fictional dinos like the Mammothor, Newbiesaur, and Grugadon. It's like being a dino trainer in VR! 🦖";
             }
 
             // Beat Saber
@@ -292,18 +301,24 @@
             // Animal Company
             if (msg.includes('animal company') || (msg.includes('animal') && msg.includes('company'))) {
                 if (msg.includes('how') && (msg.includes('play') || msg.includes('work'))) {
-                    return "In Animal Company, you and up to 3 friends explore abandoned facilities on different moons. Your job is to collect scrap and meet quotas for The Company. But these places are filled with deadly creatures! You need to work together, communicate, and survive. The proximity voice chat makes it super immersive and terrifying!";
+                    return "In Animal Company, you play as funny animals and kill monsters! You can also build with goop - it's like a building mechanic that lets you create structures. The game is about fighting monsters, building stuff, and chilling with friends. It's a fun mix of action and creativity!";
                 }
-                if (msg.includes('scary') || msg.includes('horror')) {
-                    return "Animal Company is TERRIFYING! The monsters are unpredictable and deadly. The Bracken stalks you from behind, the Coil-Head only moves when you're not looking, and the Jester... let's just say you don't want to hear its music box wind up. The game uses darkness, sound, and your imagination to scare you. It's hilarious and horrifying at the same time!";
+                if (msg.includes('monster') || msg.includes('creature') || msg.includes('enemy') || msg.includes('fight')) {
+                    return "Animal Company is all about killing monsters as funny animals! You battle various creatures and enemies throughout the game. The combat is fun and engaging, especially when you're playing as cute animals taking down scary monsters!";
                 }
-                if (msg.includes('monster') || msg.includes('creature') || msg.includes('enemy')) {
-                    return "Animal Company has tons of deadly creatures! The Bracken stalks you silently, Coil-Heads are like Weeping Angels, Thumpers chase you in vents, Jesters start harmless but become deadly, Forest Giants patrol outside, and there are many more! Each one requires different strategies to survive. Learning their behaviors is key!";
+                if (msg.includes('build') || msg.includes('goop') || msg.includes('construct')) {
+                    return "Animal Company has a cool building mechanic using goop! You can build structures and create things with this goop material. It adds a creative element to the game beyond just fighting monsters. You can build defenses, structures, or whatever you want!";
                 }
-                if (msg.includes('friend') || msg.includes('multiplayer') || msg.includes('coop')) {
-                    return "Animal Company is best with friends! You can play with up to 4 people total. Communication is CRUCIAL - someone needs to watch the ship's cameras, others explore and collect scrap. When things go wrong, it's chaos and hilarious! The proximity voice chat means you can lose contact with teammates, adding to the tension.";
+                if (msg.includes('animal') && !msg.includes('company')) {
+                    return "In Animal Company, you play as funny animals! It's hilarious being a cute animal while fighting monsters and building with goop. The animal characters add a lot of humor to the game!";
                 }
-                return "Animal Company is an intense VR co-op horror game! You and your crew explore abandoned facilities to collect scrap while avoiding terrifying creatures. Communication and teamwork are essential for survival. It's scary, funny, and incredibly addictive! Best played with friends! 😱👻";
+                if (msg.includes('friend') || msg.includes('multiplayer') || msg.includes('coop') || msg.includes('chill')) {
+                    return "Animal Company is great for chilling with friends! You can play together, kill monsters as funny animals, and build cool stuff with goop. It's a fun social game where you can hang out and have a good time together!";
+                }
+                if (msg.includes('fun') || msg.includes('good') || msg.includes('worth')) {
+                    return "Animal Company is super fun! You get to be funny animals, kill monsters, build with goop, and chill with friends. It's a great mix of action, creativity, and social gameplay. Definitely worth playing if you want something fun and unique!";
+                }
+                return "Animal Company is a VR game where you play as funny animals and kill monsters! You can build structures with goop and just chill with friends. It's a fun mix of combat, building, and hanging out. Super entertaining and unique! 🐻🔫";
             }
 
             // Gorilla Tag
