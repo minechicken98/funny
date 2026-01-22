@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VR Twenty Questions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .game-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 700px;
+            padding: 40px;
+        }
+        h1 {
+            font-size: 2.5em;
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .game-status {
+            background: #f0f4ff;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .questions-left {
+            font-size: 1.5em;
+            color: #667eea;
+            font-weight: bold;
+        }
+        .hint {
+            color: #888;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        .question-area {
+            margin-bottom: 25px;
+        }
+        .question-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            outline: none;
+        }
+        .question-input:focus {
+            border-color: #667eea;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        button {
+            flex: 1;
+            padding: 15px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .ask-btn {
+            background: #667eea;
+            color: white;
+        }
+        .ask-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+        .ask-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .guess-btn {
+            background: #10b981;
+            color: white;
+        }
+        .guess-btn:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+        .new-game-btn {
+            background: #f59e0b;
+            color: white;
+        }
+        .new-game-btn:hover {
+            background: #d97706;
+            transform: translateY(-2px);
+        }
+        .conversation {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        .qa-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .question {
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .answer {
+            color: #333;
+            padding-left: 20px;
+            font-size: 1.1em;
+        }
+        .answer.yes {
+            color: #10b981;
+        }
+        .answer.no {
+            color: #ef4444;
+        }
+        .answer.maybe {
+            color: #f59e0b;
+        }
+        .result {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            font-size: 1.3em;
+            margin-bottom: 20px;
+        }
+        .result.win {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        .result.lose {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+        .character-name {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 40px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🎮 VR Twenty Questions</h1>
+        <p class="subtitle">I'm thinking of a VR game character... Ask yes/no questions to guess who!</p>
+
+        <div class="game-status">
+            <div class="questions-left">Questions Left: <span id="questionsLeft">20</span></div>
+            <div class="hint" id="gameHint">Ask me yes/no questions like "Is it from UG?" or "Does it have teeth?"</div>
+        </div>
+
+        <div id="resultArea"></div>
+
+        <div class="question-area">
+            <input
+                type="text"
+                id="questionInput"
+                class="question-input"
+                placeholder="Type your yes/no question here..."
+                onkeypress="if(event.key==='Enter') askQuestion()"
+            >
+        </div>
+
+        <div class="button-group">
+            <button class="ask-btn" onclick="askQuestion()" id="askBtn">Ask Question</button>
+            <button class="guess-btn" onclick="makeGuess()" id="guessBtn">Make a Guess!</button>
+        </div>
+
+        <div class="conversation" id="conversation">
+            <div class="empty-state">No questions asked yet. Start guessing!</div>
+        </div>
+
+        <button class="new-game-btn" onclick="newGame()" style="width: 100%;">New Game</button>
+    </div>
+
+    <script>
+        const characters = [
+            // UG Characters
+            { name: "Mammothor", game: "UG", type: "creature", traits: ["dinosaur", "fictional", "large", "powerful"] },
+            { name: "Newbiesaur", game: "UG", type: "creature", traits: ["dinosaur", "fictional", "starter", "small"] },
+            { name: "Grugadon", game: "UG", type: "creature", traits: ["dinosaur", "fictional", "powerful"] },
+            { name: "Triskeletops", game: "UG", type: "boss", traits: ["dinosaur", "titan", "boss", "huge", "scary", "powerful"] },
+            { name: "Magmadon", game: "UG", type: "boss", traits: ["dinosaur", "titan", "boss", "fire", "huge", "scary", "powerful"] },
+
+            // Animal Company Monsters
+            { name: "Anglerfish", game: "Animal Company", type: "monster", traits: ["monster", "blue", "big", "teeth", "scary", "fish", "turns off light"] },
+            { name: "Mimic", game: "Animal Company", type: "monster", traits: ["monster", "disguise", "tricky", "jumps", "changes color", "evil"] },
+            { name: "Big Head", game: "Animal Company", type: "monster", traits: ["monster", "ugly", "larva", "giant", "teeth", "kills when looked at", "scary"] },
+            { name: "Cutie", game: "Animal Company", type: "monster", traits: ["monster", "seal", "cute", "small", "beige", "kills when looked at", "deceptive"] },
+            { name: "Funny Animal Player", game: "Animal Company", type: "player", traits: ["animal", "player", "cute", "funny", "hero"] },
+
+            // Gorilla Tag
+            { name: "Regular Gorilla", game: "Gorilla Tag", type: "player", traits: ["gorilla", "monkey", "player", "normal", "hero"] },
+            { name: "Infected Gorilla", game: "Gorilla Tag", type: "enemy", traits: ["gorilla", "monkey", "red", "lava", "infected", "enemy", "evil"] }
+        ];
+
+        let currentCharacter = null;
+        let questionsAsked = 0;
+        let conversation = [];
+        let gameOver = false;
+
+        function startGame() {
+            currentCharacter = characters[Math.floor(Math.random() * characters.length)];
+            questionsAsked = 0;
+            conversation = [];
+            gameOver = false;
+            updateUI();
+            console.log("Secret character:", currentCharacter.name); // For testing
+        }
+
+        function askQuestion() {
+            if (gameOver) return;
+
+            const input = document.getElementById('questionInput');
+            const question = input.value.trim();
+
+            if (!question) {
+                alert("Please type a question!");
+                return;
+            }
+
+            if (questionsAsked >= 20) {
+                alert("You're out of questions! Make your final guess!");
+                return;
+            }
+
+            const answer = getAnswer(question);
+            questionsAsked++;
+
+            conversation.push({ question, answer });
+            input.value = '';
+
+            if (questionsAsked >= 20) {
+                document.getElementById('gameHint').textContent = "Out of questions! Time to make your guess!";
+            }
+
+            updateUI();
+        }
+
+        function getAnswer(question) {
+            const q = question.toLowerCase();
+            const char = currentCharacter;
+
+            // Game questions
+            if (q.includes('ug')) return char.game === "UG" ? "Yes! ✓" : "No ✗";
+            if (q.includes('animal company')) return char.game === "Animal Company" ? "Yes! ✓" : "No ✗";
+            if (q.includes('gorilla tag')) return char.game === "Gorilla Tag" ? "Yes! ✓" : "No ✗";
+
+            // Type questions
+            if (q.includes('monster') || q.includes('enemy')) {
+                return (char.type === "monster" || char.type === "enemy") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('boss') || q.includes('titan')) {
+                return char.type === "boss" ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('player') || q.includes('hero')) {
+                return char.type === "player" ? "Yes! ✓" : "No ✗";
+            }
+
+            // Trait-based questions
+            if (q.includes('dinosaur') || q.includes('dino')) {
+                return char.traits.includes("dinosaur") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('cute')) {
+                return char.traits.includes("cute") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('scary') || q.includes('dangerous')) {
+                return char.traits.includes("scary") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('big') || q.includes('large') || q.includes('huge') || q.includes('giant')) {
+                return (char.traits.includes("big") || char.traits.includes("large") || char.traits.includes("huge") || char.traits.includes("giant")) ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('small') || q.includes('little')) {
+                return char.traits.includes("small") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('teeth')) {
+                return char.traits.includes("teeth") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('kill') && q.includes('look')) {
+                return char.traits.includes("kills when looked at") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('blue')) {
+                return char.traits.includes("blue") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('red') || q.includes('lava')) {
+                return (char.traits.includes("red") || char.traits.includes("lava")) ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('fire') || q.includes('lava') || q.includes('hot')) {
+                return char.traits.includes("fire") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('animal')) {
+                return char.traits.includes("animal") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('gorilla') || q.includes('monkey') || q.includes('ape')) {
+                return (char.traits.includes("gorilla") || char.traits.includes("monkey")) ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('seal')) {
+                return char.traits.includes("seal") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('fish')) {
+                return char.traits.includes("fish") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('disguise') || q.includes('mimic') || q.includes('fake')) {
+                return char.traits.includes("disguise") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('jump')) {
+                return char.traits.includes("jumps") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('powerful') || q.includes('strong')) {
+                return char.traits.includes("powerful") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('evil') || q.includes('bad')) {
+                return char.traits.includes("evil") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('ugly')) {
+                return char.traits.includes("ugly") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('light') || q.includes('flashlight')) {
+                return char.traits.includes("turns off light") ? "Yes! ✓" : "No ✗";
+            }
+
+            // Default responses for unclear questions
+            const randomResponses = ["Maybe? 🤔", "Sort of... 🤷", "I'm not sure how to answer that!", "Hard to say..."];
+            return randomResponses[Math.floor(Math.random() * randomResponses.length)];
+        }
+
+        function makeGuess() {
+            if (gameOver) return;
+
+            const guess = prompt("Who do you think it is? Type the character name:");
+            if (!guess) return;
+
+            gameOver = true;
+
+            const resultArea = document.getElementById('resultArea');
+
+            if (guess.toLowerCase().trim() === currentCharacter.name.toLowerCase()) {
+                resultArea.innerHTML = `
+                    <div class="result win">
+                        🎉 CORRECT! 🎉
+                        <div class="character-name">${currentCharacter.name}</div>
+                        <div>You guessed it in ${questionsAsked} questions!</div>
+                        <div style="margin-top: 10px;">From: ${currentCharacter.game}</div>
+                    </div>
+                `;
+            } else {
+                resultArea.innerHTML = `
+                    <div class="result lose">
+                        ❌ Wrong! ❌
+                        <div>You guessed: ${guess}</div>
+                        <div class="character-name">It was ${currentCharacter.name}!</div>
+                        <div style="margin-top: 10px;">From: ${currentCharacter.game}</div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('askBtn').disabled = true;
+            document.getElementById('guessBtn').disabled = true;
+            document.getElementById('questionInput').disabled = true;
+        }
+
+        function newGame() {
+            document.getElementById('resultArea').innerHTML = '';
+            document.getElementById('askBtn').disabled = false;
+            document.getElementById('guessBtn').disabled = false;
+            document.getElementById('questionInput').disabled = false;
+            document.getElementById('gameHint').textContent = 'Ask me yes/no questions like "Is it from UG?" or "Does it have teeth?"';
+            startGame();
+        }
+
+        function updateUI() {
+            document.getElementById('questionsLeft').textContent = 20 - questionsAsked;
+
+            const conversationDiv = document.getElementById('conversation');
+
+            if (conversation.length === 0) {
+                conversationDiv.innerHTML = '<div class="empty-state">No questions asked yet. Start guessing!</div>';
+            } else {
+                conversationDiv.innerHTML = conversation.map((qa, index) => {
+                    let answerClass = '';
+                    if (qa.answer.includes('Yes') || qa.answer.includes('✓')) answerClass = 'yes';
+                    else if (qa.answer.includes('No') || qa.answer.includes('✗')) answerClass = 'no';
+                    else answerClass = 'maybe';
+
+                    return `
+                        <div class="qa-item">
+                            <div class="question">Q${index + 1}: ${qa.question}</div>
+                            <div class="answer ${answerClass}">→ ${qa.answer}</div>
+                        </div>
+                    `;
+                }).reverse().join('');
+            }
+        }
+
+        // Start the game when page loads
+        startGame();
+    </script>
+</body>
+</html>
