@@ -182,26 +182,14 @@
             padding: 40px;
             font-style: italic;
         }
-        .loading {
-            display: inline-block;
-            margin-left: 10px;
-        }
-        .loading::after {
-            content: '...';
-            animation: dots 1.5s steps(4, end) infinite;
-        }
-        @keyframes dots {
-            0%, 20% { content: '.'; }
-            40% { content: '..'; }
-            60%, 100% { content: '...'; }
-        }
+
         .ai-thinking {
-            color: #667eea;
-            font-style: italic;
-            padding: 10px 15px;
-            background: #f0f4ff;
-            border-radius: 10px;
-            white-space: nowrap;
+            font-size: 1.5em;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
         }
         .api-modal {
             display: none;
@@ -287,6 +275,7 @@
                 placeholder="Type your yes/no question here..."
                 onkeypress="if(event.key==='Enter') askQuestion()"
             >
+            <div id="loadingIndicator" class="ai-thinking"></div>
         </div>
 
         <div class="button-group">
@@ -509,21 +498,17 @@ Answer (be creative but brief):`
                 document.getElementById('askBtn').disabled = true;
                 document.getElementById('guessBtn').disabled = true;
 
-                // Show loading message next to input
-                const questionArea = document.querySelector('.question-area');
-                const loadingDiv = document.createElement('div');
-                loadingDiv.id = 'loadingIndicator';
-                loadingDiv.innerHTML = '<div class="ai-thinking">🤔 AI is thinking<span class="loading"></span></div>';
-                questionArea.appendChild(loadingDiv);
+                // Show loading icon
+                const loadingIndicator = document.getElementById('loadingIndicator');
+                loadingIndicator.innerHTML = '🤔';
+                loadingIndicator.classList.add('show');
 
                 answer = await getAIAnswer(question);
                 console.log('AI answer result:', answer);
 
-                // Remove loading indicator and re-enable inputs
-                const loadingIndicator = document.getElementById('loadingIndicator');
-                if (loadingIndicator) {
-                    loadingIndicator.remove();
-                }
+                // Hide loading indicator and re-enable inputs
+                loadingIndicator.innerHTML = '';
+                loadingIndicator.classList.remove('show');
                 document.getElementById('questionInput').disabled = false;
                 document.getElementById('askBtn').disabled = false;
                 document.getElementById('guessBtn').disabled = false;
