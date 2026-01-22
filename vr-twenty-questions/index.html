@@ -217,10 +217,10 @@
             { name: "Mammothor", game: "UG", type: "creature", traits: ["dinosaur", "fictional", "large", "powerful"] },
             { name: "Newbiesaur", game: "UG", type: "creature", traits: ["dinosaur", "fictional", "starter", "small"] },
             { name: "Grugadon", game: "UG", type: "creature", traits: ["dinosaur", "fictional", "powerful"] },
-            { name: "Triskeletops", game: "UG", type: "boss", traits: ["dinosaur", "titan", "boss", "huge", "scary", "powerful"] },
-            { name: "Magmadon", game: "UG", type: "boss", traits: ["dinosaur", "titan", "boss", "fire", "huge", "scary", "powerful"] },
+            { name: "Triskeletops", game: "UG", type: "boss", traits: ["dinosaur", "titan", "boss", "huge", "scary", "powerful", "skeleton"] },
+            { name: "Magmadon", game: "UG", type: "boss", traits: ["dinosaur", "titan", "boss", "fire", "huge", "scary", "powerful", "lava"] },
             { name: "Cryodon", game: "UG", type: "boss", traits: ["dinosaur", "titan", "boss", "ice", "cold", "huge", "scary", "powerful"] },
-            { name: "Flaptor", game: "UG", type: "boss", traits: ["dinosaur", "titan", "boss", "flies", "flying", "huge", "scary", "powerful"] },
+            { name: "Flaptor", game: "UG", type: "boss", traits: ["dinosaur", "titan", "boss", "flies", "flying", "huge", "scary", "powerful", "bird"] },
 
             // Animal Company Monsters
             { name: "Anglerfish", game: "Animal Company", type: "monster", traits: ["monster", "blue", "big", "teeth", "scary", "fish", "turns off light", "evil"] },
@@ -361,8 +361,17 @@
             if (q.includes('red') || q.includes('lava')) {
                 return (char.traits.includes("red") || char.traits.includes("lava")) ? "Yes! ✓" : "No ✗";
             }
-            if (q.includes('fire') || q.includes('lava') || q.includes('hot')) {
+            if (q.includes('fire') || q.includes('hot')) {
                 return char.traits.includes("fire") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('lava')) {
+                return char.traits.includes("lava") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('skeleton') || q.includes('bones')) {
+                return char.traits.includes("skeleton") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('bird')) {
+                return char.traits.includes("bird") ? "Yes! ✓" : "No ✗";
             }
             if (q.includes('ice') || q.includes('cold') || q.includes('frozen')) {
                 return char.traits.includes("ice") ? "Yes! ✓" : "No ✗";
