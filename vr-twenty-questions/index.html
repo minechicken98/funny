@@ -372,7 +372,36 @@
 
             const resultArea = document.getElementById('resultArea');
 
-            if (guess.toLowerCase().trim() === currentCharacter.name.toLowerCase()) {
+            // Check if the guess matches the character name
+            const guessLower = guess.toLowerCase().trim();
+            const nameLower = currentCharacter.name.toLowerCase();
+
+            // Split the character name into words for partial matching
+            const nameWords = nameLower.split(' ');
+
+            // Check for exact match or if guess contains significant parts of the name
+            let isCorrect = guessLower === nameLower;
+
+            // Also accept if the guess matches any significant word(s) from the name
+            // or if all words in the guess appear in the character name
+            if (!isCorrect) {
+                const guessWords = guessLower.split(' ').filter(w => w.length > 0);
+
+                // If they guessed a single word that's in the character name
+                if (guessWords.length === 1 && nameWords.includes(guessWords[0])) {
+                    isCorrect = true;
+                }
+                // If they guessed multiple words and all appear in the character name
+                else if (guessWords.length > 1 && guessWords.every(word => nameWords.includes(word))) {
+                    isCorrect = true;
+                }
+                // Also check if the character name contains the guess as a substring
+                else if (nameLower.includes(guessLower)) {
+                    isCorrect = true;
+                }
+            }
+
+            if (isCorrect) {
                 resultArea.innerHTML = `
                     <div class="result win">
                         🎉 CORRECT! 🎉
