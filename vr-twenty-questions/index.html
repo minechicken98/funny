@@ -498,17 +498,25 @@ Answer (be creative but brief):`
 
                 // Show loading indicator and disable inputs
                 const loadingId = Date.now();
-                conversation.push({ question, answer: '<span class="ai-thinking">🤔 AI is thinking<span class="loading"></span></span>', id: loadingId });
                 document.getElementById('questionInput').disabled = true;
                 document.getElementById('askBtn').disabled = true;
                 document.getElementById('guessBtn').disabled = true;
-                updateUI();
+
+                // Show loading message at top of conversation
+                const conversationDiv = document.getElementById('conversation');
+                const loadingDiv = document.createElement('div');
+                loadingDiv.id = 'loadingIndicator';
+                loadingDiv.innerHTML = '<div class="ai-thinking">🤔 AI is thinking<span class="loading"></span></div>';
+                conversationDiv.insertBefore(loadingDiv, conversationDiv.firstChild);
 
                 answer = await getAIAnswer(question);
                 console.log('AI answer result:', answer);
 
                 // Remove loading indicator and re-enable inputs
-                conversation = conversation.filter(item => item.id !== loadingId);
+                const loadingIndicator = document.getElementById('loadingIndicator');
+                if (loadingIndicator) {
+                    loadingIndicator.remove();
+                }
                 document.getElementById('questionInput').disabled = false;
                 document.getElementById('askBtn').disabled = false;
                 document.getElementById('guessBtn').disabled = false;
