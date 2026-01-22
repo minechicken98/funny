@@ -231,7 +231,7 @@
         <div class="api-modal-content">
             <h2>🔑 API Configuration</h2>
             <p>Enter your Anthropic API token to enable AI-powered responses:</p>
-            <p style="font-size: 0.9em; color: #666; margin-top: 10px;">Note: Uses a CORS proxy (corsproxy.io) to make API calls work in the browser.</p>
+            <p style="font-size: 0.9em; color: #666; margin-top: 10px;">Note: Uses a CORS proxy (cors.followalong.com) to make API calls work in the browser.</p>
             <input type="password" id="apiTokenInput" placeholder="sk-ant-...">
             <div>
                 <button class="save-btn" onclick="saveApiToken()">Save</button>
@@ -360,10 +360,10 @@
 
             try {
                 // Use CORS proxy to avoid browser CORS issues
-                const corsProxy = 'https://corsproxy.io/?';
+                const corsProxy = 'https://cors.followalong.com/';
                 const apiUrl = 'https://api.anthropic.com/v1/messages';
 
-                const response = await fetch(corsProxy + encodeURIComponent(apiUrl), {
+                const response = await fetch(corsProxy + apiUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
