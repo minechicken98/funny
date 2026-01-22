@@ -175,6 +175,27 @@
             padding: 40px;
             font-style: italic;
         }
+        .loading {
+            display: inline-block;
+            margin-left: 10px;
+        }
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+        .ai-thinking {
+            color: #667eea;
+            font-style: italic;
+            padding: 15px;
+            background: #f0f4ff;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
         .api-modal {
             display: none;
             position: fixed;
@@ -474,8 +495,17 @@ Answer (be creative but brief):`
             let answer;
             if (apiToken) {
                 console.log('API token present, attempting AI response');
+
+                // Show loading indicator
+                const loadingId = Date.now();
+                conversation.push({ question, answer: '<span class="ai-thinking">🤔 AI is thinking<span class="loading"></span></span>', id: loadingId });
+                updateUI();
+
                 answer = await getAIAnswer(question);
                 console.log('AI answer result:', answer);
+
+                // Remove loading indicator
+                conversation = conversation.filter(item => item.id !== loadingId);
             }
             if (!answer) {
                 console.log('Using rule-based answer');
