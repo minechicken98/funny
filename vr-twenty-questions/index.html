@@ -225,11 +225,15 @@
             { name: "Mimic", game: "Animal Company", type: "monster", traits: ["monster", "disguise", "tricky", "jumps", "changes color", "evil"] },
             { name: "Big Head", game: "Animal Company", type: "monster", traits: ["monster", "ugly", "larva", "giant", "teeth", "kills when looked at", "scary", "evil"] },
             { name: "Cutie", game: "Animal Company", type: "monster", traits: ["monster", "seal", "cute", "small", "beige", "kills when looked at", "deceptive", "evil"], aliases: ["seal", "labubu", "dead body"] },
+            { name: "Ogre", game: "Animal Company", type: "monster", traits: ["monster", "huge", "ugly", "teeth", "eyes", "throws boulders", "throws rocks", "scary", "evil"] },
             { name: "Funny Animal Player", game: "Animal Company", type: "player", traits: ["animal", "player", "cute", "funny", "hero"] },
 
             // Gorilla Tag
             { name: "Gorilla", game: "Gorilla Tag", type: "player", traits: ["gorilla", "monkey", "player", "normal", "hero"] },
-            { name: "Lava Monke", game: "Gorilla Tag", type: "enemy", traits: ["gorilla", "monkey", "red", "lava", "infected", "enemy", "evil"], aliases: ["lava monkey"] }
+            { name: "Lava Monke", game: "Gorilla Tag", type: "enemy", traits: ["gorilla", "monkey", "red", "lava", "infected", "enemy", "evil"], aliases: ["lava monkey"] },
+            { name: "Doug the Bug", game: "Gorilla Tag", type: "creature", traits: ["bug", "insect", "small", "green", "purple", "flies", "forest"] },
+            { name: "Matt the Bat", game: "Gorilla Tag", type: "creature", traits: ["bat", "flies", "caves", "small"] },
+            { name: "Mark the Shark", game: "Gorilla Tag", type: "creature", traits: ["shark", "fish", "swims", "beach", "water", "scary"] }
         ];
 
         let currentCharacter = null;
@@ -300,8 +304,8 @@
 
             // Game questions
             if (q.includes('ug')) return char.game === "UG" ? "Yes! ✓" : "No ✗";
-            if (q.includes('animal company')) return char.game === "Animal Company" ? "Yes! ✓" : "No ✗";
-            if (q.includes('gorilla tag')) return char.game === "Gorilla Tag" ? "Yes! ✓" : "No ✗";
+            if (q.includes('animal company') || q.includes('ac')) return char.game === "Animal Company" ? "Yes! ✓" : "No ✗";
+            if (q.includes('gorilla tag') || q.includes('gtag')) return char.game === "Gorilla Tag" ? "Yes! ✓" : "No ✗";
 
             // Type questions
             if (q.includes('monster') || q.includes('enemy')) {
@@ -374,6 +378,42 @@
             }
             if (q.includes('light') || q.includes('flashlight')) {
                 return char.traits.includes("turns off light") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('bug') || q.includes('insect')) {
+                return (char.traits.includes("bug") || char.traits.includes("insect")) ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('bat')) {
+                return char.traits.includes("bat") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('shark')) {
+                return char.traits.includes("shark") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('fly') || q.includes('flies') || q.includes('flying')) {
+                return char.traits.includes("flies") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('swim') || q.includes('swims') || q.includes('swimming')) {
+                return char.traits.includes("swims") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('forest') || q.includes('woods')) {
+                return char.traits.includes("forest") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('cave') || q.includes('caves')) {
+                return char.traits.includes("caves") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('beach') || q.includes('water') || q.includes('ocean')) {
+                return (char.traits.includes("beach") || char.traits.includes("water")) ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('throw') || q.includes('boulder') || q.includes('rock')) {
+                return (char.traits.includes("throws boulders") || char.traits.includes("throws rocks")) ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('eyes')) {
+                return char.traits.includes("eyes") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('green')) {
+                return char.traits.includes("green") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('purple')) {
+                return char.traits.includes("purple") ? "Yes! ✓" : "No ✗";
             }
 
             // Default responses for unclear questions
