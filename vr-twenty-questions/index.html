@@ -267,10 +267,23 @@
             }
 
             // Check if the question contains any character name (anti-cheat)
+            // But allow game names to be mentioned
             const questionLower = question.toLowerCase();
+            const gameNames = ['ug', 'animal company', 'ac', 'gorilla tag', 'gtag'];
+
             for (const character of characters) {
                 const nameLower = character.name.toLowerCase();
-                if (questionLower.includes(nameLower)) {
+
+                // Skip if the character name is part of a game name being asked about
+                let isGameNameQuestion = false;
+                for (const gameName of gameNames) {
+                    if (questionLower.includes(gameName) && nameLower.includes('gorilla')) {
+                        isGameNameQuestion = true;
+                        break;
+                    }
+                }
+
+                if (!isGameNameQuestion && questionLower.includes(nameLower)) {
                     alert("No cheating! Don't ask about specific character names!");
                     return;
                 }
