@@ -240,7 +240,7 @@
     </div>
 
     <div class="game-container">
-        <h1 onclick="secretClick()" style="cursor: pointer;">🎮 VR Twenty Questions</h1>
+        <h1 onclick="secretClick()" style="cursor: pointer;" title="Triple-click or press Ctrl+K for settings">🎮 VR Twenty Questions</h1>
         <p class="subtitle">I'm thinking of a VR game character... Ask yes/no questions to guess who!</p>
 
         <div class="game-status">
@@ -309,10 +309,16 @@
 
         function secretClick() {
             clickCount++;
+            console.log('Click count:', clickCount); // Debug
             if (clickTimer) clearTimeout(clickTimer);
 
             if (clickCount === 3) {
-                document.getElementById('apiModal').classList.add('show');
+                console.log('Opening API modal'); // Debug
+                const modal = document.getElementById('apiModal');
+                console.log('Modal element:', modal); // Debug
+                if (modal) {
+                    modal.classList.add('show');
+                }
                 clickCount = 0;
             }
 
@@ -320,6 +326,14 @@
                 clickCount = 0;
             }, 1000);
         }
+
+        // Keyboard shortcut: Ctrl+K
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'k') {
+                e.preventDefault();
+                document.getElementById('apiModal').classList.add('show');
+            }
+        });
 
         function saveApiToken() {
             const token = document.getElementById('apiTokenInput').value.trim();
