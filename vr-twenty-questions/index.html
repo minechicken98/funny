@@ -262,6 +262,25 @@
                 return;
             }
 
+            // Check if the question contains any character name (anti-cheat)
+            const questionLower = question.toLowerCase();
+            for (const character of characters) {
+                const nameLower = character.name.toLowerCase();
+                if (questionLower.includes(nameLower)) {
+                    alert("No cheating! Don't ask about specific character names!");
+                    return;
+                }
+                // Check aliases too
+                if (character.aliases) {
+                    for (const alias of character.aliases) {
+                        if (questionLower.includes(alias.toLowerCase())) {
+                            alert("No cheating! Don't ask about specific character names!");
+                            return;
+                        }
+                    }
+                }
+            }
+
             const answer = getAnswer(question);
             questionsAsked++;
 
