@@ -219,6 +219,8 @@
             { name: "Grugadon", game: "UG", type: "creature", traits: ["dinosaur", "fictional", "powerful"] },
             { name: "Triskeletops", game: "UG", type: "boss", traits: ["dinosaur", "titan", "boss", "huge", "scary", "powerful"] },
             { name: "Magmadon", game: "UG", type: "boss", traits: ["dinosaur", "titan", "boss", "fire", "huge", "scary", "powerful"] },
+            { name: "Cryodon", game: "UG", type: "boss", traits: ["dinosaur", "titan", "boss", "ice", "cold", "huge", "scary", "powerful"] },
+            { name: "Flaptor", game: "UG", type: "boss", traits: ["dinosaur", "titan", "boss", "flies", "flying", "huge", "scary", "powerful"] },
 
             // Animal Company Monsters
             { name: "Anglerfish", game: "Animal Company", type: "monster", traits: ["monster", "blue", "big", "teeth", "scary", "fish", "turns off light", "evil"] },
@@ -361,6 +363,9 @@
             }
             if (q.includes('fire') || q.includes('lava') || q.includes('hot')) {
                 return char.traits.includes("fire") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('ice') || q.includes('cold') || q.includes('frozen')) {
+                return char.traits.includes("ice") ? "Yes! ✓" : "No ✗";
             }
             if (q.includes('animal')) {
                 return char.traits.includes("animal") ? "Yes! ✓" : "No ✗";
