@@ -300,6 +300,7 @@
             { name: "Magmadon", game: "UG", type: "boss", traits: ["dinosaur", "titan", "boss", "fire", "huge", "scary", "powerful", "lava"] },
             { name: "Cryodon", game: "UG", type: "boss", traits: ["dinosaur", "titan", "boss", "ice", "cold", "huge", "scary", "powerful"] },
             { name: "Flaptor", game: "UG", type: "boss", traits: ["dinosaur", "titan", "boss", "flies", "flying", "huge", "scary", "powerful", "bird"] },
+            { name: "Razorclaw", game: "UG", type: "creature", traits: ["dinosaur", "fictional", "hunter", "small", "weak", "alpha"] },
 
             // Animal Company Monsters
             { name: "Anglerfish", game: "Animal Company", type: "monster", traits: ["monster", "blue", "big", "teeth", "scary", "fish", "turns off light", "evil"] },
@@ -709,6 +710,12 @@ Answer (be creative but brief):`
             }
             if (q.includes('drop') || q.includes('drops') || q.includes('food')) {
                 return char.traits.includes("drops food") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('hunter') || q.includes('hunt')) {
+                return char.traits.includes("hunter") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('alpha')) {
+                return char.traits.includes("alpha") ? "Yes! ✓" : "No ✗";
             }
 
             // Default responses for unclear questions
