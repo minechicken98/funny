@@ -293,14 +293,15 @@
     <script>
         const characters = [
             // UG Characters
-            { name: "Mammothor", game: "UG", type: "creature", traits: ["dinosaur", "fictional", "large", "powerful"] },
-            { name: "Newbiesaur", game: "UG", type: "creature", traits: ["dinosaur", "fictional", "starter", "small"] },
-            { name: "Grugadon", game: "UG", type: "creature", traits: ["dinosaur", "fictional", "powerful"] },
+            { name: "Mammothor", game: "UG", type: "creature", traits: ["dinosaur", "fictional", "large", "powerful", "tank"] },
+            { name: "Newbiesaur", game: "UG", type: "creature", traits: ["dinosaur", "fictional", "starter", "small", "hunter"] },
+            { name: "Grugadon", game: "UG", type: "creature", traits: ["dinosaur", "fictional", "powerful", "tank"] },
             { name: "Triskeletops", game: "UG", type: "boss", traits: ["dinosaur", "titan", "boss", "huge", "scary", "powerful", "skeleton"] },
             { name: "Magmadon", game: "UG", type: "boss", traits: ["dinosaur", "titan", "boss", "fire", "huge", "scary", "powerful", "lava"] },
             { name: "Cryodon", game: "UG", type: "boss", traits: ["dinosaur", "titan", "boss", "ice", "cold", "huge", "scary", "powerful"] },
             { name: "Flaptor", game: "UG", type: "boss", traits: ["dinosaur", "titan", "boss", "flies", "flying", "huge", "scary", "powerful", "bird"] },
             { name: "Razorclaw", game: "UG", type: "creature", traits: ["dinosaur", "fictional", "hunter", "small", "weak", "alpha"] },
+            { name: "Chadlodon", game: "UG", type: "creature", traits: ["dinosaur", "fictional", "sigma", "beard", "ugly", "fat", "chunky", "chonké", "hunter"] },
 
             // Animal Company Monsters
             { name: "Anglerfish", game: "Animal Company", type: "monster", traits: ["monster", "blue", "big", "teeth", "scary", "fish", "turns off light", "evil"] },
@@ -716,6 +717,18 @@ Answer (be creative but brief):`
             }
             if (q.includes('alpha')) {
                 return char.traits.includes("alpha") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('tank')) {
+                return char.traits.includes("tank") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('sigma')) {
+                return char.traits.includes("sigma") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('beard')) {
+                return char.traits.includes("beard") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('fat') || q.includes('chunky') || q.includes('chonk')) {
+                return (char.traits.includes("fat") || char.traits.includes("chunky") || char.traits.includes("chonké")) ? "Yes! ✓" : "No ✗";
             }
 
             // Default responses for unclear questions
