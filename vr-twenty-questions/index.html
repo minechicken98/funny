@@ -322,6 +322,7 @@
             { name: "Gorilla", game: "Gorilla Tag", type: "player", traits: ["gorilla", "monkey", "player", "normal", "hero"] },
             { name: "Lava Monke", game: "Gorilla Tag", type: "enemy", traits: ["gorilla", "monkey", "red", "lava", "infected", "enemy", "evil"], aliases: ["lava monkey"] },
             { name: "Doug the Bug", game: "Gorilla Tag", type: "creature", traits: ["bug", "insect", "small", "green", "purple", "flies", "forest"] },
+            { name: "Dougdina", game: "Gorilla Tag", type: "creature", traits: ["bug", "insect", "small", "green", "flies", "girl", "love"], aliases: ["dougette", "doug's girlfriend"] },
             { name: "Matt the Bat", game: "Gorilla Tag", type: "creature", traits: ["bat", "flies", "caves", "small"] },
             { name: "Mark the Shark", game: "Gorilla Tag", type: "creature", traits: ["shark", "fish", "swims", "beach", "water", "scary"] }
         ];
@@ -746,6 +747,12 @@ Answer (be creative but brief):`
             }
             if (q.includes('ride') || q.includes('rider')) {
                 return char.traits.includes("rider") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('girl') || q.includes('female')) {
+                return char.traits.includes("girl") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('love') || q.includes('girlfriend') || q.includes('boyfriend')) {
+                return char.traits.includes("love") ? "Yes! ✓" : "No ✗";
             }
 
             // Default responses for unclear questions
