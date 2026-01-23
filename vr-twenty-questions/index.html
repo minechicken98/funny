@@ -302,6 +302,7 @@
             { name: "Flaptor", game: "UG", type: "boss", traits: ["dinosaur", "titan", "boss", "flies", "flying", "huge", "scary", "powerful", "bird"] },
             { name: "Razorclaw", game: "UG", type: "creature", traits: ["dinosaur", "fictional", "hunter", "small", "weak", "alpha"] },
             { name: "Chadlodon", game: "UG", type: "creature", traits: ["dinosaur", "fictional", "sigma", "beard", "ugly", "fat", "chunky", "chonké", "hunter"] },
+            { name: "Swoopjaw", game: "UG", type: "creature", traits: ["dinosaur", "fictional", "glider", "fast", "flies"] },
 
             // Animal Company Monsters
             { name: "Anglerfish", game: "Animal Company", type: "monster", traits: ["monster", "blue", "big", "teeth", "scary", "fish", "turns off light", "evil"] },
@@ -729,6 +730,9 @@ Answer (be creative but brief):`
             }
             if (q.includes('fat') || q.includes('chunky') || q.includes('chonk')) {
                 return (char.traits.includes("fat") || char.traits.includes("chunky") || char.traits.includes("chonké")) ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('glide') || q.includes('glider')) {
+                return char.traits.includes("glider") ? "Yes! ✓" : "No ✗";
             }
 
             // Default responses for unclear questions
