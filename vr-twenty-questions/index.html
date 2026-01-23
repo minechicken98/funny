@@ -303,6 +303,7 @@
             { name: "Razorclaw", game: "UG", type: "creature", traits: ["dinosaur", "fictional", "hunter", "small", "weak", "alpha"] },
             { name: "Chadlodon", game: "UG", type: "creature", traits: ["dinosaur", "fictional", "sigma", "beard", "ugly", "fat", "chunky", "chonké", "hunter"] },
             { name: "Swoopjaw", game: "UG", type: "creature", traits: ["dinosaur", "fictional", "glider", "fast", "flies"] },
+            { name: "UG Player", game: "UG", type: "player", traits: ["player", "hero", "human"] },
 
             // Animal Company Monsters
             { name: "Anglerfish", game: "Animal Company", type: "monster", traits: ["monster", "blue", "big", "teeth", "scary", "fish", "turns off light", "evil"] },
@@ -733,6 +734,9 @@ Answer (be creative but brief):`
             }
             if (q.includes('glide') || q.includes('glider')) {
                 return char.traits.includes("glider") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('human')) {
+                return char.traits.includes("human") ? "Yes! ✓" : "No ✗";
             }
 
             // Default responses for unclear questions
