@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battle Cats Capsule Machine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #FF6B9D 0%, #C06C84 50%, #6C5B7B 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 800px;
+            padding: 30px;
+        }
+        h1 {
+            font-size: 2.5em;
+            color: #FF6B9D;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .currency-display {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+        .currency-display h2 {
+            color: white;
+            font-size: 2em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .currency-display .amount {
+            font-size: 3em;
+            font-weight: bold;
+            color: white;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+        }
+        .capsule-machine {
+            background: linear-gradient(135deg, #E94560, #C73659);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(233, 69, 96, 0.4);
+            position: relative;
+        }
+        .capsule-display {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .capsule-animation {
+            font-size: 5em;
+            animation: bounce 0.5s ease-in-out infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        .pull-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .pull-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .pull-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+        .pull-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .pull-1 {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+        .pull-10 {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+        }
+        .pull-11 {
+            background: linear-gradient(135deg, #FFD700, #FF8C00);
+        }
+        .inventory {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        .inventory h3 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .cats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        .cat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .cat-card .rarity {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.8em;
+            font-weight: bold;
+            color: white;
+        }
+        .rarity.normal { background: #95a5a6; }
+        .rarity.special { background: #3498db; }
+        .rarity.rare { background: #9b59b6; }
+        .rarity.super-rare { background: #e74c3c; }
+        .rarity.uber-rare { background: linear-gradient(135deg, #FFD700, #FF6B9D); }
+        .rarity.legend { background: linear-gradient(135deg, #1e3c72, #2a5298); }
+        .cat-card .icon {
+            font-size: 3em;
+            margin: 10px 0;
+        }
+        .cat-card .name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .cat-card .count {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .result-display {
+            text-align: center;
+            animation: fadeIn 0.5s;
+        }
+        .result-display .cat-icon {
+            font-size: 6em;
+            margin: 20px 0;
+        }
+        .result-display .cat-name {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .result-display .rarity-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            color: white;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .multi-results {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .multi-result-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            animation: slideIn 0.5s ease-out;
+            animation-fill-mode: both;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .multi-result-card:nth-child(1) { animation-delay: 0.1s; }
+        .multi-result-card:nth-child(2) { animation-delay: 0.2s; }
+        .multi-result-card:nth-child(3) { animation-delay: 0.3s; }
+        .multi-result-card:nth-child(4) { animation-delay: 0.4s; }
+        .multi-result-card:nth-child(5) { animation-delay: 0.5s; }
+        .multi-result-card:nth-child(6) { animation-delay: 0.6s; }
+        .multi-result-card:nth-child(7) { animation-delay: 0.7s; }
+        .multi-result-card:nth-child(8) { animation-delay: 0.8s; }
+        .multi-result-card:nth-child(9) { animation-delay: 0.9s; }
+        .multi-result-card:nth-child(10) { animation-delay: 1.0s; }
+        .multi-result-card:nth-child(11) { animation-delay: 1.1s; }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #ddd;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .stat {
+            text-align: center;
+        }
+        .stat .label {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        .stat .value {
+            color: #333;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐱 Battle Cats Capsule 🎰</h1>
+        <p class="subtitle">Test your luck and collect rare cats!</p>
+
+        <div class="currency-display">
+            <h2>Cat Food</h2>
+            <div class="amount" id="catFood">1500</div>
+        </div>
+
+        <div class="capsule-machine">
+            <div class="capsule-display" id="capsuleDisplay">
+                <div class="capsule-animation">🎰</div>
+                <p style="color: #333; margin-top: 20px; font-size: 1.2em;">Ready to roll!</p>
+            </div>
+
+            <div class="pull-buttons">
+                <button class="pull-btn pull-1" onclick="pullCapsule(1)">
+                    Pull 1x<br>
+                    <small>150 Cat Food</small>
+                </button>
+                <button class="pull-btn pull-10" onclick="pullCapsule(10)">
+                    Pull 10x<br>
+                    <small>1500 Cat Food</small>
+                </button>
+                <button class="pull-btn pull-11" onclick="pullCapsule(11)">
+                    Pull 11x (GUARANTEED RARE+)<br>
+                    <small>1500 Cat Food</small>
+                </button>
+            </div>
+        </div>
+
+        <div class="inventory">
+            <h3>📦 Your Cat Collection</h3>
+            <div class="cats-grid" id="catsGrid"></div>
+            <div class="stats">
+                <div class="stat">
+                    <div class="label">Total Pulls</div>
+                    <div class="value" id="totalPulls">0</div>
+                </div>
+                <div class="stat">
+                    <div class="label">Unique Cats</div>
+                    <div class="value" id="uniqueCats">0</div>
+                </div>
+                <div class="stat">
+                    <div class="label">Uber Rares</div>
+                    <div class="value" id="uberCount">0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const cats = [
+            // Normal (60% drop rate)
+            { name: "Cat", icon: "🐱", rarity: "normal" },
+            { name: "Tank Cat", icon: "🛡️", rarity: "normal" },
+            { name: "Axe Cat", icon: "🪓", rarity: "normal" },
+            { name: "Gross Cat", icon: "🤢", rarity: "normal" },
+            { name: "Cow Cat", icon: "🐮", rarity: "normal" },
+            { name: "Bird Cat", icon: "🐦", rarity: "normal" },
+            { name: "Fish Cat", icon: "🐟", rarity: "normal" },
+            { name: "Lizard Cat", icon: "🦎", rarity: "normal" },
+
+            // Special (25% drop rate)
+            { name: "Ninja Cat", icon: "🥷", rarity: "special" },
+            { name: "Zombie Cat", icon: "🧟", rarity: "special" },
+            { name: "Samurai Cat", icon: "⚔️", rarity: "special" },
+            { name: "Sumo Cat", icon: "🤼", rarity: "special" },
+
+            // Rare (10% drop rate)
+            { name: "Paris Cat", icon: "🗼", rarity: "rare" },
+            { name: "Jurassic Cat", icon: "🦖", rarity: "rare" },
+            { name: "Viking Cat", icon: "🪓", rarity: "rare" },
+            { name: "Captain Cat", icon: "⚓", rarity: "rare" },
+
+            // Super Rare (4% drop rate)
+            { name: "Hacker Cat", icon: "💻", rarity: "super-rare" },
+            { name: "Sushi Cat", icon: "🍣", rarity: "super-rare" },
+            { name: "Nerd Cat", icon: "🤓", rarity: "super-rare" },
+
+            // Uber Rare (0.9% drop rate)
+            { name: "Dragon Cat", icon: "🐉", rarity: "uber-rare" },
+            { name: "Demon Cat", icon: "😈", rarity: "uber-rare" },
+            { name: "Angel Cat", icon: "😇", rarity: "uber-rare" },
+            { name: "Kamukura Cat", icon: "👑", rarity: "uber-rare" },
+
+            // Legend (0.1% drop rate)
+            { name: "Legend Cat", icon: "⭐", rarity: "legend" },
+            { name: "Mythic Cat", icon: "🌟", rarity: "legend" }
+        ];
+
+        let catFood = 1500;
+        let inventory = {};
+        let totalPulls = 0;
+
+        function getRarityChance() {
+            const rand = Math.random() * 100;
+            if (rand < 0.1) return "legend";
+            if (rand < 1) return "uber-rare";
+            if (rand < 5) return "super-rare";
+            if (rand < 15) return "rare";
+            if (rand < 40) return "special";
+            return "normal";
+        }
+
+        function pullCapsule(count) {
+            let cost;
+            let guaranteedRare = false;
+
+            if (count === 1) {
+                cost = 150;
+            } else if (count === 10) {
+                cost = 1500;
+            } else if (count === 11) {
+                cost = 1500;
+                guaranteedRare = true;
+            }
+
+            if (catFood < cost) {
+                alert("Not enough Cat Food! 😿");
+                return;
+            }
+
+            catFood -= cost;
+            document.getElementById('catFood').textContent = catFood;
+
+            const display = document.getElementById('capsuleDisplay');
+            display.innerHTML = '<div class="capsule-animation">🎰</div><p style="color: #333; margin-top: 20px; font-size: 1.2em;">Rolling...</p>';
+
+            setTimeout(() => {
+                const results = [];
+
+                for (let i = 0; i < count; i++) {
+                    let targetRarity;
+
+                    // Guaranteed rare or better on 11th pull
+                    if (guaranteedRare && i === count - 1) {
+                        const rand = Math.random() * 100;
+                        if (rand < 0.5) targetRarity = "legend";
+                        else if (rand < 5) targetRarity = "uber-rare";
+                        else if (rand < 30) targetRarity = "super-rare";
+                        else targetRarity = "rare";
+                    } else {
+                        targetRarity = getRarityChance();
+                    }
+
+                    const availableCats = cats.filter(c => c.rarity === targetRarity);
+                    const pulledCat = availableCats[Math.floor(Math.random() * availableCats.length)];
+
+                    results.push(pulledCat);
+
+                    if (!inventory[pulledCat.name]) {
+                        inventory[pulledCat.name] = { ...pulledCat, count: 0 };
+                    }
+                    inventory[pulledCat.name].count++;
+                    totalPulls++;
+                }
+
+                displayResults(results);
+                updateInventory();
+                updateStats();
+            }, 1500);
+        }
+
+        function displayResults(results) {
+            const display = document.getElementById('capsuleDisplay');
+
+            if (results.length === 1) {
+                const cat = results[0];
+                display.innerHTML = `
+                    <div class="result-display">
+                        <div class="cat-icon">${cat.icon}</div>
+                        <div class="cat-name">${cat.name}</div>
+                        <div class="rarity-badge ${cat.rarity}">${cat.rarity.toUpperCase().replace('-', ' ')}</div>
+                    </div>
+                `;
+            } else {
+                let html = '<div class="multi-results">';
+                results.forEach(cat => {
+                    html += `
+                        <div class="multi-result-card">
+                            <div class="rarity ${cat.rarity}" style="padding: 3px 8px; border-radius: 5px; font-size: 0.7em; margin-bottom: 5px;">${cat.rarity.split('-')[0].toUpperCase()}</div>
+                            <div style="font-size: 2.5em;">${cat.icon}</div>
+                            <div style="font-size: 0.9em; font-weight: bold; margin-top: 5px;">${cat.name}</div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                display.innerHTML = html;
+            }
+        }
+
+        function updateInventory() {
+            const grid = document.getElementById('catsGrid');
+
+            const sortedCats = Object.values(inventory).sort((a, b) => {
+                const rarityOrder = { "legend": 0, "uber-rare": 1, "super-rare": 2, "rare": 3, "special": 4, "normal": 5 };
+                return rarityOrder[a.rarity] - rarityOrder[b.rarity];
+            });
+
+            grid.innerHTML = sortedCats.map(cat => `
+                <div class="cat-card">
+                    <div class="rarity ${cat.rarity}">${cat.rarity.toUpperCase().replace('-', ' ')}</div>
+                    <div class="icon">${cat.icon}</div>
+                    <div class="name">${cat.name}</div>
+                    <div class="count">x${cat.count}</div>
+                </div>
+            `).join('');
+        }
+
+        function updateStats() {
+            document.getElementById('totalPulls').textContent = totalPulls;
+            document.getElementById('uniqueCats').textContent = Object.keys(inventory).length;
+
+            const uberCount = Object.values(inventory).filter(cat =>
+                cat.rarity === "uber-rare" || cat.rarity === "legend"
+            ).length;
+            document.getElementById('uberCount').textContent = uberCount;
+        }
+
+        // Initialize
+        updateInventory();
+        updateStats();
+    </script>
+</body>
+</html>
