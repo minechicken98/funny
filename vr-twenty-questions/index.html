@@ -311,6 +311,7 @@
             { name: "Red Light Green Light", game: "Animal Company", type: "monster", traits: ["monster", "creepy", "kills when moving", "scary", "evil", "red", "green", "robot"] },
             { name: "Cyst", game: "Animal Company", type: "monster", traits: ["monster", "red", "eye", "tentacle", "scary", "evil"] },
             { name: "Chicken", game: "Animal Company", type: "monster", traits: ["monster", "scary", "fast", "loud", "golden egg", "evil"] },
+            { name: "Turkey", game: "Animal Company", type: "monster", traits: ["monster", "weak", "blue", "red", "drops food", "small", "evil"] },
             { name: "Funny Animal Player", game: "Animal Company", type: "player", traits: ["animal", "player", "cute", "funny", "hero"] },
 
             // Gorilla Tag
@@ -699,6 +700,15 @@ Answer (be creative but brief):`
             }
             if (q.includes('egg') || q.includes('golden')) {
                 return char.traits.includes("golden egg") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('turkey')) {
+                return char.traits.includes("turkey") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('weak')) {
+                return char.traits.includes("weak") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('drop') || q.includes('drops') || q.includes('food')) {
+                return char.traits.includes("drops food") ? "Yes! ✓" : "No ✗";
             }
 
             // Default responses for unclear questions
