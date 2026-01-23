@@ -309,6 +309,7 @@
             { name: "Ogre", game: "Animal Company", type: "monster", traits: ["monster", "huge", "ugly", "teeth", "eyes", "throws boulders", "throws rocks", "scary", "evil"] },
             { name: "Spider", game: "Animal Company", type: "monster", traits: ["monster", "spider", "insect", "scary", "webs", "crawls", "evil"] },
             { name: "Red Light Green Light", game: "Animal Company", type: "monster", traits: ["monster", "creepy", "kills when moving", "scary", "evil", "red", "green", "robot"] },
+            { name: "Cyst", game: "Animal Company", type: "monster", traits: ["monster", "red", "eye", "tentacle", "scary", "evil"] },
             { name: "Funny Animal Player", game: "Animal Company", type: "player", traits: ["animal", "player", "cute", "funny", "hero"] },
 
             // Gorilla Tag
@@ -682,6 +683,9 @@ Answer (be creative but brief):`
             }
             if (q.includes('move') || q.includes('moving')) {
                 return char.traits.includes("kills when moving") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('tentacle')) {
+                return char.traits.includes("tentacle") ? "Yes! ✓" : "No ✗";
             }
 
             // Default responses for unclear questions
