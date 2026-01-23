@@ -307,6 +307,8 @@
             { name: "Big Head", game: "Animal Company", type: "monster", traits: ["monster", "ugly", "larva", "giant", "teeth", "kills when looked at", "scary", "evil"] },
             { name: "Cutie", game: "Animal Company", type: "monster", traits: ["monster", "seal", "cute", "small", "beige", "kills when looked at", "deceptive", "evil"], aliases: ["seal", "labubu", "dead body"] },
             { name: "Ogre", game: "Animal Company", type: "monster", traits: ["monster", "huge", "ugly", "teeth", "eyes", "throws boulders", "throws rocks", "scary", "evil"] },
+            { name: "Spider", game: "Animal Company", type: "monster", traits: ["monster", "spider", "insect", "scary", "webs", "crawls", "evil"] },
+            { name: "Red Light Green Light", game: "Animal Company", type: "monster", traits: ["monster", "doll", "creepy", "kills when moving", "scary", "evil"] },
             { name: "Funny Animal Player", game: "Animal Company", type: "player", traits: ["animal", "player", "cute", "funny", "hero"] },
 
             // Gorilla Tag
@@ -662,6 +664,24 @@ Answer (be creative but brief):`
             }
             if (q.includes('purple')) {
                 return char.traits.includes("purple") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('spider')) {
+                return char.traits.includes("spider") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('web') || q.includes('webs')) {
+                return char.traits.includes("webs") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('crawl') || q.includes('crawls')) {
+                return char.traits.includes("crawls") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('doll')) {
+                return char.traits.includes("doll") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('creepy')) {
+                return char.traits.includes("creepy") ? "Yes! ✓" : "No ✗";
+            }
+            if (q.includes('move') || q.includes('moving')) {
+                return char.traits.includes("kills when moving") ? "Yes! ✓" : "No ✗";
             }
 
             // Default responses for unclear questions
