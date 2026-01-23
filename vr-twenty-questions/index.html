@@ -122,6 +122,46 @@
             background: #d97706;
             transform: translateY(-2px);
         }
+        .difficulty-selector {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .difficulty-btn {
+            padding: 8px 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s;
+        }
+        .difficulty-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .difficulty-btn.active {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+        .difficulty-btn.noob { border-color: #10b981; }
+        .difficulty-btn.noob.active { background: #10b981; border-color: #10b981; }
+        .difficulty-btn.easy { border-color: #3b82f6; }
+        .difficulty-btn.easy.active { background: #3b82f6; border-color: #3b82f6; }
+        .difficulty-btn.normal { border-color: #667eea; }
+        .difficulty-btn.normal.active { background: #667eea; border-color: #667eea; }
+        .difficulty-btn.hard { border-color: #f59e0b; }
+        .difficulty-btn.hard.active { background: #f59e0b; border-color: #f59e0b; }
+        .difficulty-btn.expert { border-color: #ef4444; }
+        .difficulty-btn.expert.active { background: #ef4444; border-color: #ef4444; }
+        .difficulty-btn.extreme { border-color: #dc2626; }
+        .difficulty-btn.extreme.active { background: #dc2626; border-color: #dc2626; }
+        .difficulty-btn.hacker { border-color: #000; }
+        .difficulty-btn.hacker.active { background: #000; border-color: #000; }
         .conversation {
             background: #f8f9fa;
             border-radius: 15px;
@@ -260,6 +300,16 @@
         <h1 onclick="secretClick()" style="cursor: pointer;" title="Triple-click or press Ctrl+K for settings">🎮 VR Twenty Questions</h1>
         <p class="subtitle">I'm thinking of a VR game character... Ask yes/no questions to guess who!</p>
 
+        <div class="difficulty-selector">
+            <button class="difficulty-btn noob" onclick="setDifficulty('noob', 50)">Noob (50)</button>
+            <button class="difficulty-btn easy" onclick="setDifficulty('easy', 35)">Easy (35)</button>
+            <button class="difficulty-btn normal active" onclick="setDifficulty('normal', 20)">Normal (20)</button>
+            <button class="difficulty-btn hard" onclick="setDifficulty('hard', 15)">Hard (15)</button>
+            <button class="difficulty-btn expert" onclick="setDifficulty('expert', 10)">Expert (10)</button>
+            <button class="difficulty-btn extreme" onclick="setDifficulty('extreme', 5)">Extreme (5)</button>
+            <button class="difficulty-btn hacker" onclick="setDifficulty('hacker', 1)">Hacker (1)</button>
+        </div>
+
         <div class="game-status">
             <div class="questions-left">Questions Left: <span id="questionsLeft">20</span></div>
             <div class="hint" id="gameHint">Ask me yes/no questions like "Is it from UG?" or "Does it have teeth?"</div>
@@ -331,6 +381,8 @@
         let questionsAsked = 0;
         let conversation = [];
         let gameOver = false;
+        let maxQuestions = 20;
+        let currentDifficulty = 'normal';
         let apiToken = localStorage.getItem('anthropic_api_token') || '';
         let clickCount = 0;
         let clickTimer = null;
@@ -453,6 +505,20 @@ Answer (be creative but brief):`
             console.log("Secret character:", currentCharacter.name); // For testing
         }
 
+        function setDifficulty(difficulty, questions) {
+            maxQuestions = questions;
+            currentDifficulty = difficulty;
+
+            // Update active button
+            document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Restart game with new difficulty
+            startGame();
+        }
+
         async function askQuestion() {
             if (gameOver) return;
 
@@ -464,7 +530,7 @@ Answer (be creative but brief):`
                 return;
             }
 
-            if (questionsAsked >= 20) {
+            if (questionsAsked >= maxQuestions) {
                 alert("You're out of questions! Make your final guess!");
                 return;
             }
@@ -537,8 +603,8 @@ Answer (be creative but brief):`
             conversation.push({ question, answer });
             input.value = '';
 
-            if (questionsAsked >= 20) {
-                document.getElementById('gameHint').textContent = "Out of questions! Time to make your guess!";
+            if (questionsAsked >= maxQuestions) {
+                document.getElementById('gameHint').textContent = "Out of questions! Make your final guess!";
             }
 
             updateUI();
@@ -839,7 +905,7 @@ Answer (be creative but brief):`
         }
 
         function updateUI() {
-            document.getElementById('questionsLeft').textContent = 20 - questionsAsked;
+            document.getElementById('questionsLeft').textContent = maxQuestions - questionsAsked;
 
             const conversationDiv = document.getElementById('conversation');
 
