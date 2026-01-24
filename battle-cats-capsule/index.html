@@ -469,10 +469,10 @@
         let legendLockActive = false;
 
         function showLegendLock() {
-            const passcode = prompt("Enter the secret passcode to activate Legend Lock:");
+            const passcode = prompt("Enter the secret passcode to activate Legend Lock:\n\n(Your input will be hidden)");
             if (passcode === "legendz4life") {
                 legendLockActive = true;
-                document.getElementById('legendStatus').textContent = "🌟 LEGEND LOCK ACTIVE! Next pull guaranteed Legend! 🌟";
+                document.getElementById('legendStatus').textContent = "🌟 LEGEND LOCK ACTIVE! Next pull guaranteed Legend Rare! 🌟";
                 document.getElementById('legendStatus').style.color = "#FFD700";
 
                 // Celebration effect
@@ -487,7 +487,7 @@
         }
 
         function getRarityText(rarity) {
-            if (rarity === "legend") return '<span style="background: linear-gradient(135deg, #ff0000 0%, #ff7f00 15%, #ffff00 30%, #00ff00 45%, #0000ff 60%, #4b0082 75%, #9400d3 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: bold; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.5)) drop-shadow(0 0 15px rgba(255,255,255,0.9));">LEGEND</span>';
+            if (rarity === "legend") return '<span style="background: linear-gradient(135deg, #ff0000 0%, #ff7f00 15%, #ffff00 30%, #00ff00 45%, #0000ff 60%, #4b0082 75%, #9400d3 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: bold; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.5)) drop-shadow(0 0 15px rgba(255,255,255,0.9));">LEGEND</span> <span style="background: linear-gradient(180deg, #FFD700 0%, #FFE44D 50%, #FFD700 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.6)) drop-shadow(0 0 10px rgba(255,215,0,0.8));">RARE</span>';
             if (rarity === "uber super rare") return '<span style="background: linear-gradient(180deg, #ff3333 0%, #ff8888 50%, #ff3333 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.6)) drop-shadow(0 0 10px rgba(255,100,100,0.8));">UBER</span> <span style="background: linear-gradient(180deg, #FFD700 0%, #FFE44D 50%, #FFD700 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.6)) drop-shadow(0 0 10px rgba(255,215,0,0.8));">SUPER RARE</span>';
             if (rarity === "super rare") return '<span style="background: linear-gradient(180deg, #FFD700 0%, #FFE44D 50%, #FFD700 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.6)) drop-shadow(0 0 10px rgba(255,215,0,0.8));">SUPER RARE</span>';
             if (rarity === "rare") return '<span style="background: linear-gradient(180deg, #FFD700 0%, #FFE44D 50%, #FFD700 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.6)) drop-shadow(0 0 10px rgba(255,215,0,0.8));">RARE</span>';
