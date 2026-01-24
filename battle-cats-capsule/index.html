@@ -532,10 +532,15 @@
         let currentResultIndex = 0;
         let isNormalPull = false;
         let legendLockActive = false;
+        let legendLockUsed = false;
         let passwordInput = "";
         let passwordTimeout = null;
 
         function showLegendLock() {
+            if (legendLockUsed) {
+                alert("Legend Lock has already been used! It's a one-time code.");
+                return;
+            }
             passwordInput = "";
             document.getElementById('passwordDisplay').textContent = "";
             document.getElementById('passwordModal').classList.add('show');
@@ -582,6 +587,7 @@
 
             if (passwordInput === "legendz4life") {
                 legendLockActive = true;
+                legendLockUsed = true;
                 document.getElementById('legendStatus').textContent = "🌟 LEGEND LOCK ACTIVE! Next pull guaranteed Legend Rare! 🌟";
                 document.getElementById('legendStatus').style.color = "#FFD700";
 
