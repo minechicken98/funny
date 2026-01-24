@@ -154,7 +154,8 @@
             font-weight: bold;
             color: white;
         }
-        .rarity.rare { background: #95a5a6; }
+        .rarity.normal { background: #95a5a6; }
+        .rarity.rare { background: #9b59b6; }
         .rarity.super.rare { background: #3498db; }
         .rarity.uber.rare { background: linear-gradient(135deg, #FFD700, #FF6B9D); }
         .rarity.legend { background: linear-gradient(135deg, #1e3c72, #2a5298); }
@@ -267,23 +268,43 @@
         </div>
 
         <div class="capsule-machine">
+            <h2 style="color: white; text-align: center; margin-bottom: 20px;">🎰 Rare Cat Capsule</h2>
             <div class="capsule-display" id="capsuleDisplay">
                 <div class="capsule-animation">🎰</div>
                 <p style="color: #333; margin-top: 20px; font-size: 1.2em;">Ready to roll!</p>
             </div>
 
             <div class="pull-buttons">
-                <button class="pull-btn pull-1" onclick="pullCapsule(1)">
+                <button class="pull-btn pull-1" onclick="pullCapsule(1, false)">
                     Pull 1x<br>
                     <small>150 Cat Food</small>
                 </button>
-                <button class="pull-btn pull-10" onclick="pullCapsule(10)">
+                <button class="pull-btn pull-10" onclick="pullCapsule(10, false)">
                     Pull 10x<br>
                     <small>1500 Cat Food</small>
                 </button>
-                <button class="pull-btn pull-11" onclick="pullCapsule(11)">
+                <button class="pull-btn pull-11" onclick="pullCapsule(11, false)">
                     Pull 11x (GUARANTEED RARE+)<br>
                     <small>1500 Cat Food</small>
+                </button>
+            </div>
+        </div>
+
+        <div class="capsule-machine" style="background: linear-gradient(135deg, #10b981, #059669); margin-top: 20px;">
+            <h2 style="color: white; text-align: center; margin-bottom: 20px;">🐱 Normal Cat Capsule</h2>
+            <div class="capsule-display" id="normalCapsuleDisplay">
+                <div class="capsule-animation">🎰</div>
+                <p style="color: #333; margin-top: 20px; font-size: 1.2em;">Get basic cats!</p>
+            </div>
+
+            <div class="pull-buttons">
+                <button class="pull-btn pull-1" onclick="pullCapsule(1, true)" style="background: linear-gradient(135deg, #10b981, #059669);">
+                    Pull 1x<br>
+                    <small>30 Cat Food</small>
+                </button>
+                <button class="pull-btn pull-10" onclick="pullCapsule(10, true)" style="background: linear-gradient(135deg, #10b981, #059669);">
+                    Pull 10x<br>
+                    <small>300 Cat Food</small>
                 </button>
             </div>
         </div>
@@ -309,6 +330,21 @@
     </div>
 
     <script>
+        const normalCats = [
+            // Normal cats for basic capsule
+            { name: "Cat", icon: "🐱", rarity: "normal" },
+            { name: "Tank Cat", icon: "🛡️", rarity: "normal" },
+            { name: "Axe Cat", icon: "🪓", rarity: "normal" },
+            { name: "Gross Cat", icon: "🤢", rarity: "normal" },
+            { name: "Cow Cat", icon: "🐮", rarity: "normal" },
+            { name: "Bird Cat", icon: "🐦", rarity: "normal" },
+            { name: "Fish Cat", icon: "🐟", rarity: "normal" },
+            { name: "Lizard Cat", icon: "🦎", rarity: "normal" },
+            { name: "Titan Cat", icon: "💪", rarity: "normal" },
+            { name: "Valkyrie Cat", icon: "⚡", rarity: "normal" },
+            { name: "Bahamut Cat", icon: "🌀", rarity: "normal" }
+        ];
+
         const cats = [
             // Rare (69.7% drop rate)
             { name: "Paris Cat", icon: "🗼", rarity: "rare" },
@@ -355,17 +391,21 @@
             return "rare";
         }
 
-        function pullCapsule(count) {
+        function pullCapsule(count, isNormal) {
             let cost;
             let guaranteedRare = false;
 
-            if (count === 1) {
-                cost = 150;
-            } else if (count === 10) {
-                cost = 1500;
-            } else if (count === 11) {
-                cost = 1500;
-                guaranteedRare = true;
+            if (isNormal) {
+                cost = count === 1 ? 30 : 300;
+            } else {
+                if (count === 1) {
+                    cost = 150;
+                } else if (count === 10) {
+                    cost = 1500;
+                } else if (count === 11) {
+                    cost = 1500;
+                    guaranteedRare = true;
+                }
             }
 
             if (catFood < cost) {
@@ -376,27 +416,35 @@
             catFood -= cost;
             document.getElementById('catFood').textContent = catFood;
 
-            const display = document.getElementById('capsuleDisplay');
+            const display = isNormal ? document.getElementById('normalCapsuleDisplay') : document.getElementById('capsuleDisplay');
             display.innerHTML = '<div class="capsule-animation">🎰</div><p style="color: #333; margin-top: 20px; font-size: 1.2em;">Rolling...</p>';
 
             setTimeout(() => {
                 const results = [];
 
                 for (let i = 0; i < count; i++) {
-                    let targetRarity;
+                    let pulledCat;
 
-                    // Guaranteed rare or better on 11th pull (at least super rare)
-                    if (guaranteedRare && i === count - 1) {
-                        const rand = Math.random() * 100;
-                        if (rand < 1) targetRarity = "legend";
-                        else if (rand < 20) targetRarity = "uber rare";
-                        else targetRarity = "super rare";
+                    if (isNormal) {
+                        // Normal capsule - just pick random normal cat
+                        pulledCat = normalCats[Math.floor(Math.random() * normalCats.length)];
                     } else {
-                        targetRarity = getRarityChance();
-                    }
+                        // Rare capsule - use rarity system
+                        let targetRarity;
 
-                    const availableCats = cats.filter(c => c.rarity === targetRarity);
-                    const pulledCat = availableCats[Math.floor(Math.random() * availableCats.length)];
+                        // Guaranteed rare or better on 11th pull (at least super rare)
+                        if (guaranteedRare && i === count - 1) {
+                            const rand = Math.random() * 100;
+                            if (rand < 1) targetRarity = "legend";
+                            else if (rand < 20) targetRarity = "uber rare";
+                            else targetRarity = "super rare";
+                        } else {
+                            targetRarity = getRarityChance();
+                        }
+
+                        const availableCats = cats.filter(c => c.rarity === targetRarity);
+                        pulledCat = availableCats[Math.floor(Math.random() * availableCats.length)];
+                    }
 
                     results.push(pulledCat);
 
@@ -407,14 +455,14 @@
                     totalPulls++;
                 }
 
-                displayResults(results);
+                displayResults(results, isNormal);
                 updateInventory();
                 updateStats();
             }, 1500);
         }
 
-        function displayResults(results) {
-            const display = document.getElementById('capsuleDisplay');
+        function displayResults(results, isNormal) {
+            const display = isNormal ? document.getElementById('normalCapsuleDisplay') : document.getElementById('capsuleDisplay');
 
             if (results.length === 1) {
                 const cat = results[0];
@@ -445,7 +493,7 @@
             const grid = document.getElementById('catsGrid');
 
             const sortedCats = Object.values(inventory).sort((a, b) => {
-                const rarityOrder = { "legend": 0, "uber rare": 1, "super rare": 2, "rare": 3 };
+                const rarityOrder = { "legend": 0, "uber rare": 1, "super rare": 2, "rare": 3, "normal": 4 };
                 return rarityOrder[a.rarity] - rarityOrder[b.rarity];
             });
 
