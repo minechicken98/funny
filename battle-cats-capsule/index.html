@@ -281,7 +281,7 @@
             width: 30px;
             height: 30px;
             font-size: 20px;
-            opacity: 0.15;
+            opacity: 0.05;
             cursor: pointer;
             transition: opacity 0.3s;
             z-index: 10;
@@ -577,9 +577,9 @@
 
             display.innerHTML = `
                 <div class="result-display">
+                    <div class="rarity-badge ${cat.rarity.replace(' ', '.')}">${cat.rarity.toUpperCase()}</div>
                     <div class="cat-icon">${cat.icon}</div>
                     <div class="cat-name">${cat.name}</div>
-                    <div class="rarity-badge ${cat.rarity.replace(' ', '.')}">${cat.rarity.toUpperCase()}</div>
                     <p style="margin-top: 15px; color: #666;">${currentResultIndex + 1} of ${currentResults.length}</p>
                     ${currentResultIndex < currentResults.length - 1 ? '<button class="next-btn" onclick="nextCat()">Next Cat →</button>' : '<button class="next-btn" onclick="finishPull()">Done! ✓</button>'}
                 </div>
