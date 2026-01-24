@@ -809,9 +809,10 @@
 
             grid.innerHTML = sortedCats.map(cat => {
                 const catDisplay = cat.isImage ? `<img src="${cat.icon}" style="width: 60px; height: 60px; object-fit: contain;">` : cat.icon;
+                const rarityDisplay = getRarityText(cat.rarity);
                 return `
                     <div class="cat-card">
-                        <div class="rarity ${cat.rarity}">${cat.rarity.toUpperCase().replace('-', ' ')}</div>
+                        <div class="rarity ${cat.rarity}" style="font-size: 0.8em;">${rarityDisplay}</div>
                         <div class="icon">${catDisplay}</div>
                         <div class="name">${cat.name}</div>
                         <div class="count">x${cat.count}</div>
