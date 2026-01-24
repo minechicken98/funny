@@ -59,12 +59,16 @@
             text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
         }
         .capsule-machine {
-            background: linear-gradient(135deg, #E94560, #C73659);
+            background: linear-gradient(135deg, #FFD700, #FFA500);
             border-radius: 20px;
             padding: 30px;
             margin-bottom: 30px;
-            box-shadow: 0 8px 25px rgba(233, 69, 96, 0.4);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
             position: relative;
+        }
+        .capsule-machine.silver {
+            background: linear-gradient(135deg, #C0C0C0, #A8A8A8);
+            box-shadow: 0 8px 25px rgba(192, 192, 192, 0.4);
         }
         .capsule-display {
             background: rgba(255, 255, 255, 0.9);
@@ -290,7 +294,7 @@
             </div>
         </div>
 
-        <div class="capsule-machine" style="background: linear-gradient(135deg, #10b981, #059669); margin-top: 20px;">
+        <div class="capsule-machine silver" style="margin-top: 20px;">
             <h2 style="color: white; text-align: center; margin-bottom: 20px;">🐱 Normal Cat Capsule</h2>
             <div class="capsule-display" id="normalCapsuleDisplay">
                 <div class="capsule-animation">🎰</div>
@@ -298,11 +302,11 @@
             </div>
 
             <div class="pull-buttons">
-                <button class="pull-btn pull-1" onclick="pullCapsule(1, true)" style="background: linear-gradient(135deg, #10b981, #059669);">
+                <button class="pull-btn pull-1" onclick="pullCapsule(1, true)" style="background: linear-gradient(135deg, #C0C0C0, #A8A8A8);">
                     Pull 1x<br>
                     <small>30 Cat Food</small>
                 </button>
-                <button class="pull-btn pull-10" onclick="pullCapsule(10, true)" style="background: linear-gradient(135deg, #10b981, #059669);">
+                <button class="pull-btn pull-10" onclick="pullCapsule(10, true)" style="background: linear-gradient(135deg, #C0C0C0, #A8A8A8);">
                     Pull 10x<br>
                     <small>300 Cat Food</small>
                 </button>
