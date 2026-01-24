@@ -159,9 +159,9 @@
             color: white;
         }
         .rarity.normal { background: #95a5a6; }
-        .rarity.rare { background: #9b59b6; }
-        .rarity.super.rare { background: #3498db; }
-        .rarity.uber.rare { background: linear-gradient(135deg, #FFD700, #FF6B9D); }
+        .rarity.rare { background: #000; color: #FFD700; }
+        .rarity.super.rare { background: #000; color: #FFD700; }
+        .rarity.uber.super.rare { background: #000; }
         .rarity.legend { background: linear-gradient(135deg, #1e3c72, #2a5298); }
         .cat-card .icon {
             font-size: 3em;
@@ -442,12 +442,12 @@
             { name: "Cyborg Cat", icon: "🤖", rarity: "super rare" },
             { name: "Rocker Cat", icon: "🎸", rarity: "super rare" },
 
-            // Uber Rare (5% drop rate)
-            { name: "Dragon Cat", icon: "🐉", rarity: "uber rare" },
-            { name: "Demon Cat", icon: "😈", rarity: "uber rare" },
-            { name: "Angel Cat", icon: "😇", rarity: "uber rare" },
-            { name: "Kamukura Cat", icon: "👑", rarity: "uber rare" },
-            { name: "Megidora", icon: "🦁", rarity: "uber rare" },
+            // Uber Super Rare (5% drop rate)
+            { name: "Dragon Cat", icon: "🐉", rarity: "uber super rare" },
+            { name: "Demon Cat", icon: "😈", rarity: "uber super rare" },
+            { name: "Angel Cat", icon: "😇", rarity: "uber super rare" },
+            { name: "Kamukura Cat", icon: "👑", rarity: "uber super rare" },
+            { name: "Megidora", icon: "🦁", rarity: "uber super rare" },
 
             // Legend (0.3% drop rate)
             { name: "Legend Cat", icon: "⭐", rarity: "legend" },
@@ -462,11 +462,19 @@
         let currentResultIndex = 0;
         let isNormalPull = false;
 
+        function getRarityText(rarity) {
+            if (rarity === "legend") return '<span style="color: white;">LEGEND</span>';
+            if (rarity === "uber super rare") return '<span style="color: #ff0000;">UBER</span> <span style="color: #FFD700;">SUPER RARE</span>';
+            if (rarity === "super rare") return '<span style="color: #FFD700;">SUPER RARE</span>';
+            if (rarity === "rare") return '<span style="color: #FFD700;">RARE</span>';
+            return '<span style="color: #666;">NORMAL</span>';
+        }
+
         function getRarityColor(rarity) {
             if (rarity === "legend") return "linear-gradient(135deg, #1e3c72, #2a5298)";
-            if (rarity === "uber rare") return "linear-gradient(135deg, #FFD700, #FF6B9D)";
-            if (rarity === "super rare") return "#3498db";
-            if (rarity === "rare") return "#9b59b6";
+            if (rarity === "uber super rare") return "#000";
+            if (rarity === "super rare") return "#000";
+            if (rarity === "rare") return "#000";
             return "#95a5a6";
         }
 
@@ -486,7 +494,7 @@
         function getRarityChance() {
             const rand = Math.random() * 100;
             if (rand < 0.3) return "legend";
-            if (rand < 5.3) return "uber rare";
+            if (rand < 5.3) return "uber super rare";
             if (rand < 30.3) return "super rare";
             return "rare";
         }
@@ -547,7 +555,7 @@
                         if (guaranteedRare && i === count - 1) {
                             const rand = Math.random() * 100;
                             if (rand < 1) targetRarity = "legend";
-                            else if (rand < 20) targetRarity = "uber rare";
+                            else if (rand < 20) targetRarity = "uber super rare";
                             else targetRarity = "super rare";
                         } else {
                             targetRarity = getRarityChance();
@@ -585,7 +593,7 @@
 
             display.innerHTML = `
                 <div class="result-display">
-                    <div class="rarity-badge" style="background: ${getRarityColor(cat.rarity)};">${cat.rarity.toUpperCase()}</div>
+                    <div class="rarity-badge" style="background: ${getRarityColor(cat.rarity)};">${getRarityText(cat.rarity)}</div>
                     <div class="cat-icon">${cat.icon}</div>
                     <div class="cat-name">${cat.name}</div>
                     <p style="margin-top: 15px; color: #666;">${currentResultIndex + 1} of ${currentResults.length}</p>
@@ -638,7 +646,7 @@
             const grid = document.getElementById('catsGrid');
 
             const sortedCats = Object.values(inventory).sort((a, b) => {
-                const rarityOrder = { "legend": 0, "uber rare": 1, "super rare": 2, "rare": 3, "normal": 4 };
+                const rarityOrder = { "legend": 0, "uber super rare": 1, "super rare": 2, "rare": 3, "normal": 4 };
                 return rarityOrder[a.rarity] - rarityOrder[b.rarity];
             });
 
@@ -657,7 +665,7 @@
             document.getElementById('uniqueCats').textContent = Object.keys(inventory).length;
 
             const uberCount = Object.values(inventory).filter(cat =>
-                cat.rarity === "uber rare" || cat.rarity === "legend"
+                cat.rarity === "uber super rare" || cat.rarity === "legend"
             ).length;
             document.getElementById('uberCount').textContent = uberCount;
         }
