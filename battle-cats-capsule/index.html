@@ -457,8 +457,8 @@
         </div>
 
         <div class="inventory">
-            <h3>⬜ Cat Storage</h3>
-            <div class="cats-grid" id="catsGrid"></div>
+            <h3 onclick="toggleCatStorage()" style="cursor: pointer;">⬜ Cat Storage <span id="storageToggle">▼</span></h3>
+            <div class="cats-grid" id="catsGrid" style="display: none;"></div>
             <div class="stats">
                 <div class="stat">
                     <div class="label">Total Pulls</div>
@@ -601,6 +601,18 @@
             document.removeEventListener('keydown', handlePasswordInput);
             document.getElementById('passwordModal').classList.remove('show');
             passwordInput = "";
+        }
+
+        function toggleCatStorage() {
+            const grid = document.getElementById('catsGrid');
+            const toggle = document.getElementById('storageToggle');
+            if (grid.style.display === 'none') {
+                grid.style.display = 'grid';
+                toggle.textContent = '▲';
+            } else {
+                grid.style.display = 'none';
+                toggle.textContent = '▼';
+            }
         }
 
         function getRarityText(rarity) {
