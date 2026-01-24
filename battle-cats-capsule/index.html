@@ -259,9 +259,71 @@
             font-size: 1.5em;
             font-weight: bold;
         }
+        .next-btn {
+            margin-top: 20px;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+        .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+        .hidden-ticket {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            font-size: 20px;
+            opacity: 0.15;
+            cursor: pointer;
+            transition: opacity 0.3s;
+            z-index: 10;
+        }
+        .hidden-ticket:hover {
+            opacity: 1;
+            transform: scale(1.5);
+        }
+        .ticket-display {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+        }
+        .ticket-display h3 {
+            color: white;
+            font-size: 1.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .ticket-display .amount {
+            font-size: 2em;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
     </style>
 </head>
 <body>
+    <!-- Hidden rare tickets scattered around the page -->
+    <div class="hidden-ticket" style="top: 5%; left: 10%;" onclick="collectTicket(this)">🎫</div>
+    <div class="hidden-ticket" style="top: 15%; right: 15%;" onclick="collectTicket(this)">🎫</div>
+    <div class="hidden-ticket" style="top: 30%; left: 5%;" onclick="collectTicket(this)">🎫</div>
+    <div class="hidden-ticket" style="top: 45%; right: 8%;" onclick="collectTicket(this)">🎫</div>
+    <div class="hidden-ticket" style="top: 60%; left: 12%;" onclick="collectTicket(this)">🎫</div>
+    <div class="hidden-ticket" style="top: 75%; right: 20%;" onclick="collectTicket(this)">🎫</div>
+    <div class="hidden-ticket" style="top: 85%; left: 25%;" onclick="collectTicket(this)">🎫</div>
+    <div class="hidden-ticket" style="top: 20%; left: 50%;" onclick="collectTicket(this)">🎫</div>
+    <div class="hidden-ticket" style="top: 50%; right: 5%;" onclick="collectTicket(this)">🎫</div>
+    <div class="hidden-ticket" style="top: 90%; left: 80%;" onclick="collectTicket(this)">🎫</div>
+
     <div class="container">
         <h1>🐱 Battle Cats Capsule 🎰</h1>
         <p class="subtitle">Test your luck and collect rare cats!</p>
@@ -269,6 +331,11 @@
         <div class="currency-display">
             <h2>Cat Food</h2>
             <div class="amount" id="catFood">1500</div>
+        </div>
+
+        <div class="ticket-display">
+            <h3>🎫 Rare Tickets</h3>
+            <div class="amount" id="rareTickets">0</div>
         </div>
 
         <div class="capsule-machine">
@@ -282,6 +349,10 @@
                 <button class="pull-btn pull-1" onclick="pullCapsule(1, false)">
                     Pull 1x<br>
                     <small>150 Cat Food</small>
+                </button>
+                <button class="pull-btn pull-1" onclick="pullCapsule(1, false, true)" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);">
+                    Pull 1x<br>
+                    <small>1 Rare Ticket 🎫</small>
                 </button>
                 <button class="pull-btn pull-10" onclick="pullCapsule(10, false)">
                     Pull 10x<br>
@@ -386,6 +457,23 @@
         let catFood = 1500;
         let inventory = {};
         let totalPulls = 0;
+        let rareTickets = 0;
+        let currentResults = [];
+        let currentResultIndex = 0;
+        let isNormalPull = false;
+
+        function collectTicket(element) {
+            rareTickets++;
+            document.getElementById('rareTickets').textContent = rareTickets;
+            element.style.display = 'none';
+
+            // Show celebration
+            const celebration = document.createElement('div');
+            celebration.textContent = '🎫 Rare Ticket Found!';
+            celebration.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, #FFD700, #FFA500); color: white; padding: 30px 50px; border-radius: 20px; font-size: 2em; font-weight: bold; z-index: 1000; box-shadow: 0 10px 50px rgba(0,0,0,0.5); animation: fadeIn 0.5s;';
+            document.body.appendChild(celebration);
+            setTimeout(() => celebration.remove(), 2000);
+        }
 
         function getRarityChance() {
             const rand = Math.random() * 100;
@@ -395,12 +483,25 @@
             return "rare";
         }
 
-        function pullCapsule(count, isNormal) {
+        function pullCapsule(count, isNormal, useTicket = false) {
             let cost;
             let guaranteedRare = false;
 
-            if (isNormal) {
+            if (useTicket) {
+                if (rareTickets < 1) {
+                    alert("Not enough Rare Tickets! 🎫");
+                    return;
+                }
+                rareTickets--;
+                document.getElementById('rareTickets').textContent = rareTickets;
+            } else if (isNormal) {
                 cost = count === 1 ? 30 : 300;
+                if (catFood < cost) {
+                    alert("Not enough Cat Food! 😿");
+                    return;
+                }
+                catFood -= cost;
+                document.getElementById('catFood').textContent = catFood;
             } else {
                 if (count === 1) {
                     cost = 150;
@@ -410,15 +511,13 @@
                     cost = 1500;
                     guaranteedRare = true;
                 }
+                if (catFood < cost) {
+                    alert("Not enough Cat Food! 😿");
+                    return;
+                }
+                catFood -= cost;
+                document.getElementById('catFood').textContent = catFood;
             }
-
-            if (catFood < cost) {
-                alert("Not enough Cat Food! 😿");
-                return;
-            }
-
-            catFood -= cost;
-            document.getElementById('catFood').textContent = catFood;
 
             const display = isNormal ? document.getElementById('normalCapsuleDisplay') : document.getElementById('capsuleDisplay');
             display.innerHTML = '<div class="capsule-animation">🎰</div><p style="color: #333; margin-top: 20px; font-size: 1.2em;">Rolling...</p>';
@@ -459,10 +558,44 @@
                     totalPulls++;
                 }
 
-                displayResults(results, isNormal);
+                currentResults = results;
+                currentResultIndex = 0;
+                isNormalPull = isNormal;
+                showNextResult();
+            }, 1500);
+        }
+
+        function showNextResult() {
+            if (currentResultIndex >= currentResults.length) {
                 updateInventory();
                 updateStats();
-            }, 1500);
+                return;
+            }
+
+            const cat = currentResults[currentResultIndex];
+            const display = isNormalPull ? document.getElementById('normalCapsuleDisplay') : document.getElementById('capsuleDisplay');
+
+            display.innerHTML = `
+                <div class="result-display">
+                    <div class="cat-icon">${cat.icon}</div>
+                    <div class="cat-name">${cat.name}</div>
+                    <div class="rarity-badge ${cat.rarity.replace(' ', '.')}">${cat.rarity.toUpperCase()}</div>
+                    <p style="margin-top: 15px; color: #666;">${currentResultIndex + 1} of ${currentResults.length}</p>
+                    ${currentResultIndex < currentResults.length - 1 ? '<button class="next-btn" onclick="nextCat()">Next Cat →</button>' : '<button class="next-btn" onclick="finishPull()">Done! ✓</button>'}
+                </div>
+            `;
+        }
+
+        function nextCat() {
+            currentResultIndex++;
+            showNextResult();
+        }
+
+        function finishPull() {
+            const display = isNormalPull ? document.getElementById('normalCapsuleDisplay') : document.getElementById('capsuleDisplay');
+            display.innerHTML = '<div class="capsule-animation">🎰</div><p style="color: #333; margin-top: 20px; font-size: 1.2em;">Ready to roll!</p>';
+            updateInventory();
+            updateStats();
         }
 
         function displayResults(results, isNormal) {
