@@ -154,11 +154,9 @@
             font-weight: bold;
             color: white;
         }
-        .rarity.normal { background: #95a5a6; }
-        .rarity.special { background: #3498db; }
-        .rarity.rare { background: #9b59b6; }
-        .rarity.super-rare { background: #e74c3c; }
-        .rarity.uber-rare { background: linear-gradient(135deg, #FFD700, #FF6B9D); }
+        .rarity.rare { background: #95a5a6; }
+        .rarity.super.rare { background: #3498db; }
+        .rarity.uber.rare { background: linear-gradient(135deg, #FFD700, #FF6B9D); }
         .rarity.legend { background: linear-gradient(135deg, #1e3c72, #2a5298); }
         .cat-card .icon {
             font-size: 3em;
@@ -312,40 +310,35 @@
 
     <script>
         const cats = [
-            // Normal (60% drop rate)
-            { name: "Cat", icon: "🐱", rarity: "normal" },
-            { name: "Tank Cat", icon: "🛡️", rarity: "normal" },
-            { name: "Axe Cat", icon: "🪓", rarity: "normal" },
-            { name: "Gross Cat", icon: "🤢", rarity: "normal" },
-            { name: "Cow Cat", icon: "🐮", rarity: "normal" },
-            { name: "Bird Cat", icon: "🐦", rarity: "normal" },
-            { name: "Fish Cat", icon: "🐟", rarity: "normal" },
-            { name: "Lizard Cat", icon: "🦎", rarity: "normal" },
-
-            // Special (25% drop rate)
-            { name: "Ninja Cat", icon: "🥷", rarity: "special" },
-            { name: "Zombie Cat", icon: "🧟", rarity: "special" },
-            { name: "Samurai Cat", icon: "⚔️", rarity: "special" },
-            { name: "Sumo Cat", icon: "🤼", rarity: "special" },
-
-            // Rare (10% drop rate)
+            // Rare (69.7% drop rate)
+            { name: "Cat", icon: "🐱", rarity: "rare" },
+            { name: "Tank Cat", icon: "🛡️", rarity: "rare" },
+            { name: "Axe Cat", icon: "🪓", rarity: "rare" },
+            { name: "Gross Cat", icon: "🤢", rarity: "rare" },
+            { name: "Cow Cat", icon: "🐮", rarity: "rare" },
+            { name: "Bird Cat", icon: "🐦", rarity: "rare" },
+            { name: "Fish Cat", icon: "🐟", rarity: "rare" },
+            { name: "Lizard Cat", icon: "🦎", rarity: "rare" },
             { name: "Paris Cat", icon: "🗼", rarity: "rare" },
             { name: "Jurassic Cat", icon: "🦖", rarity: "rare" },
             { name: "Viking Cat", icon: "🪓", rarity: "rare" },
             { name: "Captain Cat", icon: "⚓", rarity: "rare" },
 
-            // Super Rare (4% drop rate)
-            { name: "Hacker Cat", icon: "💻", rarity: "super-rare" },
-            { name: "Sushi Cat", icon: "🍣", rarity: "super-rare" },
-            { name: "Nerd Cat", icon: "🤓", rarity: "super-rare" },
+            // Super Rare (25% drop rate)
+            { name: "Hacker Cat", icon: "💻", rarity: "super rare" },
+            { name: "Sushi Cat", icon: "🍣", rarity: "super rare" },
+            { name: "Nerd Cat", icon: "🤓", rarity: "super rare" },
+            { name: "Cyborg Cat", icon: "🤖", rarity: "super rare" },
+            { name: "Rocker Cat", icon: "🎸", rarity: "super rare" },
 
-            // Uber Rare (0.9% drop rate)
-            { name: "Dragon Cat", icon: "🐉", rarity: "uber-rare" },
-            { name: "Demon Cat", icon: "😈", rarity: "uber-rare" },
-            { name: "Angel Cat", icon: "😇", rarity: "uber-rare" },
-            { name: "Kamukura Cat", icon: "👑", rarity: "uber-rare" },
+            // Uber Rare (5% drop rate)
+            { name: "Dragon Cat", icon: "🐉", rarity: "uber rare" },
+            { name: "Demon Cat", icon: "😈", rarity: "uber rare" },
+            { name: "Angel Cat", icon: "😇", rarity: "uber rare" },
+            { name: "Kamukura Cat", icon: "👑", rarity: "uber rare" },
+            { name: "Megidora", icon: "🦁", rarity: "uber rare" },
 
-            // Legend (0.1% drop rate)
+            // Legend (0.3% drop rate)
             { name: "Legend Cat", icon: "⭐", rarity: "legend" },
             { name: "Mythic Cat", icon: "🌟", rarity: "legend" }
         ];
@@ -356,12 +349,10 @@
 
         function getRarityChance() {
             const rand = Math.random() * 100;
-            if (rand < 0.1) return "legend";
-            if (rand < 1) return "uber-rare";
-            if (rand < 5) return "super-rare";
-            if (rand < 15) return "rare";
-            if (rand < 40) return "special";
-            return "normal";
+            if (rand < 0.3) return "legend";
+            if (rand < 5.3) return "uber rare";
+            if (rand < 30.3) return "super rare";
+            return "rare";
         }
 
         function pullCapsule(count) {
@@ -394,13 +385,12 @@
                 for (let i = 0; i < count; i++) {
                     let targetRarity;
 
-                    // Guaranteed rare or better on 11th pull
+                    // Guaranteed rare or better on 11th pull (at least super rare)
                     if (guaranteedRare && i === count - 1) {
                         const rand = Math.random() * 100;
-                        if (rand < 0.5) targetRarity = "legend";
-                        else if (rand < 5) targetRarity = "uber-rare";
-                        else if (rand < 30) targetRarity = "super-rare";
-                        else targetRarity = "rare";
+                        if (rand < 1) targetRarity = "legend";
+                        else if (rand < 20) targetRarity = "uber rare";
+                        else targetRarity = "super rare";
                     } else {
                         targetRarity = getRarityChance();
                     }
@@ -455,7 +445,7 @@
             const grid = document.getElementById('catsGrid');
 
             const sortedCats = Object.values(inventory).sort((a, b) => {
-                const rarityOrder = { "legend": 0, "uber-rare": 1, "super-rare": 2, "rare": 3, "special": 4, "normal": 5 };
+                const rarityOrder = { "legend": 0, "uber rare": 1, "super rare": 2, "rare": 3 };
                 return rarityOrder[a.rarity] - rarityOrder[b.rarity];
             });
 
@@ -474,7 +464,7 @@
             document.getElementById('uniqueCats').textContent = Object.keys(inventory).length;
 
             const uberCount = Object.values(inventory).filter(cat =>
-                cat.rarity === "uber-rare" || cat.rarity === "legend"
+                cat.rarity === "uber rare" || cat.rarity === "legend"
             ).length;
             document.getElementById('uberCount').textContent = uberCount;
         }
