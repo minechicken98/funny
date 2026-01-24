@@ -261,6 +261,60 @@
             font-size: 1.5em;
             font-weight: bold;
         }
+        .password-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        .password-modal.show {
+            display: flex;
+        }
+        .password-modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 400px;
+            width: 90%;
+        }
+        .password-modal h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .password-display {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-size: 1.5em;
+            margin: 10px 0;
+            text-align: center;
+            background: #f8f9fa;
+            min-height: 50px;
+            letter-spacing: 5px;
+        }
+        .password-modal button {
+            padding: 12px 24px;
+            margin: 5px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .password-modal .submit-btn {
+            background: #667eea;
+            color: white;
+        }
+        .password-modal .cancel-btn {
+            background: #ddd;
+        }
+    </style>
         .next-btn {
             margin-top: 20px;
             padding: 15px 40px;
@@ -325,6 +379,18 @@
     <div class="hidden-ticket" style="top: 20%; left: 50%;" onclick="collectTicket(this)">🎫</div>
     <div class="hidden-ticket" style="top: 50%; right: 5%;" onclick="collectTicket(this)">🎫</div>
     <div class="hidden-ticket" style="top: 90%; left: 80%;" onclick="collectTicket(this)">🎫</div>
+
+    <!-- Password Modal -->
+    <div class="password-modal" id="passwordModal">
+        <div class="password-modal-content">
+            <h3>🔒 Enter Legend Lock Passcode</h3>
+            <div class="password-display" id="passwordDisplay"></div>
+            <div>
+                <button class="submit-btn" onclick="submitPasscode()">Submit</button>
+                <button class="cancel-btn" onclick="closePasswordModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
 
     <div class="container">
         <h1>🐱 Battle Cats Capsule 🎰</h1>
@@ -467,10 +533,55 @@
         let currentResultIndex = 0;
         let isNormalPull = false;
         let legendLockActive = false;
+        let passwordInput = "";
+        let passwordTimeout = null;
 
         function showLegendLock() {
-            const passcode = prompt("Enter the secret passcode to activate Legend Lock:\n\n(Your input will be hidden)");
-            if (passcode === "legendz4life") {
+            passwordInput = "";
+            document.getElementById('passwordDisplay').textContent = "";
+            document.getElementById('passwordModal').classList.add('show');
+
+            // Listen for keyboard input
+            document.addEventListener('keydown', handlePasswordInput);
+        }
+
+        function handlePasswordInput(e) {
+            if (e.key === 'Enter') {
+                submitPasscode();
+            } else if (e.key === 'Backspace') {
+                passwordInput = passwordInput.slice(0, -1);
+                updatePasswordDisplay();
+            } else if (e.key.length === 1) {
+                passwordInput += e.key;
+                const display = document.getElementById('passwordDisplay');
+
+                // Show the actual character briefly
+                updatePasswordDisplay(e.key);
+
+                // Replace with bullet after 100ms
+                clearTimeout(passwordTimeout);
+                passwordTimeout = setTimeout(() => {
+                    updatePasswordDisplay();
+                }, 100);
+            }
+        }
+
+        function updatePasswordDisplay(lastChar = null) {
+            const display = document.getElementById('passwordDisplay');
+            if (passwordInput.length === 0) {
+                display.textContent = "";
+            } else if (lastChar) {
+                display.textContent = "•".repeat(passwordInput.length - 1) + lastChar;
+            } else {
+                display.textContent = "•".repeat(passwordInput.length);
+            }
+        }
+
+        function submitPasscode() {
+            document.removeEventListener('keydown', handlePasswordInput);
+            document.getElementById('passwordModal').classList.remove('show');
+
+            if (passwordInput === "legendz4life") {
                 legendLockActive = true;
                 document.getElementById('legendStatus').textContent = "🌟 LEGEND LOCK ACTIVE! Next pull guaranteed Legend Rare! 🌟";
                 document.getElementById('legendStatus').style.color = "#FFD700";
@@ -481,9 +592,16 @@
                 celebration.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; padding: 30px 50px; border-radius: 20px; font-size: 2em; font-weight: bold; z-index: 1000; box-shadow: 0 10px 50px rgba(0,0,0,0.5); animation: fadeIn 0.5s;';
                 document.body.appendChild(celebration);
                 setTimeout(() => celebration.remove(), 2000);
-            } else if (passcode !== null) {
+            } else {
                 alert("❌ Wrong passcode!");
             }
+            passwordInput = "";
+        }
+
+        function closePasswordModal() {
+            document.removeEventListener('keydown', handlePasswordInput);
+            document.getElementById('passwordModal').classList.remove('show');
+            passwordInput = "";
         }
 
         function getRarityText(rarity) {
