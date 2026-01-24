@@ -414,15 +414,15 @@
     <script>
         const normalCats = [
             // Normal cats for basic capsule
-            { name: "Cat", icon: "🐱", rarity: "normal" },
-            { name: "Tank Cat", icon: "🛡️", rarity: "normal" },
-            { name: "Axe Cat", icon: "🪓", rarity: "normal" },
-            { name: "Gross Cat", icon: "🤢", rarity: "normal" },
-            { name: "Cow Cat", icon: "🐮", rarity: "normal" },
-            { name: "Bird Cat", icon: "🐦", rarity: "normal" },
-            { name: "Fish Cat", icon: "🐟", rarity: "normal" },
-            { name: "Lizard Cat", icon: "🦎", rarity: "normal" },
-            { name: "Titan Cat", icon: "💪", rarity: "normal" }
+            { name: "Cat", icon: "images/cat.png", rarity: "normal", isImage: true },
+            { name: "Tank Cat", icon: "images/tank.png", rarity: "normal", isImage: true },
+            { name: "Axe Cat", icon: "images/axe.png", rarity: "normal", isImage: true },
+            { name: "Gross Cat", icon: "images/gross.webp", rarity: "normal", isImage: true },
+            { name: "Cow Cat", icon: "images/cow.webp", rarity: "normal", isImage: true },
+            { name: "Bird Cat", icon: "images/bird.png", rarity: "normal", isImage: true },
+            { name: "Fish Cat", icon: "images/fish.png", rarity: "normal", isImage: true },
+            { name: "Lizard Cat", icon: "images/lizard.png", rarity: "normal", isImage: true },
+            { name: "Titan Cat", icon: "images/titan.webp", rarity: "normal", isImage: true }
         ];
 
         const cats = [
@@ -617,10 +617,12 @@
             const cat = currentResults[currentResultIndex];
             const display = isNormalPull ? document.getElementById('normalCapsuleDisplay') : document.getElementById('capsuleDisplay');
 
+            const catDisplay = cat.isImage ? `<img src="${cat.icon}" style="width: 200px; height: 200px; object-fit: contain;">` : cat.icon;
+
             display.innerHTML = `
                 <div class="result-display">
                     <div class="rarity-badge" style="background: ${getRarityColor(cat.rarity)};">${getRarityText(cat.rarity)}</div>
-                    <div class="cat-icon">${cat.icon}</div>
+                    <div class="cat-icon">${catDisplay}</div>
                     <div class="cat-name">${cat.name}</div>
                     <p style="margin-top: 15px; color: #666;">${currentResultIndex + 1} of ${currentResults.length}</p>
                     ${currentResultIndex < currentResults.length - 1 ? '<button class="next-btn" onclick="nextCat()">Next Cat →</button>' : '<button class="next-btn" onclick="finishPull()">Done! ✓</button>'}
@@ -676,14 +678,17 @@
                 return rarityOrder[a.rarity] - rarityOrder[b.rarity];
             });
 
-            grid.innerHTML = sortedCats.map(cat => `
-                <div class="cat-card">
-                    <div class="rarity ${cat.rarity}">${cat.rarity.toUpperCase().replace('-', ' ')}</div>
-                    <div class="icon">${cat.icon}</div>
-                    <div class="name">${cat.name}</div>
-                    <div class="count">x${cat.count}</div>
-                </div>
-            `).join('');
+            grid.innerHTML = sortedCats.map(cat => {
+                const catDisplay = cat.isImage ? `<img src="${cat.icon}" style="width: 60px; height: 60px; object-fit: contain;">` : cat.icon;
+                return `
+                    <div class="cat-card">
+                        <div class="rarity ${cat.rarity}">${cat.rarity.toUpperCase().replace('-', ' ')}</div>
+                        <div class="icon">${catDisplay}</div>
+                        <div class="name">${cat.name}</div>
+                        <div class="count">x${cat.count}</div>
+                    </div>
+                `;
+            }).join('');
         }
 
         function updateStats() {
