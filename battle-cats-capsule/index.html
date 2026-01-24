@@ -463,7 +463,7 @@
         let isNormalPull = false;
 
         function getRarityText(rarity) {
-            if (rarity === "legend") return '<span style="color: white;">LEGEND</span>';
+            if (rarity === "legend") return '<span style="background: linear-gradient(to right, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: bold;">LEGEND</span>';
             if (rarity === "uber super rare") return '<span style="color: #ff0000;">UBER</span> <span style="color: #FFD700;">SUPER RARE</span>';
             if (rarity === "super rare") return '<span style="color: #FFD700;">SUPER RARE</span>';
             if (rarity === "rare") return '<span style="color: #FFD700;">RARE</span>';
