@@ -340,6 +340,11 @@
             <div class="amount" id="rareTickets">0</div>
         </div>
 
+        <div style="text-align: center; margin-bottom: 20px;">
+            <button onclick="showLegendLock()" style="padding: 10px 20px; background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; border: none; border-radius: 10px; font-size: 1em; cursor: pointer; font-weight: bold;">🔒 Legend Lock</button>
+            <div id="legendStatus" style="margin-top: 10px; color: white; font-weight: bold;"></div>
+        </div>
+
         <div class="capsule-machine">
             <h2 style="color: white; text-align: center; margin-bottom: 20px;">🎰 Rare Cat Capsule</h2>
             <div class="capsule-display" id="capsuleDisplay">
@@ -463,6 +468,25 @@
         let currentResults = [];
         let currentResultIndex = 0;
         let isNormalPull = false;
+        let legendLockActive = false;
+
+        function showLegendLock() {
+            const passcode = prompt("Enter the secret passcode to activate Legend Lock:");
+            if (passcode === "legendz4life") {
+                legendLockActive = true;
+                document.getElementById('legendStatus').textContent = "🌟 LEGEND LOCK ACTIVE! Next pull guaranteed Legend! 🌟";
+                document.getElementById('legendStatus').style.color = "#FFD700";
+
+                // Celebration effect
+                const celebration = document.createElement('div');
+                celebration.textContent = '🔓 LEGEND LOCK ACTIVATED!';
+                celebration.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; padding: 30px 50px; border-radius: 20px; font-size: 2em; font-weight: bold; z-index: 1000; box-shadow: 0 10px 50px rgba(0,0,0,0.5); animation: fadeIn 0.5s;';
+                document.body.appendChild(celebration);
+                setTimeout(() => celebration.remove(), 2000);
+            } else if (passcode !== null) {
+                alert("❌ Wrong passcode!");
+            }
+        }
 
         function getRarityText(rarity) {
             if (rarity === "legend") return '<span style="background: linear-gradient(135deg, #ff0000 0%, #ff7f00 15%, #ffff00 30%, #00ff00 45%, #0000ff 60%, #4b0082 75%, #9400d3 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: bold; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.5)) drop-shadow(0 0 15px rgba(255,255,255,0.9));">LEGEND</span>';
@@ -549,8 +573,14 @@
                         // Rare capsule - use rarity system
                         let targetRarity;
 
+                        // Check for legend lock on first pull
+                        if (legendLockActive && i === 0) {
+                            targetRarity = "legend";
+                            legendLockActive = false;
+                            document.getElementById('legendStatus').textContent = "";
+                        }
                         // Guaranteed rare or better on 11th pull (at least super rare)
-                        if (guaranteedRare && i === count - 1) {
+                        else if (guaranteedRare && i === count - 1) {
                             const rand = Math.random() * 100;
                             if (rand < 1) targetRarity = "legend";
                             else if (rand < 20) targetRarity = "uber super rare";
