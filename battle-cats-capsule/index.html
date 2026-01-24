@@ -462,6 +462,14 @@
         let currentResultIndex = 0;
         let isNormalPull = false;
 
+        function getRarityColor(rarity) {
+            if (rarity === "legend") return "linear-gradient(135deg, #1e3c72, #2a5298)";
+            if (rarity === "uber rare") return "linear-gradient(135deg, #FFD700, #FF6B9D)";
+            if (rarity === "super rare") return "#3498db";
+            if (rarity === "rare") return "#9b59b6";
+            return "#95a5a6";
+        }
+
         function collectTicket(element) {
             rareTickets++;
             document.getElementById('rareTickets').textContent = rareTickets;
@@ -577,7 +585,7 @@
 
             display.innerHTML = `
                 <div class="result-display">
-                    <div class="rarity-badge ${cat.rarity.replace(' ', '.')}">${cat.rarity.toUpperCase()}</div>
+                    <div class="rarity-badge" style="background: ${getRarityColor(cat.rarity)};">${cat.rarity.toUpperCase()}</div>
                     <div class="cat-icon">${cat.icon}</div>
                     <div class="cat-name">${cat.name}</div>
                     <p style="margin-top: 15px; color: #666;">${currentResultIndex + 1} of ${currentResults.length}</p>
