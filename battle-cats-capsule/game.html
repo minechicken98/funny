@@ -407,35 +407,107 @@
             }
 
             function drawCat(cat) {
-                const img = catImages[cat.type];
                 const isTitan = cat.type === "titan";
-                const drawY = isTitan ? cat.y : 300; // All non-titan cats at same height
+                const drawY = isTitan ? cat.y : 300;
+                const size = isTitan ? 35 : 20;
 
-                if (img.complete) {
-                    const size = isTitan ? 50 : 25;
-                    const offset = size / 2;
+                ctx.save();
+                ctx.translate(cat.x, drawY);
 
-                    ctx.save();
-                    ctx.translate(cat.x, drawY);
-                    ctx.scale(-1, 1); // Flip horizontally (all cats face right)
-                    ctx.drawImage(img, -offset, -offset, size, size);
-                    ctx.restore();
-                } else {
+                // Cat colors based on type
+                const catColors = {
+                    cat: "#FFFFFF",
+                    tank: "#FFFFFF",
+                    axe: "#8B4513",
+                    gross: "#90EE90",
+                    cow: "#FFFFFF",
+                    bird: "#FFD700",
+                    fish: "#4169E1",
+                    lizard: "#32CD32",
+                    titan: "#808080",
+                };
+
+                const color = catColors[cat.type] || "#FFFFFF";
+
+                // Body
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.ellipse(0, 0, size, size * 0.8, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = "#333";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Ears
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.moveTo(-size * 0.6, -size * 0.5);
+                ctx.lineTo(-size * 0.3, -size);
+                ctx.lineTo(-size * 0.1, -size * 0.5);
+                ctx.fill();
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(size * 0.6, -size * 0.5);
+                ctx.lineTo(size * 0.3, -size);
+                ctx.lineTo(size * 0.1, -size * 0.5);
+                ctx.fill();
+                ctx.stroke();
+
+                // Eyes
+                ctx.fillStyle = "black";
+                ctx.beginPath();
+                ctx.arc(-size * 0.3, -size * 0.1, size * 0.15, 0, Math.PI * 2);
+                ctx.arc(size * 0.3, -size * 0.1, size * 0.15, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Mouth
+                ctx.strokeStyle = "#FF6B6B";
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(0, size * 0.2, size * 0.2, 0, Math.PI);
+                ctx.stroke();
+
+                // Special features based on type
+                if (cat.type === "axe") {
+                    ctx.fillStyle = "#C0C0C0";
+                    ctx.fillRect(
+                        size * 0.8,
+                        -size * 0.5,
+                        size * 0.8,
+                        size * 0.3,
+                    );
+                }
+                if (cat.type === "bird") {
                     ctx.fillStyle = "#FFA500";
                     ctx.beginPath();
-                    ctx.arc(cat.x, drawY, 20, 0, Math.PI * 2);
+                    ctx.moveTo(size * 0.8, 0);
+                    ctx.lineTo(size * 1.3, 0);
+                    ctx.lineTo(size * 0.8, size * 0.2);
                     ctx.fill();
                 }
+                if (cat.type === "titan") {
+                    // Muscles
+                    ctx.strokeStyle = "#666";
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.arc(-size * 0.5, size * 0.3, size * 0.3, Math.PI, 0);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.arc(size * 0.5, size * 0.3, size * 0.3, Math.PI, 0);
+                    ctx.stroke();
+                }
+
+                ctx.restore();
 
                 // HP bar
                 ctx.fillStyle = "#333";
-                ctx.fillRect(cat.x - 25, drawY - 40, 50, 6);
+                ctx.fillRect(cat.x - 20, drawY - size - 15, 40, 5);
                 ctx.fillStyle = "#00FF00";
                 ctx.fillRect(
-                    cat.x - 25,
-                    drawY - 40,
-                    50 * (cat.hp / cat.maxHp),
-                    6,
+                    cat.x - 20,
+                    drawY - size - 15,
+                    40 * (cat.hp / cat.maxHp),
+                    5,
                 );
             }
 
