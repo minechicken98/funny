@@ -644,7 +644,11 @@
 
                 ctx.save();
                 ctx.translate(cat.x, drawY);
-                // Don't flip - cats face left now
+
+                // Flip fish horizontally (faces wrong way)
+                if (cat.type === "fish") {
+                    ctx.scale(-1, 1);
+                }
 
                 if (img && img.complete) {
                     ctx.drawImage(img, -size / 2, -size / 2, size, size);
