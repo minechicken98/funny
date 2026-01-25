@@ -636,6 +636,26 @@
                 updateUI();
             }
 
+            function retryLevel() {
+                gameOver = false;
+                levelWon = false;
+                const levelData = levels[level - 1];
+                enemyHP = levelData.enemyHP;
+                enemySpawnRate = levelData.spawnRate;
+                cats = [];
+                enemies = [];
+                money = 500 + (level - 1) * 200;
+                baseHP = baseMaxHP;
+
+                // Restart enemy spawner with new rate
+                clearInterval(enemySpawner);
+                enemySpawner = setInterval(() => {
+                    if (!gameOver && !paused && !levelWon) spawnEnemy();
+                }, enemySpawnRate);
+
+                updateUI();
+            }
+
             function updateUI() {
                 document.getElementById("money").textContent =
                     Math.floor(money);
@@ -1076,7 +1096,23 @@
                     ctx.fillText(
                         enemyHP <= 0 ? "YOU WIN!" : "GAME OVER",
                         canvas.width / 2,
-                        canvas.height / 2,
+                        canvas.height / 2 - 30,
+                    );
+
+                    // Retry button
+                    ctx.fillStyle = "#4CAF50";
+                    ctx.fillRect(
+                        canvas.width / 2 - 60,
+                        canvas.height / 2 + 10,
+                        120,
+                        45,
+                    );
+                    ctx.fillStyle = "white";
+                    ctx.font = "24px Luckiest Guy";
+                    ctx.fillText(
+                        "RETRY",
+                        canvas.width / 2,
+                        canvas.height / 2 + 42,
                     );
                 }
 
@@ -1173,6 +1209,19 @@
                         showCosmoUnlock = false;
                     }
                     return; // Don't process other clicks while popup is showing
+                }
+
+                // Retry button on game over
+                if (gameOver) {
+                    if (
+                        x >= canvas.width / 2 - 60 &&
+                        x <= canvas.width / 2 + 60 &&
+                        y >= canvas.height / 2 + 10 &&
+                        y <= canvas.height / 2 + 55
+                    ) {
+                        retryLevel();
+                    }
+                    return;
                 }
 
                 // Check if clicked on victory screen buttons
