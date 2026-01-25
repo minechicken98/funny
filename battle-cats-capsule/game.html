@@ -408,30 +408,32 @@
 
             function drawCat(cat) {
                 const img = catImages[cat.type];
+                const isTitan = cat.type === "titan";
+                const drawY = isTitan ? cat.y : 300; // All non-titan cats at same height
+
                 if (img.complete) {
-                    const isTitan = cat.type === "titan";
                     const size = isTitan ? 100 : 60;
                     const offset = size / 2;
 
                     ctx.save();
-                    ctx.translate(cat.x, cat.y);
+                    ctx.translate(cat.x, drawY);
                     ctx.scale(-1, 1); // Flip horizontally (all cats face right)
                     ctx.drawImage(img, -offset, -offset, size, size);
                     ctx.restore();
                 } else {
                     ctx.fillStyle = "#FFA500";
                     ctx.beginPath();
-                    ctx.arc(cat.x, cat.y, 20, 0, Math.PI * 2);
+                    ctx.arc(cat.x, drawY, 20, 0, Math.PI * 2);
                     ctx.fill();
                 }
 
                 // HP bar
                 ctx.fillStyle = "#333";
-                ctx.fillRect(cat.x - 25, cat.y - 40, 50, 6);
+                ctx.fillRect(cat.x - 25, drawY - 40, 50, 6);
                 ctx.fillStyle = "#00FF00";
                 ctx.fillRect(
                     cat.x - 25,
-                    cat.y - 40,
+                    drawY - 40,
                     50 * (cat.hp / cat.maxHp),
                     6,
                 );
