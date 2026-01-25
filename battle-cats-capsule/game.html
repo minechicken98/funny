@@ -267,6 +267,8 @@
             // Track upgrade levels for each cat (affects hp and damage)
             let baseMaxHP = 1000;
             let baseUpgradeLevel = 0;
+            let moneySpeedLevel = 0;
+            let moneySpeedMultiplier = 1;
 
             const catUpgrades = {
                 cat: 0,
@@ -313,6 +315,20 @@
                     totalXP -= cost;
                     baseUpgradeLevel++;
                     baseMaxHP = Math.floor(baseMaxHP * 1.15);
+                    updateUI();
+                }
+            }
+
+            function getMoneySpeedCost() {
+                return Math.floor(1500 * Math.pow(1.6, moneySpeedLevel));
+            }
+
+            function upgradeMoneySpeed() {
+                const cost = getMoneySpeedCost();
+                if (totalXP >= cost) {
+                    totalXP -= cost;
+                    moneySpeedLevel++;
+                    moneySpeedMultiplier = 1 + moneySpeedLevel * 0.25;
                     updateUI();
                 }
             }
@@ -789,7 +805,7 @@
                 if (gameOver || paused || levelWon) return;
 
                 // Money generation
-                money += 3.5;
+                money += 3.5 * moneySpeedMultiplier;
 
                 // Update cats
                 cats.forEach((cat) => {
@@ -1086,6 +1102,46 @@
                         baseY + 20,
                     );
 
+                    // Money speed upgrade row
+                    const moneyY = baseY + itemHeight;
+                    const moneyCost = getMoneySpeedCost();
+                    const canAffordMoney = totalXP >= moneyCost;
+
+                    ctx.fillStyle = canAffordMoney
+                        ? "rgba(255,215,0,0.3)"
+                        : "rgba(255,215,0,0.15)";
+                    ctx.fillRect(50, moneyY, canvas.width - 100, 24);
+
+                    ctx.fillStyle = "#FFD700";
+                    ctx.font = "14px Luckiest Guy";
+                    ctx.textAlign = "left";
+                    ctx.fillText(
+                        "MONEY SPEED (Lv." + moneySpeedLevel + ")",
+                        70,
+                        moneyY + 20,
+                    );
+
+                    ctx.font = "12px Arial";
+                    ctx.fillStyle = "#AAA";
+                    ctx.fillText(
+                        "+" +
+                            Math.round((moneySpeedMultiplier - 1) * 100) +
+                            "% faster",
+                        230,
+                        moneyY + 20,
+                    );
+
+                    ctx.fillStyle = canAffordMoney ? "#4CAF50" : "#666";
+                    ctx.fillRect(canvas.width - 180, moneyY + 2, 120, 20);
+                    ctx.fillStyle = "white";
+                    ctx.font = "12px Luckiest Guy";
+                    ctx.textAlign = "center";
+                    ctx.fillText(
+                        moneyCost.toLocaleString() + " XP",
+                        canvas.width - 120,
+                        moneyY + 20,
+                    );
+
                     // Back button
                     ctx.fillStyle = "#f44336";
                     ctx.fillRect(
@@ -1305,6 +1361,17 @@
                         y <= baseY + 20
                     ) {
                         upgradeBase();
+                    }
+
+                    // Money speed upgrade button
+                    const moneyY = baseY + itemHeight;
+                    if (
+                        x >= canvas.width - 180 &&
+                        x <= canvas.width - 60 &&
+                        y >= moneyY &&
+                        y <= moneyY + 20
+                    ) {
+                        upgradeMoneySpeed();
                     }
                 }
             });
