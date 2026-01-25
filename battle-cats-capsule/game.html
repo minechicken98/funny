@@ -432,8 +432,8 @@
             }
 
             function drawPauseButton() {
-                // Draw pause button in top right of canvas
-                const x = canvas.width - 40;
+                // Draw pause button in top left of canvas
+                const x = 10;
                 const y = 15;
 
                 ctx.fillStyle = "rgba(0,0,0,0.5)";
@@ -886,13 +886,8 @@
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
 
-                // Check if clicked on pause button (top right)
-                if (
-                    x >= canvas.width - 40 &&
-                    x <= canvas.width - 10 &&
-                    y >= 15 &&
-                    y <= 45
-                ) {
+                // Check if clicked on pause button (top left)
+                if (x >= 10 && x <= 40 && y >= 15 && y <= 45) {
                     togglePause();
                 }
 
