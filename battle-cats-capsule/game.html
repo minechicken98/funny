@@ -1,468 +1,641 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Battle Cats Game</title>
-    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Luckiest Guy', cursive;
-            background: linear-gradient(135deg, #87ceeb 0%, #5bb5e0 50%, #b4f080 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow: hidden;
-        }
-        h1 {
-            color: #5bb5e0;
-            margin: 10px 0;
-            font-size: 2em;
-        }
-        #gameCanvas {
-            border: 4px solid #333;
-            border-radius: 10px;
-            background: linear-gradient(to bottom, #87CEEB 0%, #87CEEB 60%, #90EE90 60%, #228B22 100%);
-        }
-        .controls {
-            display: flex;
-            gap: 10px;
-            margin: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .cat-btn {
-            padding: 10px;
-            border: 3px solid #333;
-            border-radius: 10px;
-            cursor: pointer;
-            background: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-width: 80px;
-            transition: all 0.2s;
-        }
-        .cat-btn:hover:not(:disabled) {
-            transform: scale(1.1);
-            background: #b4f080;
-        }
-        .cat-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        .cat-btn img {
-            width: 50px;
-            height: 50px;
-            object-fit: contain;
-        }
-        .cat-btn .cost {
-            font-size: 0.8em;
-            color: #666;
-        }
-        .cat-btn .key {
-            font-size: 0.7em;
-            background: #333;
-            color: white;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-        .stats {
-            display: flex;
-            gap: 30px;
-            margin: 10px;
-            font-size: 1.2em;
-        }
-        .stat {
-            background: white;
-            padding: 10px 20px;
-            border-radius: 10px;
-            border: 3px solid #333;
-        }
-        .back-btn {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            padding: 10px 20px;
-            background: linear-gradient(135deg, #87ceeb, #5bb5e0);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-family: 'Luckiest Guy', cursive;
-            font-size: 1em;
-            cursor: pointer;
-            text-decoration: none;
-        }
-        .back-btn:hover {
-            transform: scale(1.05);
-        }
-    </style>
-</head>
-<body>
-    <a href="index.html" class="back-btn">← Back</a>
-    <h1>🐱 Battle Cats 🐱</h1>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Battle Cats Game</title>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            body {
+                font-family: "Luckiest Guy", cursive;
+                background: linear-gradient(
+                    135deg,
+                    #87ceeb 0%,
+                    #5bb5e0 50%,
+                    #b4f080 100%
+                );
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                overflow: hidden;
+            }
+            h1 {
+                color: #5bb5e0;
+                margin: 10px 0;
+                font-size: 2em;
+            }
+            #gameCanvas {
+                border: 4px solid #333;
+                border-radius: 10px;
+                background: linear-gradient(
+                    to bottom,
+                    #87ceeb 0%,
+                    #87ceeb 60%,
+                    #90ee90 60%,
+                    #228b22 100%
+                );
+            }
+            .controls {
+                display: flex;
+                gap: 10px;
+                margin: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .cat-btn {
+                padding: 10px;
+                border: 3px solid #333;
+                border-radius: 10px;
+                cursor: pointer;
+                background: white;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                min-width: 80px;
+                transition: all 0.2s;
+            }
+            .cat-btn:hover:not(:disabled) {
+                transform: scale(1.1);
+                background: #b4f080;
+            }
+            .cat-btn:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+            .cat-btn img {
+                width: 50px;
+                height: 50px;
+                object-fit: contain;
+            }
+            .cat-btn .cost {
+                font-size: 0.8em;
+                color: #666;
+            }
+            .cat-btn .key {
+                font-size: 0.7em;
+                background: #333;
+                color: white;
+                padding: 2px 6px;
+                border-radius: 4px;
+            }
+            .stats {
+                display: flex;
+                gap: 30px;
+                margin: 10px;
+                font-size: 1.2em;
+            }
+            .stat {
+                background: white;
+                padding: 10px 20px;
+                border-radius: 10px;
+                border: 3px solid #333;
+            }
+            .back-btn {
+                position: absolute;
+                top: 10px;
+                left: 10px;
+                padding: 10px 20px;
+                background: linear-gradient(135deg, #87ceeb, #5bb5e0);
+                color: white;
+                border: none;
+                border-radius: 10px;
+                font-family: "Luckiest Guy", cursive;
+                font-size: 1em;
+                cursor: pointer;
+                text-decoration: none;
+            }
+            .back-btn:hover {
+                transform: scale(1.05);
+            }
+        </style>
+    </head>
+    <body>
+        <a href="index.html" class="back-btn">← Back</a>
+        <h1>🐱 Battle Cats 🐱</h1>
 
-    <div class="stats">
-        <div class="stat">💰 <span id="money">100</span></div>
-        <div class="stat">🏠 Base: <span id="baseHP">1000</span></div>
-        <div class="stat">👹 Enemy Base: <span id="enemyHP">1000</span></div>
-    </div>
+        <div class="stats">
+            <div class="stat">💰 <span id="money">100</span></div>
+            <div class="stat">🏠 Base: <span id="baseHP">1000</span></div>
+            <div class="stat">
+                👹 Enemy Base: <span id="enemyHP">1000</span>
+            </div>
+        </div>
 
-    <canvas id="gameCanvas" width="900" height="400"></canvas>
+        <canvas id="gameCanvas" width="900" height="400"></canvas>
 
-    <div class="controls">
-        <button class="cat-btn" onclick="spawnCat('cat')" id="btn-cat">
-            <img src="images/cat.png" alt="Cat">
-            <span class="cost">$50</span>
-            <span class="key">1</span>
-        </button>
-        <button class="cat-btn" onclick="spawnCat('tank')" id="btn-tank">
-            <img src="images/tank.png" alt="Tank">
-            <span class="cost">$100</span>
-            <span class="key">2</span>
-        </button>
-        <button class="cat-btn" onclick="spawnCat('axe')" id="btn-axe">
-            <img src="images/axe.png" alt="Axe">
-            <span class="cost">$75</span>
-            <span class="key">3</span>
-        </button>
-        <button class="cat-btn" onclick="spawnCat('gross')" id="btn-gross">
-            <img src="images/gross.webp" alt="Gross">
-            <span class="cost">$150</span>
-            <span class="key">4</span>
-        </button>
-        <button class="cat-btn" onclick="spawnCat('cow')" id="btn-cow">
-            <img src="images/cow.webp" alt="Cow">
-            <span class="cost">$200</span>
-            <span class="key">5</span>
-        </button>
-        <button class="cat-btn" onclick="spawnCat('bird')" id="btn-bird">
-            <img src="images/bird.png" alt="Bird">
-            <span class="cost">$125</span>
-            <span class="key">6</span>
-        </button>
-        <button class="cat-btn" onclick="spawnCat('fish')" id="btn-fish">
-            <img src="images/fish.png" alt="Fish">
-            <span class="cost">$175</span>
-            <span class="key">7</span>
-        </button>
-        <button class="cat-btn" onclick="spawnCat('lizard')" id="btn-lizard">
-            <img src="images/lizard.png" alt="Lizard">
-            <span class="cost">$225</span>
-            <span class="key">8</span>
-        </button>
-        <button class="cat-btn" onclick="spawnCat('titan')" id="btn-titan">
-            <img src="images/titan.webp" alt="Titan">
-            <span class="cost">$400</span>
-            <span class="key">9</span>
-        </button>
-    </div>
+        <div class="controls">
+            <button class="cat-btn" onclick="spawnCat('cat')" id="btn-cat">
+                <img src="images/cat.png" alt="Cat" />
+                <span class="cost">$50</span>
+                <span class="key">1</span>
+            </button>
+            <button class="cat-btn" onclick="spawnCat('tank')" id="btn-tank">
+                <img src="images/tank.png" alt="Tank" />
+                <span class="cost">$100</span>
+                <span class="key">2</span>
+            </button>
+            <button class="cat-btn" onclick="spawnCat('axe')" id="btn-axe">
+                <img src="images/axe.png" alt="Axe" />
+                <span class="cost">$75</span>
+                <span class="key">3</span>
+            </button>
+            <button class="cat-btn" onclick="spawnCat('gross')" id="btn-gross">
+                <img src="images/gross.webp" alt="Gross" />
+                <span class="cost">$150</span>
+                <span class="key">4</span>
+            </button>
+            <button class="cat-btn" onclick="spawnCat('cow')" id="btn-cow">
+                <img src="images/cow.webp" alt="Cow" />
+                <span class="cost">$200</span>
+                <span class="key">5</span>
+            </button>
+            <button class="cat-btn" onclick="spawnCat('bird')" id="btn-bird">
+                <img src="images/bird.png" alt="Bird" />
+                <span class="cost">$125</span>
+                <span class="key">6</span>
+            </button>
+            <button class="cat-btn" onclick="spawnCat('fish')" id="btn-fish">
+                <img src="images/fish.png" alt="Fish" />
+                <span class="cost">$175</span>
+                <span class="key">7</span>
+            </button>
+            <button
+                class="cat-btn"
+                onclick="spawnCat('lizard')"
+                id="btn-lizard"
+            >
+                <img src="images/lizard.png" alt="Lizard" />
+                <span class="cost">$225</span>
+                <span class="key">8</span>
+            </button>
+            <button class="cat-btn" onclick="spawnCat('titan')" id="btn-titan">
+                <img src="images/titan.webp" alt="Titan" />
+                <span class="cost">$400</span>
+                <span class="key">9</span>
+            </button>
+        </div>
 
-    <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
+        <script>
+            const canvas = document.getElementById("gameCanvas");
+            const ctx = canvas.getContext("2d");
 
-        let money = 100;
-        let baseHP = 1000;
-        let enemyHP = 1000;
-        let cats = [];
-        let enemies = [];
-        let gameOver = false;
+            let money = 100;
+            let baseHP = 1000;
+            let enemyHP = 1000;
+            let cats = [];
+            let enemies = [];
+            let gameOver = false;
 
-        const catStats = {
-            cat: { cost: 50, hp: 100, damage: 20, speed: 2, attackSpeed: 1000, range: 50 },
-            tank: { cost: 100, hp: 300, damage: 10, speed: 1, attackSpeed: 1500, range: 40 },
-            axe: { cost: 75, hp: 80, damage: 35, speed: 2.5, attackSpeed: 800, range: 45 },
-            gross: { cost: 150, hp: 150, damage: 25, speed: 1.5, attackSpeed: 1200, range: 100 },
-            cow: { cost: 200, hp: 200, damage: 40, speed: 3, attackSpeed: 1000, range: 50 },
-            bird: { cost: 125, hp: 60, damage: 50, speed: 2, attackSpeed: 600, range: 120 },
-            fish: { cost: 175, hp: 180, damage: 30, speed: 1.8, attackSpeed: 1100, range: 60 },
-            lizard: { cost: 225, hp: 120, damage: 60, speed: 1.5, attackSpeed: 1400, range: 150 },
-            titan: { cost: 400, hp: 500, damage: 80, speed: 0.8, attackSpeed: 2000, range: 60 }
-        };
+            const catStats = {
+                cat: {
+                    cost: 50,
+                    hp: 100,
+                    damage: 20,
+                    speed: 2,
+                    attackSpeed: 1000,
+                    range: 50,
+                },
+                tank: {
+                    cost: 100,
+                    hp: 300,
+                    damage: 10,
+                    speed: 1,
+                    attackSpeed: 1500,
+                    range: 40,
+                },
+                axe: {
+                    cost: 75,
+                    hp: 80,
+                    damage: 35,
+                    speed: 2.5,
+                    attackSpeed: 800,
+                    range: 45,
+                },
+                gross: {
+                    cost: 150,
+                    hp: 150,
+                    damage: 25,
+                    speed: 1.5,
+                    attackSpeed: 1200,
+                    range: 100,
+                },
+                cow: {
+                    cost: 200,
+                    hp: 200,
+                    damage: 40,
+                    speed: 3,
+                    attackSpeed: 1000,
+                    range: 50,
+                },
+                bird: {
+                    cost: 125,
+                    hp: 60,
+                    damage: 50,
+                    speed: 2,
+                    attackSpeed: 600,
+                    range: 120,
+                },
+                fish: {
+                    cost: 175,
+                    hp: 180,
+                    damage: 30,
+                    speed: 1.8,
+                    attackSpeed: 1100,
+                    range: 60,
+                },
+                lizard: {
+                    cost: 225,
+                    hp: 120,
+                    damage: 60,
+                    speed: 1.5,
+                    attackSpeed: 1400,
+                    range: 150,
+                },
+                titan: {
+                    cost: 400,
+                    hp: 500,
+                    damage: 80,
+                    speed: 0.8,
+                    attackSpeed: 2000,
+                    range: 60,
+                },
+            };
 
-        const enemyTypes = [
-            { name: 'Doge', hp: 80, damage: 15, speed: 1.5, attackSpeed: 1000, range: 40, color: '#FFD700' },
-            { name: 'Snache', hp: 50, damage: 25, speed: 2.5, attackSpeed: 800, range: 35, color: '#00FF00' },
-            { name: 'Pigge', hp: 150, damage: 20, speed: 1, attackSpeed: 1200, range: 45, color: '#FFC0CB' },
-            { name: 'Gory', hp: 200, damage: 40, speed: 1.2, attackSpeed: 1500, range: 50, color: '#8B0000' }
-        ];
+            const enemyTypes = [
+                {
+                    name: "Doge",
+                    hp: 80,
+                    damage: 15,
+                    speed: 1.5,
+                    attackSpeed: 1000,
+                    range: 40,
+                    color: "#FFD700",
+                },
+                {
+                    name: "Snache",
+                    hp: 50,
+                    damage: 25,
+                    speed: 2.5,
+                    attackSpeed: 800,
+                    range: 35,
+                    color: "#00FF00",
+                },
+                {
+                    name: "Pigge",
+                    hp: 150,
+                    damage: 20,
+                    speed: 1,
+                    attackSpeed: 1200,
+                    range: 45,
+                    color: "#FFC0CB",
+                },
+                {
+                    name: "Gory",
+                    hp: 200,
+                    damage: 40,
+                    speed: 1.2,
+                    attackSpeed: 1500,
+                    range: 50,
+                    color: "#8B0000",
+                },
+            ];
 
-        // Load cat images
-        const catImages = {};
-        const catNames = ['cat', 'tank', 'axe', 'gross', 'cow', 'bird', 'fish', 'lizard', 'titan'];
-        catNames.forEach(name => {
-            catImages[name] = new Image();
-            const ext = (name === 'gross' || name === 'cow' || name === 'titan') ? 'webp' : 'png';
-            catImages[name].src = `images/${name}.${ext}`;
-        });
+            // Load cat images
+            const catImages = {};
+            const catNames = [
+                "cat",
+                "tank",
+                "axe",
+                "gross",
+                "cow",
+                "bird",
+                "fish",
+                "lizard",
+                "titan",
+            ];
+            catNames.forEach((name) => {
+                catImages[name] = new Image();
+                const ext =
+                    name === "gross" || name === "cow" || name === "titan"
+                        ? "webp"
+                        : "png";
+                catImages[name].src = `images/${name}.${ext}`;
+            });
 
-        function spawnCat(type) {
-            if (gameOver) return;
-            const stats = catStats[type];
-            if (money >= stats.cost) {
-                money -= stats.cost;
-                cats.push({
-                    type: type,
-                    x: 80,
+            function spawnCat(type) {
+                if (gameOver) return;
+                const stats = catStats[type];
+                if (money >= stats.cost) {
+                    money -= stats.cost;
+                    cats.push({
+                        type: type,
+                        x: 80,
+                        y: 280 + Math.random() * 40,
+                        hp: stats.hp,
+                        maxHp: stats.hp,
+                        damage: stats.damage,
+                        speed: stats.speed,
+                        attackSpeed: stats.attackSpeed,
+                        range: stats.range,
+                        lastAttack: 0,
+                        attacking: false,
+                    });
+                    updateUI();
+                }
+            }
+
+            function spawnEnemy() {
+                if (gameOver) return;
+                const type =
+                    enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
+                enemies.push({
+                    name: type.name,
+                    x: canvas.width - 80,
                     y: 280 + Math.random() * 40,
-                    hp: stats.hp,
-                    maxHp: stats.hp,
-                    damage: stats.damage,
-                    speed: stats.speed,
-                    attackSpeed: stats.attackSpeed,
-                    range: stats.range,
+                    hp: type.hp,
+                    maxHp: type.hp,
+                    damage: type.damage,
+                    speed: type.speed,
+                    attackSpeed: type.attackSpeed,
+                    range: type.range,
+                    color: type.color,
                     lastAttack: 0,
-                    attacking: false
+                    attacking: false,
                 });
+            }
+
+            function updateUI() {
+                document.getElementById("money").textContent =
+                    Math.floor(money);
+                document.getElementById("baseHP").textContent =
+                    Math.floor(baseHP);
+                document.getElementById("enemyHP").textContent =
+                    Math.floor(enemyHP);
+
+                // Update button states
+                for (const [name, stats] of Object.entries(catStats)) {
+                    const btn = document.getElementById(`btn-${name}`);
+                    btn.disabled = money < stats.cost;
+                }
+            }
+
+            function drawBase(x, hp, maxHp, isEnemy) {
+                ctx.fillStyle = isEnemy ? "#8B0000" : "#4169E1";
+                ctx.fillRect(x, 200, 60, 150);
+                ctx.fillStyle = "#333";
+                ctx.fillRect(x + 15, 280, 30, 70);
+
+                // HP bar
+                ctx.fillStyle = "#333";
+                ctx.fillRect(x - 10, 180, 80, 15);
+                ctx.fillStyle =
+                    hp > maxHp * 0.5
+                        ? "#00FF00"
+                        : hp > maxHp * 0.25
+                          ? "#FFFF00"
+                          : "#FF0000";
+                ctx.fillRect(x - 10, 180, 80 * (hp / maxHp), 15);
+            }
+
+            function drawCat(cat) {
+                const img = catImages[cat.type];
+                if (img.complete) {
+                    const isTitan = cat.type === "titan";
+                    const size = isTitan ? 100 : 60;
+                    const offset = size / 2;
+
+                    ctx.save();
+                    ctx.translate(cat.x, cat.y);
+                    ctx.scale(-1, 1); // Flip horizontally (all cats face right)
+                    ctx.drawImage(img, -offset, -offset, size, size);
+                    ctx.restore();
+                } else {
+                    ctx.fillStyle = "#FFA500";
+                    ctx.beginPath();
+                    ctx.arc(cat.x, cat.y, 20, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // HP bar
+                ctx.fillStyle = "#333";
+                ctx.fillRect(cat.x - 25, cat.y - 40, 50, 6);
+                ctx.fillStyle = "#00FF00";
+                ctx.fillRect(
+                    cat.x - 25,
+                    cat.y - 40,
+                    50 * (cat.hp / cat.maxHp),
+                    6,
+                );
+            }
+
+            function drawEnemy(enemy) {
+                ctx.fillStyle = enemy.color;
+                ctx.beginPath();
+                ctx.arc(enemy.x, enemy.y, 25, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Face
+                ctx.fillStyle = "white";
+                ctx.beginPath();
+                ctx.arc(enemy.x - 8, enemy.y - 5, 6, 0, Math.PI * 2);
+                ctx.arc(enemy.x + 8, enemy.y - 5, 6, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = "black";
+                ctx.beginPath();
+                ctx.arc(enemy.x - 8, enemy.y - 5, 3, 0, Math.PI * 2);
+                ctx.arc(enemy.x + 8, enemy.y - 5, 3, 0, Math.PI * 2);
+                ctx.fill();
+
+                // HP bar
+                ctx.fillStyle = "#333";
+                ctx.fillRect(enemy.x - 25, enemy.y - 40, 50, 6);
+                ctx.fillStyle = "#FF0000";
+                ctx.fillRect(
+                    enemy.x - 25,
+                    enemy.y - 40,
+                    50 * (enemy.hp / enemy.maxHp),
+                    6,
+                );
+
+                // Name
+                ctx.fillStyle = "white";
+                ctx.font = "12px Arial";
+                ctx.textAlign = "center";
+                ctx.fillText(enemy.name, enemy.x, enemy.y + 40);
+            }
+
+            function update(timestamp) {
+                if (gameOver) return;
+
+                // Money generation
+                money += 0.5;
+
+                // Update cats
+                cats.forEach((cat) => {
+                    cat.attacking = false;
+
+                    // Check for enemies in range
+                    let target = null;
+                    let minDist = Infinity;
+                    enemies.forEach((enemy) => {
+                        const dist = enemy.x - cat.x;
+                        if (dist > 0 && dist < minDist) {
+                            minDist = dist;
+                            target = enemy;
+                        }
+                    });
+
+                    // Check if can attack enemy base
+                    const distToBase = canvas.width - 60 - cat.x;
+
+                    if (target && minDist <= cat.range) {
+                        cat.attacking = true;
+                        if (timestamp - cat.lastAttack >= cat.attackSpeed) {
+                            target.hp -= cat.damage;
+                            cat.lastAttack = timestamp;
+                        }
+                    } else if (distToBase <= cat.range) {
+                        cat.attacking = true;
+                        if (timestamp - cat.lastAttack >= cat.attackSpeed) {
+                            enemyHP -= cat.damage;
+                            cat.lastAttack = timestamp;
+                        }
+                    } else {
+                        cat.x += cat.speed;
+                    }
+                });
+
+                // Update enemies
+                enemies.forEach((enemy) => {
+                    enemy.attacking = false;
+
+                    // Check for cats in range
+                    let target = null;
+                    let minDist = Infinity;
+                    cats.forEach((cat) => {
+                        const dist = cat.x - enemy.x;
+                        if (dist < 0 && Math.abs(dist) < minDist) {
+                            minDist = Math.abs(dist);
+                            target = cat;
+                        }
+                    });
+
+                    // Check if can attack player base
+                    const distToBase = enemy.x - 60;
+
+                    if (target && minDist <= enemy.range) {
+                        enemy.attacking = true;
+                        if (timestamp - enemy.lastAttack >= enemy.attackSpeed) {
+                            target.hp -= enemy.damage;
+                            enemy.lastAttack = timestamp;
+                        }
+                    } else if (distToBase <= enemy.range) {
+                        enemy.attacking = true;
+                        if (timestamp - enemy.lastAttack >= enemy.attackSpeed) {
+                            baseHP -= enemy.damage;
+                            enemy.lastAttack = timestamp;
+                        }
+                    } else {
+                        enemy.x -= enemy.speed;
+                    }
+                });
+
+                // Remove dead units
+                cats = cats.filter((cat) => cat.hp > 0);
+                enemies = enemies.filter((enemy) => enemy.hp > 0);
+
+                // Check win/lose
+                if (baseHP <= 0) {
+                    gameOver = true;
+                    alert("Game Over! Your base was destroyed!");
+                }
+                if (enemyHP <= 0) {
+                    gameOver = true;
+                    alert("Victory! You destroyed the enemy base!");
+                }
+
                 updateUI();
             }
-        }
 
-        function spawnEnemy() {
-            if (gameOver) return;
-            const type = enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
-            enemies.push({
-                name: type.name,
-                x: canvas.width - 80,
-                y: 280 + Math.random() * 40,
-                hp: type.hp,
-                maxHp: type.hp,
-                damage: type.damage,
-                speed: type.speed,
-                attackSpeed: type.attackSpeed,
-                range: type.range,
-                color: type.color,
-                lastAttack: 0,
-                attacking: false
-            });
-        }
+            function draw() {
+                // Clear
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        function updateUI() {
-            document.getElementById('money').textContent = Math.floor(money);
-            document.getElementById('baseHP').textContent = Math.floor(baseHP);
-            document.getElementById('enemyHP').textContent = Math.floor(enemyHP);
+                // Background
+                ctx.fillStyle = "#87CEEB";
+                ctx.fillRect(0, 0, canvas.width, 250);
+                ctx.fillStyle = "#90EE90";
+                ctx.fillRect(0, 250, canvas.width, 150);
 
-            // Update button states
-            for (const [name, stats] of Object.entries(catStats)) {
-                const btn = document.getElementById(`btn-${name}`);
-                btn.disabled = money < stats.cost;
-            }
-        }
-
-        function drawBase(x, hp, maxHp, isEnemy) {
-            ctx.fillStyle = isEnemy ? '#8B0000' : '#4169E1';
-            ctx.fillRect(x, 200, 60, 150);
-            ctx.fillStyle = '#333';
-            ctx.fillRect(x + 15, 280, 30, 70);
-
-            // HP bar
-            ctx.fillStyle = '#333';
-            ctx.fillRect(x - 10, 180, 80, 15);
-            ctx.fillStyle = hp > maxHp * 0.5 ? '#00FF00' : hp > maxHp * 0.25 ? '#FFFF00' : '#FF0000';
-            ctx.fillRect(x - 10, 180, 80 * (hp / maxHp), 15);
-        }
-
-        function drawCat(cat) {
-            const img = catImages[cat.type];
-            if (img.complete) {
-                ctx.drawImage(img, cat.x - 30, cat.y - 30, 60, 60);
-            } else {
-                ctx.fillStyle = '#FFA500';
+                // Ground line
+                ctx.strokeStyle = "#228B22";
+                ctx.lineWidth = 3;
                 ctx.beginPath();
-                ctx.arc(cat.x, cat.y, 20, 0, Math.PI * 2);
-                ctx.fill();
+                ctx.moveTo(0, 250);
+                ctx.lineTo(canvas.width, 250);
+                ctx.stroke();
+
+                // Draw bases
+                drawBase(10, baseHP, 1000, false);
+                drawBase(canvas.width - 70, enemyHP, 1000, true);
+
+                // Draw units
+                cats.forEach(drawCat);
+                enemies.forEach(drawEnemy);
+
+                // Game over text
+                if (gameOver) {
+                    ctx.fillStyle = "rgba(0,0,0,0.7)";
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillStyle = "white";
+                    ctx.font = "48px Luckiest Guy";
+                    ctx.textAlign = "center";
+                    ctx.fillText(
+                        enemyHP <= 0 ? "VICTORY!" : "GAME OVER",
+                        canvas.width / 2,
+                        canvas.height / 2,
+                    );
+                }
             }
 
-            // HP bar
-            ctx.fillStyle = '#333';
-            ctx.fillRect(cat.x - 25, cat.y - 40, 50, 6);
-            ctx.fillStyle = '#00FF00';
-            ctx.fillRect(cat.x - 25, cat.y - 40, 50 * (cat.hp / cat.maxHp), 6);
-        }
+            function gameLoop(timestamp) {
+                update(timestamp);
+                draw();
+                requestAnimationFrame(gameLoop);
+            }
 
-        function drawEnemy(enemy) {
-            ctx.fillStyle = enemy.color;
-            ctx.beginPath();
-            ctx.arc(enemy.x, enemy.y, 25, 0, Math.PI * 2);
-            ctx.fill();
+            // Spawn enemies periodically
+            setInterval(() => {
+                if (!gameOver) spawnEnemy();
+            }, 3000);
 
-            // Face
-            ctx.fillStyle = 'white';
-            ctx.beginPath();
-            ctx.arc(enemy.x - 8, enemy.y - 5, 6, 0, Math.PI * 2);
-            ctx.arc(enemy.x + 8, enemy.y - 5, 6, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = 'black';
-            ctx.beginPath();
-            ctx.arc(enemy.x - 8, enemy.y - 5, 3, 0, Math.PI * 2);
-            ctx.arc(enemy.x + 8, enemy.y - 5, 3, 0, Math.PI * 2);
-            ctx.fill();
-
-            // HP bar
-            ctx.fillStyle = '#333';
-            ctx.fillRect(enemy.x - 25, enemy.y - 40, 50, 6);
-            ctx.fillStyle = '#FF0000';
-            ctx.fillRect(enemy.x - 25, enemy.y - 40, 50 * (enemy.hp / enemy.maxHp), 6);
-
-            // Name
-            ctx.fillStyle = 'white';
-            ctx.font = '12px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText(enemy.name, enemy.x, enemy.y + 40);
-        }
-
-        function update(timestamp) {
-            if (gameOver) return;
-
-            // Money generation
-            money += 0.5;
-
-            // Update cats
-            cats.forEach(cat => {
-                cat.attacking = false;
-
-                // Check for enemies in range
-                let target = null;
-                let minDist = Infinity;
-                enemies.forEach(enemy => {
-                    const dist = enemy.x - cat.x;
-                    if (dist > 0 && dist < minDist) {
-                        minDist = dist;
-                        target = enemy;
-                    }
-                });
-
-                // Check if can attack enemy base
-                const distToBase = (canvas.width - 60) - cat.x;
-
-                if (target && minDist <= cat.range) {
-                    cat.attacking = true;
-                    if (timestamp - cat.lastAttack >= cat.attackSpeed) {
-                        target.hp -= cat.damage;
-                        cat.lastAttack = timestamp;
-                    }
-                } else if (distToBase <= cat.range) {
-                    cat.attacking = true;
-                    if (timestamp - cat.lastAttack >= cat.attackSpeed) {
-                        enemyHP -= cat.damage;
-                        cat.lastAttack = timestamp;
-                    }
-                } else {
-                    cat.x += cat.speed;
-                }
+            // Keyboard controls
+            document.addEventListener("keydown", (e) => {
+                const keyMap = {
+                    1: "cat",
+                    2: "tank",
+                    3: "axe",
+                    4: "gross",
+                    5: "cow",
+                    6: "bird",
+                    7: "fish",
+                    8: "lizard",
+                    9: "titan",
+                };
+                if (keyMap[e.key]) spawnCat(keyMap[e.key]);
             });
 
-            // Update enemies
-            enemies.forEach(enemy => {
-                enemy.attacking = false;
-
-                // Check for cats in range
-                let target = null;
-                let minDist = Infinity;
-                cats.forEach(cat => {
-                    const dist = cat.x - enemy.x;
-                    if (dist < 0 && Math.abs(dist) < minDist) {
-                        minDist = Math.abs(dist);
-                        target = cat;
-                    }
-                });
-
-                // Check if can attack player base
-                const distToBase = enemy.x - 60;
-
-                if (target && minDist <= enemy.range) {
-                    enemy.attacking = true;
-                    if (timestamp - enemy.lastAttack >= enemy.attackSpeed) {
-                        target.hp -= enemy.damage;
-                        enemy.lastAttack = timestamp;
-                    }
-                } else if (distToBase <= enemy.range) {
-                    enemy.attacking = true;
-                    if (timestamp - enemy.lastAttack >= enemy.attackSpeed) {
-                        baseHP -= enemy.damage;
-                        enemy.lastAttack = timestamp;
-                    }
-                } else {
-                    enemy.x -= enemy.speed;
-                }
-            });
-
-            // Remove dead units
-            cats = cats.filter(cat => cat.hp > 0);
-            enemies = enemies.filter(enemy => enemy.hp > 0);
-
-            // Check win/lose
-            if (baseHP <= 0) {
-                gameOver = true;
-                alert('Game Over! Your base was destroyed!');
-            }
-            if (enemyHP <= 0) {
-                gameOver = true;
-                alert('Victory! You destroyed the enemy base!');
-            }
-
-            updateUI();
-        }
-
-        function draw() {
-            // Clear
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Background
-            ctx.fillStyle = '#87CEEB';
-            ctx.fillRect(0, 0, canvas.width, 250);
-            ctx.fillStyle = '#90EE90';
-            ctx.fillRect(0, 250, canvas.width, 150);
-
-            // Ground line
-            ctx.strokeStyle = '#228B22';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.moveTo(0, 250);
-            ctx.lineTo(canvas.width, 250);
-            ctx.stroke();
-
-            // Draw bases
-            drawBase(10, baseHP, 1000, false);
-            drawBase(canvas.width - 70, enemyHP, 1000, true);
-
-            // Draw units
-            cats.forEach(drawCat);
-            enemies.forEach(drawEnemy);
-
-            // Game over text
-            if (gameOver) {
-                ctx.fillStyle = 'rgba(0,0,0,0.7)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = 'white';
-                ctx.font = '48px Luckiest Guy';
-                ctx.textAlign = 'center';
-                ctx.fillText(enemyHP <= 0 ? 'VICTORY!' : 'GAME OVER', canvas.width/2, canvas.height/2);
-            }
-        }
-
-        function gameLoop(timestamp) {
-            update(timestamp);
-            draw();
+            // Start game
             requestAnimationFrame(gameLoop);
-        }
-
-        // Spawn enemies periodically
-        setInterval(() => {
-            if (!gameOver) spawnEnemy();
-        }, 3000);
-
-        // Keyboard controls
-        document.addEventListener('keydown', (e) => {
-            const keyMap = { '1': 'cat', '2': 'tank', '3': 'axe', '4': 'gross', '5': 'cow', '6': 'bird', '7': 'fish', '8': 'lizard', '9': 'titan' };
-            if (keyMap[e.key]) spawnCat(keyMap[e.key]);
-        });
-
-        // Start game
-        requestAnimationFrame(gameLoop);
-    </script>
-</body>
+        </script>
+    </body>
 </html>
