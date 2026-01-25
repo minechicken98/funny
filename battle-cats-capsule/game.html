@@ -125,6 +125,17 @@
         <div class="stats">
             <div class="stat">Level <span id="levelNum">1</span></div>
             <div class="stat"><span id="money">500</span>¢</div>
+            <button class="stat" id="pauseBtn" onclick="togglePause()">
+                Pause
+            </button>
+            <button
+                class="stat"
+                id="nextLevelBtn"
+                onclick="startNextLevel()"
+                style="display: none; background: #4caf50; color: white"
+            >
+                Next Level
+            </button>
         </div>
 
         <canvas id="gameCanvas" width="900" height="400"></canvas>
@@ -191,6 +202,8 @@
             let cats = [];
             let enemies = [];
             let gameOver = false;
+            let levelWon = false;
+            let paused = false;
             let level = 1;
             let enemySpawnRate = 3000;
 
@@ -385,8 +398,16 @@
                 });
             }
 
-            function nextLevel() {
+            function togglePause() {
+                paused = !paused;
+                document.getElementById("pauseBtn").textContent = paused
+                    ? "Resume"
+                    : "Pause";
+            }
+
+            function startNextLevel() {
                 level++;
+                levelWon = false;
                 const levelData = levels[level - 1];
                 enemyHP = levelData.enemyHP;
                 enemySpawnRate = levelData.spawnRate;
@@ -398,7 +419,7 @@
                 // Restart enemy spawner with new rate
                 clearInterval(enemySpawner);
                 enemySpawner = setInterval(() => {
-                    if (!gameOver) spawnEnemy();
+                    if (!gameOver && !paused && !levelWon) spawnEnemy();
                 }, enemySpawnRate);
 
                 updateUI();
@@ -408,6 +429,9 @@
                 document.getElementById("money").textContent =
                     Math.floor(money);
                 document.getElementById("levelNum").textContent = level;
+                document.getElementById("nextLevelBtn").style.display = levelWon
+                    ? "block"
+                    : "none";
 
                 // Update button states
                 for (const [name, stats] of Object.entries(catStats)) {
@@ -507,7 +531,7 @@
             }
 
             function update(timestamp) {
-                if (gameOver) return;
+                if (gameOver || paused || levelWon) return;
 
                 // Money generation
                 money += 3.5;
@@ -589,13 +613,12 @@
                 // Check win/lose
                 if (baseHP <= 0) {
                     gameOver = true;
-                    alert("Game Over! Your base was destroyed!");
                 }
                 if (enemyHP <= 0) {
                     if (level >= levels.length) {
                         gameOver = true;
                     } else {
-                        nextLevel();
+                        levelWon = true;
                     }
                 }
 
@@ -629,6 +652,36 @@
                 cats.forEach(drawCat);
                 enemies.forEach(drawEnemy);
 
+                // Paused text
+                if (paused) {
+                    ctx.fillStyle = "rgba(0,0,0,0.5)";
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillStyle = "white";
+                    ctx.font = "48px Luckiest Guy";
+                    ctx.textAlign = "center";
+                    ctx.fillText("PAUSED", canvas.width / 2, canvas.height / 2);
+                }
+
+                // Level won text
+                if (levelWon) {
+                    ctx.fillStyle = "rgba(0,0,0,0.7)";
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillStyle = "white";
+                    ctx.font = "48px Luckiest Guy";
+                    ctx.textAlign = "center";
+                    ctx.fillText(
+                        "VICTORY!",
+                        canvas.width / 2,
+                        canvas.height / 2 - 30,
+                    );
+                    ctx.font = "24px Luckiest Guy";
+                    ctx.fillText(
+                        "Click Next Level to continue",
+                        canvas.width / 2,
+                        canvas.height / 2 + 20,
+                    );
+                }
+
                 // Game over text
                 if (gameOver) {
                     ctx.fillStyle = "rgba(0,0,0,0.7)";
@@ -637,7 +690,7 @@
                     ctx.font = "48px Luckiest Guy";
                     ctx.textAlign = "center";
                     ctx.fillText(
-                        enemyHP <= 0 ? "VICTORY!" : "GAME OVER",
+                        enemyHP <= 0 ? "YOU WIN!" : "GAME OVER",
                         canvas.width / 2,
                         canvas.height / 2,
                     );
