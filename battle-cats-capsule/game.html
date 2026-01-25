@@ -406,7 +406,19 @@
             function drawCat(cat) {
                 const isTitan = cat.type === "titan";
                 const drawY = isTitan ? cat.y : 300;
-                const size = isTitan ? 100 : 70;
+                // Different sizes for each cat type
+                const sizes = {
+                    cat: 70,
+                    tank: 90,
+                    axe: 70,
+                    gross: 70,
+                    cow: 75,
+                    bird: 70,
+                    fish: 70,
+                    lizard: 70,
+                    titan: 100,
+                };
+                const size = sizes[cat.type] || 70;
                 const img = catImages[cat.type];
 
                 ctx.save();
