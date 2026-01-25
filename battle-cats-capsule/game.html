@@ -178,7 +178,7 @@
                 <span class="key">8</span>
             </button>
             <button class="cat-btn" onclick="spawnCat('titan')" id="btn-titan">
-                <img src="images/titan.webp" alt="Titan" />
+                <img src="images/titan.png" alt="Titan" />
                 <span class="cost">$400</span>
                 <span class="key">9</span>
             </button>
@@ -324,10 +324,7 @@
             ];
             catNames.forEach((name) => {
                 catImages[name] = new Image();
-                const ext =
-                    name === "gross" || name === "cow" || name === "titan"
-                        ? "webp"
-                        : "png";
+                const ext = name === "gross" || name === "cow" ? "webp" : "png";
                 catImages[name].src = `images/${name}.${ext}`;
             });
 
