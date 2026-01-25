@@ -906,7 +906,8 @@
 
                     // Celebration effect
                     const celebration = document.createElement("div");
-                    celebration.textContent = "🔓 LEGEND LOCK ACTIVATED!";
+                    celebration.innerHTML =
+                        '🔓 <span style="background: linear-gradient(135deg, #ff0000 0%, #ff7f00 15%, #ffff00 30%, #00ff00 45%, #0000ff 60%, #4b0082 75%, #9400d3 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">LEGEND LOCK ACTIVATED!</span>';
                     celebration.style.cssText =
                         "position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; padding: 30px 50px; border-radius: 20px; font-size: 2em; font-weight: bold; z-index: 1000; box-shadow: 0 10px 50px rgba(0,0,0,0.5); opacity: 1; font-family: 'Luckiest Guy', cursive; ";
                     document.body.appendChild(celebration);
