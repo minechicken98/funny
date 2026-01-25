@@ -988,10 +988,14 @@
                         70,
                     );
 
-                    // Draw cat upgrade options
+                    // Draw cat upgrade options (only show unlocked cats)
                     const startY = 80;
                     const itemHeight = 28;
-                    catNames.forEach((name, i) => {
+                    const unlockedCats = catNames.filter((name) => {
+                        const unlockLevel = catStats[name].unlockLevel || 1;
+                        return level >= unlockLevel;
+                    });
+                    unlockedCats.forEach((name, i) => {
                         const y = startY + i * itemHeight;
                         const cost = getUpgradeCost(name);
                         const lvl = catUpgrades[name];
@@ -1039,7 +1043,7 @@
                     });
 
                     // Base health upgrade row
-                    const baseY = startY + catNames.length * itemHeight;
+                    const baseY = startY + unlockedCats.length * itemHeight;
                     const baseCost = getBaseUpgradeCost();
                     const canAffordBase = totalXP >= baseCost;
 
@@ -1263,10 +1267,14 @@
                         showingUpgrades = false;
                     }
 
-                    // Upgrade buttons for each cat
+                    // Upgrade buttons for each cat (only unlocked)
                     const startY = 80;
                     const itemHeight = 28;
-                    catNames.forEach((name, i) => {
+                    const unlockedCats = catNames.filter((name) => {
+                        const unlockLevel = catStats[name].unlockLevel || 1;
+                        return level >= unlockLevel;
+                    });
+                    unlockedCats.forEach((name, i) => {
                         const btnY = startY + i * itemHeight + 2;
                         if (
                             x >= canvas.width - 180 &&
@@ -1279,7 +1287,7 @@
                     });
 
                     // Base upgrade button
-                    const baseY = startY + catNames.length * itemHeight + 2;
+                    const baseY = startY + unlockedCats.length * itemHeight + 2;
                     if (
                         x >= canvas.width - 180 &&
                         x <= canvas.width - 60 &&
