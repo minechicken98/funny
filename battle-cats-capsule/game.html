@@ -224,17 +224,17 @@
             let showingUpgrades = false;
             let upgradeScroll = 0;
 
-            // Cooldowns for each cat (in milliseconds)
+            // Cooldowns for each cat (in milliseconds) - halved
             const catCooldowns = {
-                cat: 5000,
-                tank: 8000,
-                axe: 7000,
-                gross: 11000,
-                cow: 9000,
-                bird: 8330,
-                fish: 13000,
-                lizard: 19000,
-                titan: 27000,
+                cat: 2500,
+                tank: 4000,
+                axe: 3500,
+                gross: 5500,
+                cow: 4500,
+                bird: 4165,
+                fish: 6500,
+                lizard: 9500,
+                titan: 13500,
             };
 
             // Track when each cat was last spawned
@@ -251,6 +251,9 @@
             };
 
             // Track upgrade levels for each cat (affects hp and damage)
+            let baseMaxHP = 1000;
+            let baseUpgradeLevel = 0;
+
             const catUpgrades = {
                 cat: 0,
                 tank: 0,
@@ -281,6 +284,20 @@
                     catStats[catType].damage = Math.floor(
                         catStats[catType].damage * 1.1,
                     );
+                    updateUI();
+                }
+            }
+
+            function getBaseUpgradeCost() {
+                return Math.floor(2000 * Math.pow(1.5, baseUpgradeLevel));
+            }
+
+            function upgradeBase() {
+                const cost = getBaseUpgradeCost();
+                if (totalXP >= cost) {
+                    totalXP -= cost;
+                    baseUpgradeLevel++;
+                    baseMaxHP = Math.floor(baseMaxHP * 1.15);
                     updateUI();
                 }
             }
@@ -569,7 +586,7 @@
                 cats = [];
                 enemies = [];
                 money = 500 + (level - 1) * 200;
-                baseHP = 1000;
+                baseHP = baseMaxHP;
 
                 // Restart enemy spawner with new rate
                 clearInterval(enemySpawner);
@@ -821,7 +838,7 @@
                 // Draw bases
                 const levelData = levels[level - 1];
                 drawBase(10, enemyHP, levelData.enemyHP, true);
-                drawBase(canvas.width - 70, baseHP, 1000, false);
+                drawBase(canvas.width - 70, baseHP, baseMaxHP, false);
 
                 // Draw units
                 cats.forEach(drawCat);
@@ -947,6 +964,40 @@
                         );
                     });
 
+                    // Base health upgrade row
+                    const baseY = startY + catNames.length * itemHeight;
+                    const baseCost = getBaseUpgradeCost();
+                    const canAffordBase = totalXP >= baseCost;
+
+                    ctx.fillStyle = canAffordBase
+                        ? "rgba(100,150,255,0.3)"
+                        : "rgba(100,150,255,0.15)";
+                    ctx.fillRect(50, baseY, canvas.width - 100, 30);
+
+                    ctx.fillStyle = "#4169E1";
+                    ctx.font = "14px Luckiest Guy";
+                    ctx.textAlign = "left";
+                    ctx.fillText(
+                        "BASE HP (Lv." + baseUpgradeLevel + ")",
+                        70,
+                        baseY + 20,
+                    );
+
+                    ctx.font = "12px Arial";
+                    ctx.fillStyle = "#AAA";
+                    ctx.fillText("HP: " + baseMaxHP, 200, baseY + 20);
+
+                    ctx.fillStyle = canAffordBase ? "#4CAF50" : "#666";
+                    ctx.fillRect(canvas.width - 180, baseY + 2, 120, 26);
+                    ctx.fillStyle = "white";
+                    ctx.font = "12px Luckiest Guy";
+                    ctx.textAlign = "center";
+                    ctx.fillText(
+                        baseCost.toLocaleString() + " XP",
+                        canvas.width - 120,
+                        baseY + 20,
+                    );
+
                     // Back button
                     ctx.fillStyle = "#f44336";
                     ctx.fillRect(
@@ -1067,6 +1118,17 @@
                             upgradeCat(name);
                         }
                     });
+
+                    // Base upgrade button
+                    const baseY = startY + catNames.length * itemHeight + 2;
+                    if (
+                        x >= canvas.width - 180 &&
+                        x <= canvas.width - 60 &&
+                        y >= baseY &&
+                        y <= baseY + 26
+                    ) {
+                        upgradeBase();
+                    }
                 }
             });
 
