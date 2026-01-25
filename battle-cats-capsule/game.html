@@ -125,6 +125,7 @@
         <div class="stats">
             <div class="stat">Level <span id="levelNum">1</span></div>
             <div class="stat"><span id="money">500</span>¢</div>
+            <div class="stat"><span id="xpDisplay">0</span> XP</div>
         </div>
 
         <canvas id="gameCanvas" width="900" height="400"></canvas>
@@ -195,6 +196,8 @@
             let paused = false;
             let level = 1;
             let enemySpawnRate = 3000;
+            let totalXP = 0;
+            let lastXPReward = 0;
 
             const levels = [
                 { enemyHP: 1000, spawnRate: 3000, enemyMultiplier: 1 },
@@ -439,6 +442,8 @@
                 document.getElementById("money").textContent =
                     Math.floor(money);
                 document.getElementById("levelNum").textContent = level;
+                document.getElementById("xpDisplay").textContent =
+                    totalXP.toLocaleString();
 
                 // Update button states
                 for (const [name, stats] of Object.entries(catStats)) {
@@ -626,6 +631,9 @@
                         gameOver = true;
                     } else {
                         levelWon = true;
+                        lastXPReward =
+                            Math.floor(Math.random() * 20001) + 10000;
+                        totalXP += lastXPReward;
                     }
                 }
 
@@ -682,12 +690,21 @@
                     ctx.fillText(
                         "VICTORY!",
                         canvas.width / 2,
-                        canvas.height / 2 - 40,
+                        canvas.height / 2 - 60,
+                    );
+
+                    // XP reward
+                    ctx.font = "28px Luckiest Guy";
+                    ctx.fillStyle = "#FFD700";
+                    ctx.fillText(
+                        "+" + lastXPReward.toLocaleString() + " XP",
+                        canvas.width / 2,
+                        canvas.height / 2 - 15,
                     );
 
                     // Draw Next Level button
                     const btnX = canvas.width / 2 - 80;
-                    const btnY = canvas.height / 2;
+                    const btnY = canvas.height / 2 + 20;
                     ctx.fillStyle = "#4CAF50";
                     ctx.fillRect(btnX, btnY, 160, 50);
                     ctx.fillStyle = "white";
@@ -756,7 +773,7 @@
                 // Check if clicked on Next Level button (when level won)
                 if (levelWon) {
                     const btnX = canvas.width / 2 - 80;
-                    const btnY = canvas.height / 2;
+                    const btnY = canvas.height / 2 + 20;
                     if (
                         x >= btnX &&
                         x <= btnX + 160 &&
