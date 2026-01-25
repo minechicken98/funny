@@ -123,6 +123,7 @@
         <h1>🐱 Battle Cats 🐱</h1>
 
         <div class="stats">
+            <div class="stat">Level <span id="levelNum">1</span></div>
             <div class="stat"><span id="money">500</span>¢</div>
         </div>
 
@@ -190,6 +191,19 @@
             let cats = [];
             let enemies = [];
             let gameOver = false;
+            let level = 1;
+            let enemySpawnRate = 3000;
+
+            const levels = [
+                { enemyHP: 1000, spawnRate: 3000, enemyMultiplier: 1 },
+                { enemyHP: 1500, spawnRate: 2500, enemyMultiplier: 1.2 },
+                { enemyHP: 2000, spawnRate: 2200, enemyMultiplier: 1.5 },
+                { enemyHP: 3000, spawnRate: 2000, enemyMultiplier: 1.8 },
+                { enemyHP: 4000, spawnRate: 1800, enemyMultiplier: 2.2 },
+                { enemyHP: 5000, spawnRate: 1500, enemyMultiplier: 2.5 },
+                { enemyHP: 7000, spawnRate: 1300, enemyMultiplier: 3 },
+                { enemyHP: 10000, spawnRate: 1000, enemyMultiplier: 4 },
+            ];
 
             const catStats = {
                 cat: {
@@ -351,15 +365,17 @@
 
             function spawnEnemy() {
                 if (gameOver) return;
+                const levelData = levels[level - 1];
+                const mult = levelData.enemyMultiplier;
                 const type =
                     enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
                 enemies.push({
                     name: type.name,
                     x: 80,
                     y: 280 + Math.random() * 40,
-                    hp: type.hp,
-                    maxHp: type.hp,
-                    damage: type.damage,
+                    hp: Math.floor(type.hp * mult),
+                    maxHp: Math.floor(type.hp * mult),
+                    damage: Math.floor(type.damage * mult),
                     speed: type.speed,
                     attackSpeed: type.attackSpeed,
                     range: type.range,
@@ -369,9 +385,29 @@
                 });
             }
 
+            function nextLevel() {
+                level++;
+                const levelData = levels[level - 1];
+                enemyHP = levelData.enemyHP;
+                enemySpawnRate = levelData.spawnRate;
+                cats = [];
+                enemies = [];
+                money = 500 + (level - 1) * 200;
+                baseHP = 1000;
+
+                // Restart enemy spawner with new rate
+                clearInterval(enemySpawner);
+                enemySpawner = setInterval(() => {
+                    if (!gameOver) spawnEnemy();
+                }, enemySpawnRate);
+
+                updateUI();
+            }
+
             function updateUI() {
                 document.getElementById("money").textContent =
                     Math.floor(money);
+                document.getElementById("levelNum").textContent = level;
 
                 // Update button states
                 for (const [name, stats] of Object.entries(catStats)) {
@@ -556,8 +592,11 @@
                     alert("Game Over! Your base was destroyed!");
                 }
                 if (enemyHP <= 0) {
-                    gameOver = true;
-                    alert("Victory! You destroyed the enemy base!");
+                    if (level >= levels.length) {
+                        gameOver = true;
+                    } else {
+                        nextLevel();
+                    }
                 }
 
                 updateUI();
@@ -582,7 +621,8 @@
                 ctx.stroke();
 
                 // Draw bases
-                drawBase(10, enemyHP, 1000, true);
+                const levelData = levels[level - 1];
+                drawBase(10, enemyHP, levelData.enemyHP, true);
                 drawBase(canvas.width - 70, baseHP, 1000, false);
 
                 // Draw units
@@ -611,9 +651,9 @@
             }
 
             // Spawn enemies periodically
-            setInterval(() => {
+            let enemySpawner = setInterval(() => {
                 if (!gameOver) spawnEnemy();
-            }, 3000);
+            }, enemySpawnRate);
 
             // Keyboard controls
             document.addEventListener("keydown", (e) => {
