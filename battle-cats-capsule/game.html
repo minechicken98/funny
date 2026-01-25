@@ -203,6 +203,17 @@
                 <span class="cost">1950¢</span>
                 <span class="key">9</span>
             </button>
+            <button
+                class="cat-btn"
+                onclick="spawnCat('cosmo')"
+                id="btn-cosmo"
+                style="display: none"
+            >
+                <div class="cooldown-bar" id="cd-cosmo"></div>
+                <img src="images/cosmo.png" alt="Cosmo" />
+                <span class="cost">9999¢</span>
+                <span class="key">0</span>
+            </button>
         </div>
 
         <script>
@@ -235,6 +246,7 @@
                 fish: 6500,
                 lizard: 9500,
                 titan: 13500,
+                cosmo: 60000,
             };
 
             // Track when each cat was last spawned
@@ -248,6 +260,7 @@
                 fish: 0,
                 lizard: 0,
                 titan: 0,
+                cosmo: 0,
             };
 
             // Track upgrade levels for each cat (affects hp and damage)
@@ -264,6 +277,7 @@
                 fish: 0,
                 lizard: 0,
                 titan: 0,
+                cosmo: 0,
             };
 
             function getUpgradeCost(catType) {
@@ -357,6 +371,20 @@
                     spawnRate: 1000,
                     enemyMultiplier: 4,
                     xpMin: 100000,
+                    xpMax: 200000,
+                },
+                {
+                    enemyHP: 15000,
+                    spawnRate: 800,
+                    enemyMultiplier: 5,
+                    xpMin: 200000,
+                    xpMax: 500000,
+                },
+                {
+                    enemyHP: 25000,
+                    spawnRate: 600,
+                    enemyMultiplier: 7,
+                    xpMin: 500000,
                     xpMax: 1000000,
                 },
             ];
@@ -435,6 +463,15 @@
                     attackSpeed: 2000,
                     range: 60,
                 },
+                cosmo: {
+                    cost: 9999,
+                    hp: 99999,
+                    damage: 10000,
+                    speed: 1.5,
+                    attackSpeed: 500,
+                    range: 1000,
+                    unlockLevel: 10,
+                },
             };
 
             const enemyTypes = [
@@ -488,6 +525,7 @@
                 "fish",
                 "lizard",
                 "titan",
+                "cosmo",
             ];
             catNames.forEach((name) => {
                 catImages[name] = new Image();
@@ -614,10 +652,19 @@
                     const cooldown = catCooldowns[name];
                     const onCooldown = timeSinceSpawn < cooldown;
 
-                    btn.disabled = money < stats.cost || onCooldown;
+                    // Check if cat is locked (cosmo unlocks at level 10)
+                    const unlockLevel = stats.unlockLevel || 1;
+                    const isLocked = level < unlockLevel;
+
+                    if (isLocked) {
+                        btn.style.display = "none";
+                    } else {
+                        btn.style.display = "flex";
+                        btn.disabled = money < stats.cost || onCooldown;
+                    }
 
                     // Update cooldown bar (starts full, shrinks down)
-                    if (onCooldown) {
+                    if (onCooldown && !isLocked) {
                         const remaining = cooldown - timeSinceSpawn;
                         const percent = (remaining / cooldown) * 100;
                         cdBar.style.height = percent + "%";
@@ -655,6 +702,7 @@
                     fish: 70,
                     lizard: 70,
                     titan: 100,
+                    cosmo: 120,
                 };
                 const size = sizes[cat.type] || 70;
                 const img = catImages[cat.type];
@@ -1050,6 +1098,7 @@
                     7: "fish",
                     8: "lizard",
                     9: "titan",
+                    0: "cosmo",
                 };
                 if (keyMap[e.key]) spawnCat(keyMap[e.key]);
             });
