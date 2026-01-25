@@ -200,7 +200,7 @@
                     cost: 50,
                     hp: 100,
                     damage: 20,
-                    speed: 2,
+                    speed: 1,
                     attackSpeed: 1000,
                     range: 50,
                 },
@@ -208,7 +208,7 @@
                     cost: 100,
                     hp: 300,
                     damage: 10,
-                    speed: 1,
+                    speed: 0.5,
                     attackSpeed: 1500,
                     range: 40,
                 },
@@ -216,7 +216,7 @@
                     cost: 75,
                     hp: 80,
                     damage: 35,
-                    speed: 2.5,
+                    speed: 1.2,
                     attackSpeed: 800,
                     range: 45,
                 },
@@ -224,7 +224,7 @@
                     cost: 150,
                     hp: 150,
                     damage: 25,
-                    speed: 1.5,
+                    speed: 0.8,
                     attackSpeed: 1200,
                     range: 100,
                 },
@@ -232,7 +232,7 @@
                     cost: 200,
                     hp: 200,
                     damage: 40,
-                    speed: 3,
+                    speed: 1.5,
                     attackSpeed: 1000,
                     range: 50,
                 },
@@ -240,15 +240,16 @@
                     cost: 125,
                     hp: 60,
                     damage: 50,
-                    speed: 2,
+                    speed: 1.8,
                     attackSpeed: 600,
                     range: 120,
+                    flies: true,
                 },
                 fish: {
                     cost: 175,
                     hp: 180,
                     damage: 30,
-                    speed: 1.8,
+                    speed: 0.9,
                     attackSpeed: 1100,
                     range: 60,
                 },
@@ -256,7 +257,7 @@
                     cost: 225,
                     hp: 120,
                     damage: 60,
-                    speed: 1.5,
+                    speed: 0.7,
                     attackSpeed: 1400,
                     range: 150,
                 },
@@ -264,7 +265,7 @@
                     cost: 400,
                     hp: 500,
                     damage: 80,
-                    speed: 0.8,
+                    speed: 0.4,
                     attackSpeed: 2000,
                     range: 60,
                 },
@@ -333,10 +334,12 @@
                 const stats = catStats[type];
                 if (money >= stats.cost) {
                     money -= stats.cost;
+                    const isBird = type === "bird";
                     cats.push({
                         type: type,
                         x: 80,
-                        y: 280 + Math.random() * 40,
+                        y: isBird ? 220 : 280 + Math.random() * 40,
+                        flies: isBird,
                         hp: stats.hp,
                         maxHp: stats.hp,
                         damage: stats.damage,
@@ -405,7 +408,8 @@
 
             function drawCat(cat) {
                 const isTitan = cat.type === "titan";
-                const drawY = isTitan ? cat.y : 300;
+                const isBird = cat.type === "bird";
+                const drawY = isBird ? cat.y : isTitan ? cat.y : 300;
                 // Different sizes for each cat type
                 const sizes = {
                     cat: 50,
