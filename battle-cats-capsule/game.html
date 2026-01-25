@@ -480,7 +480,7 @@
                     name: "Doge",
                     hp: 80,
                     damage: 15,
-                    speed: 1.5,
+                    speed: 0.75,
                     attackSpeed: 1000,
                     range: 40,
                     color: "#FFD700",
@@ -489,7 +489,7 @@
                     name: "Snache",
                     hp: 50,
                     damage: 25,
-                    speed: 2.5,
+                    speed: 1.25,
                     attackSpeed: 800,
                     range: 35,
                     color: "#00FF00",
@@ -498,7 +498,7 @@
                     name: "Pigge",
                     hp: 150,
                     damage: 20,
-                    speed: 1,
+                    speed: 0.5,
                     attackSpeed: 1200,
                     range: 45,
                     color: "#FFC0CB",
@@ -507,7 +507,7 @@
                     name: "Gory",
                     hp: 200,
                     damage: 40,
-                    speed: 1.2,
+                    speed: 0.6,
                     attackSpeed: 1500,
                     range: 50,
                     color: "#8B0000",
@@ -989,8 +989,8 @@
                     );
 
                     // Draw cat upgrade options
-                    const startY = 85;
-                    const itemHeight = 35;
+                    const startY = 80;
+                    const itemHeight = 28;
                     catNames.forEach((name, i) => {
                         const y = startY + i * itemHeight;
                         const cost = getUpgradeCost(name);
@@ -1001,7 +1001,7 @@
                         ctx.fillStyle = canAfford
                             ? "rgba(255,255,255,0.2)"
                             : "rgba(255,255,255,0.1)";
-                        ctx.fillRect(50, y, canvas.width - 100, 30);
+                        ctx.fillRect(50, y, canvas.width - 100, 24);
 
                         // Cat name and level
                         ctx.fillStyle = "white";
@@ -1027,7 +1027,7 @@
 
                         // Upgrade button
                         ctx.fillStyle = canAfford ? "#4CAF50" : "#666";
-                        ctx.fillRect(canvas.width - 180, y + 2, 120, 26);
+                        ctx.fillRect(canvas.width - 180, y + 2, 120, 20);
                         ctx.fillStyle = "white";
                         ctx.font = "12px Luckiest Guy";
                         ctx.textAlign = "center";
@@ -1046,7 +1046,7 @@
                     ctx.fillStyle = canAffordBase
                         ? "rgba(100,150,255,0.3)"
                         : "rgba(100,150,255,0.15)";
-                    ctx.fillRect(50, baseY, canvas.width - 100, 30);
+                    ctx.fillRect(50, baseY, canvas.width - 100, 24);
 
                     ctx.fillStyle = "#4169E1";
                     ctx.font = "14px Luckiest Guy";
@@ -1062,7 +1062,7 @@
                     ctx.fillText("HP: " + baseMaxHP, 200, baseY + 20);
 
                     ctx.fillStyle = canAffordBase ? "#4CAF50" : "#666";
-                    ctx.fillRect(canvas.width - 180, baseY + 2, 120, 26);
+                    ctx.fillRect(canvas.width - 180, baseY + 2, 120, 20);
                     ctx.fillStyle = "white";
                     ctx.font = "12px Luckiest Guy";
                     ctx.textAlign = "center";
@@ -1264,15 +1264,15 @@
                     }
 
                     // Upgrade buttons for each cat
-                    const startY = 85;
-                    const itemHeight = 35;
+                    const startY = 80;
+                    const itemHeight = 28;
                     catNames.forEach((name, i) => {
                         const btnY = startY + i * itemHeight + 2;
                         if (
                             x >= canvas.width - 180 &&
                             x <= canvas.width - 60 &&
                             y >= btnY &&
-                            y <= btnY + 26
+                            y <= btnY + 20
                         ) {
                             upgradeCat(name);
                         }
@@ -1284,7 +1284,7 @@
                         x >= canvas.width - 180 &&
                         x <= canvas.width - 60 &&
                         y >= baseY &&
-                        y <= baseY + 26
+                        y <= baseY + 20
                     ) {
                         upgradeBase();
                     }
