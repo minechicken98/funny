@@ -898,8 +898,8 @@
                     );
 
                     // Draw cat upgrade options
-                    const startY = 100;
-                    const itemHeight = 60;
+                    const startY = 85;
+                    const itemHeight = 35;
                     catNames.forEach((name, i) => {
                         const y = startY + i * itemHeight;
                         const cost = getUpgradeCost(name);
@@ -910,40 +910,40 @@
                         ctx.fillStyle = canAfford
                             ? "rgba(255,255,255,0.2)"
                             : "rgba(255,255,255,0.1)";
-                        ctx.fillRect(50, y, canvas.width - 100, 50);
+                        ctx.fillRect(50, y, canvas.width - 100, 30);
 
                         // Cat name and level
                         ctx.fillStyle = "white";
-                        ctx.font = "18px Luckiest Guy";
+                        ctx.font = "14px Luckiest Guy";
                         ctx.textAlign = "left";
                         ctx.fillText(
                             name.toUpperCase() + " (Lv." + lvl + ")",
                             70,
-                            y + 32,
+                            y + 20,
                         );
 
                         // Stats
-                        ctx.font = "14px Arial";
+                        ctx.font = "12px Arial";
                         ctx.fillStyle = "#AAA";
                         ctx.fillText(
                             "HP: " +
                                 catStats[name].hp +
                                 " DMG: " +
                                 catStats[name].damage,
-                            220,
-                            y + 32,
+                            200,
+                            y + 20,
                         );
 
                         // Upgrade button
                         ctx.fillStyle = canAfford ? "#4CAF50" : "#666";
-                        ctx.fillRect(canvas.width - 200, y + 5, 140, 40);
+                        ctx.fillRect(canvas.width - 180, y + 2, 120, 26);
                         ctx.fillStyle = "white";
-                        ctx.font = "16px Luckiest Guy";
+                        ctx.font = "12px Luckiest Guy";
                         ctx.textAlign = "center";
                         ctx.fillText(
                             cost.toLocaleString() + " XP",
-                            canvas.width - 130,
-                            y + 32,
+                            canvas.width - 120,
+                            y + 20,
                         );
                     });
 
@@ -1054,15 +1054,15 @@
                     }
 
                     // Upgrade buttons for each cat
-                    const startY = 100;
-                    const itemHeight = 60;
+                    const startY = 85;
+                    const itemHeight = 35;
                     catNames.forEach((name, i) => {
-                        const btnY = startY + i * itemHeight + 5;
+                        const btnY = startY + i * itemHeight + 2;
                         if (
-                            x >= canvas.width - 200 &&
+                            x >= canvas.width - 180 &&
                             x <= canvas.width - 60 &&
                             y >= btnY &&
-                            y <= btnY + 40
+                            y <= btnY + 26
                         ) {
                             upgradeCat(name);
                         }
