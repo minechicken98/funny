@@ -93,12 +93,11 @@
             }
             .cat-btn .cooldown-bar {
                 position: absolute;
-                bottom: 0;
+                top: 0;
                 left: 0;
                 width: 100%;
                 height: 0%;
                 background: rgba(0, 0, 0, 0.6);
-                transition: height 0.1s linear;
                 pointer-events: none;
             }
             .stats {
@@ -286,14 +285,62 @@
             }
 
             const levels = [
-                { enemyHP: 1000, spawnRate: 3000, enemyMultiplier: 1 },
-                { enemyHP: 1500, spawnRate: 2500, enemyMultiplier: 1.2 },
-                { enemyHP: 2000, spawnRate: 2200, enemyMultiplier: 1.5 },
-                { enemyHP: 3000, spawnRate: 2000, enemyMultiplier: 1.8 },
-                { enemyHP: 4000, spawnRate: 1800, enemyMultiplier: 2.2 },
-                { enemyHP: 5000, spawnRate: 1500, enemyMultiplier: 2.5 },
-                { enemyHP: 7000, spawnRate: 1300, enemyMultiplier: 3 },
-                { enemyHP: 10000, spawnRate: 1000, enemyMultiplier: 4 },
+                {
+                    enemyHP: 1000,
+                    spawnRate: 3000,
+                    enemyMultiplier: 1,
+                    xpMin: 5000,
+                    xpMax: 10000,
+                },
+                {
+                    enemyHP: 1500,
+                    spawnRate: 2500,
+                    enemyMultiplier: 1.2,
+                    xpMin: 10000,
+                    xpMax: 20000,
+                },
+                {
+                    enemyHP: 2000,
+                    spawnRate: 2200,
+                    enemyMultiplier: 1.5,
+                    xpMin: 20000,
+                    xpMax: 30000,
+                },
+                {
+                    enemyHP: 3000,
+                    spawnRate: 2000,
+                    enemyMultiplier: 1.8,
+                    xpMin: 30000,
+                    xpMax: 40000,
+                },
+                {
+                    enemyHP: 4000,
+                    spawnRate: 1800,
+                    enemyMultiplier: 2.2,
+                    xpMin: 40000,
+                    xpMax: 50000,
+                },
+                {
+                    enemyHP: 5000,
+                    spawnRate: 1500,
+                    enemyMultiplier: 2.5,
+                    xpMin: 50000,
+                    xpMax: 60000,
+                },
+                {
+                    enemyHP: 7000,
+                    spawnRate: 1300,
+                    enemyMultiplier: 3,
+                    xpMin: 60000,
+                    xpMax: 70000,
+                },
+                {
+                    enemyHP: 10000,
+                    spawnRate: 1000,
+                    enemyMultiplier: 4,
+                    xpMin: 100000,
+                    xpMax: 1000000,
+                },
             ];
 
             const catStats = {
@@ -551,7 +598,7 @@
 
                     btn.disabled = money < stats.cost || onCooldown;
 
-                    // Update cooldown bar (fills from bottom up as cooldown progresses)
+                    // Update cooldown bar (starts full, shrinks down)
                     if (onCooldown) {
                         const remaining = cooldown - timeSinceSpawn;
                         const percent = (remaining / cooldown) * 100;
@@ -740,8 +787,11 @@
                     if (level >= levels.length) {
                         gameOver = true;
                     } else {
+                        const lvlData = levels[level - 1];
+                        const range = lvlData.xpMax - lvlData.xpMin;
                         lastXPReward =
-                            Math.floor(Math.random() * 20001) + 10000;
+                            Math.floor(Math.random() * (range + 1)) +
+                            lvlData.xpMin;
                         totalXP += lastXPReward;
                         levelWon = true;
                     }
