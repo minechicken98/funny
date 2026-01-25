@@ -4,6 +4,12 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Battle Cats Capsule Machine</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap"
+            rel="stylesheet"
+        />
         <style>
             * {
                 margin: 0;
@@ -11,9 +17,7 @@
                 box-sizing: border-box;
             }
             body {
-                font-family:
-                    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-                    Oxygen, Ubuntu, Cantarell, sans-serif;
+                font-family: "Luckiest Guy", cursive;
                 background: linear-gradient(
                     135deg,
                     #87ceeb 0%,
@@ -67,13 +71,21 @@
             .currency-display h2 {
                 color: white;
                 font-size: 2em;
-                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+                text-shadow:
+                    1px 1px 0 black,
+                    -1px -1px 0 black,
+                    1px -1px 0 black,
+                    -1px 1px 0 black;
             }
             .currency-display .amount {
                 font-size: 3em;
                 font-weight: bold;
                 color: white;
-                text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+                text-shadow:
+                    1px 1px 0 black,
+                    -1px -1px 0 black,
+                    1px -1px 0 black,
+                    -1px 1px 0 black;
             }
             .capsule-machine {
                 background: linear-gradient(135deg, #b4f080, #8ed860);
@@ -421,6 +433,11 @@
             }
             .password-modal .cancel-btn {
                 background: #ddd;
+                text-shadow:
+                    1px 1px 0 white,
+                    -1px -1px 0 white,
+                    1px -1px 0 white,
+                    -1px 1px 0 white;
             }
             .next-btn {
                 margin-top: 20px;
@@ -469,13 +486,21 @@
             .ticket-display h3 {
                 color: white;
                 font-size: 1.5em;
-                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+                text-shadow:
+                    1px 1px 0 black,
+                    -1px -1px 0 black,
+                    1px -1px 0 black,
+                    -1px 1px 0 black;
             }
             .ticket-display .amount {
                 font-size: 2em;
                 font-weight: bold;
                 color: white;
-                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+                text-shadow:
+                    1px 1px 0 black,
+                    -1px -1px 0 black,
+                    1px -1px 0 black,
+                    -1px 1px 0 black;
             }
         </style>
     </head>
@@ -644,7 +669,11 @@
                         font-size: 1em;
                         cursor: pointer;
                         font-weight: bold;
-                        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+                        text-shadow:
+                            1px 1px 0 black,
+                            -1px -1px 0 black,
+                            1px -1px 0 black,
+                            -1px 1px 0 black;
                     "
                 >
                     🔒 Legend Lock
@@ -661,13 +690,29 @@
                         color: white;
                         text-align: center;
                         margin-bottom: 20px;
+                        text-shadow:
+                            1px 1px 0 black,
+                            -1px -1px 0 black,
+                            1px -1px 0 black,
+                            -1px 1px 0 black;
                     "
                 >
                     🎰 Rare Cat Capsule
                 </h2>
                 <div class="capsule-display" id="capsuleDisplay">
                     <div class="capsule-animation">🎰</div>
-                    <p style="color: #333; margin-top: 20px; font-size: 1.2em">
+                    <p
+                        style="
+                            color: #333;
+                            margin-top: 20px;
+                            font-size: 1.2em;
+                            text-shadow:
+                                1px 1px 0 white,
+                                -1px -1px 0 white,
+                                1px -1px 0 white,
+                                -1px 1px 0 white;
+                        "
+                    >
                         Ready to roll!
                     </p>
                 </div>
@@ -727,13 +772,29 @@
                         color: white;
                         text-align: center;
                         margin-bottom: 20px;
+                        text-shadow:
+                            1px 1px 0 black,
+                            -1px -1px 0 black,
+                            1px -1px 0 black,
+                            -1px 1px 0 black;
                     "
                 >
                     🐱 Normal Cat Capsule
                 </h2>
                 <div class="capsule-display" id="normalCapsuleDisplay">
                     <div class="capsule-animation">🎰</div>
-                    <p style="color: #333; margin-top: 20px; font-size: 1.2em">
+                    <p
+                        style="
+                            color: #333;
+                            margin-top: 20px;
+                            font-size: 1.2em;
+                            text-shadow:
+                                1px 1px 0 white,
+                                -1px -1px 0 white,
+                                1px -1px 0 white,
+                                -1px 1px 0 white;
+                        "
+                    >
                         Get basic cats!
                     </p>
                 </div>
@@ -967,7 +1028,7 @@
                     const celebration = document.createElement("div");
                     celebration.textContent = "🔓 LEGEND LOCK ACTIVATED!";
                     celebration.style.cssText =
-                        "position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; padding: 30px 50px; border-radius: 20px; font-size: 2em; font-weight: bold; z-index: 1000; box-shadow: 0 10px 50px rgba(0,0,0,0.5); opacity: 1;";
+                        "position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; padding: 30px 50px; border-radius: 20px; font-size: 2em; font-weight: bold; z-index: 1000; box-shadow: 0 10px 50px rgba(0,0,0,0.5); opacity: 1; font-family: 'Luckiest Guy', cursive; text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black;";
                     document.body.appendChild(celebration);
                     setTimeout(() => celebration.remove(), 2000);
                 } else {
@@ -1023,7 +1084,7 @@
                 celebration.innerHTML =
                     '<img src="images/rare ticket.png" style="width: 240px; height: auto; vertical-align: middle; transform: rotate(0deg);"> Rare Ticket Found!';
                 celebration.style.cssText =
-                    "position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, #FFD700, #FFA500); color: white; padding: 30px 50px; border-radius: 20px; font-size: 2em; font-weight: bold; z-index: 1000; box-shadow: 0 10px 50px rgba(0,0,0,0.5); animation: fadeIn 0.5s;";
+                    "position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, #FFD700, #FFA500); color: white; padding: 30px 50px; border-radius: 20px; font-size: 2em; font-weight: bold; z-index: 1000; box-shadow: 0 10px 50px rgba(0,0,0,0.5); animation: fadeIn 0.5s; font-family: 'Luckiest Guy', cursive; text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black;";
                 document.body.appendChild(celebration);
                 setTimeout(() => celebration.remove(), 2000);
             }
@@ -1077,7 +1138,7 @@
                     ? document.getElementById("normalCapsuleDisplay")
                     : document.getElementById("capsuleDisplay");
                 display.innerHTML =
-                    '<div class="capsule-animation">🎰</div><p style="color: #333; margin-top: 20px; font-size: 1.2em;">Rolling...</p>';
+                    '<div class="capsule-animation">🎰</div><p style="color: #333; margin-top: 20px; font-size: 1.2em; text-shadow: 1px 1px 0 white, -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white;">Rolling...</p>';
 
                 setTimeout(() => {
                     const results = [];
@@ -1167,7 +1228,7 @@
                     <div class="rarity-badge" style="background: ${getRarityColor(cat.rarity)};">${getRarityText(cat.rarity)}</div>
                     <div class="cat-icon">${catDisplay}</div>
                     <div class="cat-name">${cat.name}</div>
-                    <p style="margin-top: 15px; color: #666;">${currentResultIndex + 1} of ${currentResults.length}</p>
+                    <p style="margin-top: 15px; color: #666; text-shadow: 1px 1px 0 white, -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white;">${currentResultIndex + 1} of ${currentResults.length}</p>
                     ${currentResultIndex < currentResults.length - 1 ? '<button class="next-btn" onclick="nextCat()">Next Cat →</button>' : '<button class="next-btn" onclick="finishPull()">Done! ✓</button>'}
                 </div>
             `;
@@ -1183,7 +1244,7 @@
                     ? document.getElementById("normalCapsuleDisplay")
                     : document.getElementById("capsuleDisplay");
                 display.innerHTML =
-                    '<div class="capsule-animation">🎰</div><p style="color: #333; margin-top: 20px; font-size: 1.2em;">Ready to roll!</p>';
+                    '<div class="capsule-animation">🎰</div><p style="color: #333; margin-top: 20px; font-size: 1.2em; text-shadow: 1px 1px 0 white, -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white;">Ready to roll!</p>';
                 updateInventory();
                 updateStats();
             }
