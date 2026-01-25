@@ -861,9 +861,19 @@
                     }
                 });
 
-                // Remove dead units
+                // Remove dead units and give money for kills
                 cats = cats.filter((cat) => cat.hp > 0);
-                enemies = enemies.filter((enemy) => enemy.hp > 0);
+                enemies = enemies.filter((enemy) => {
+                    if (enemy.hp <= 0) {
+                        // Give money based on enemy difficulty
+                        const killReward = Math.floor(
+                            enemy.maxHp / 2 + enemy.damage * 2,
+                        );
+                        money += killReward;
+                        return false;
+                    }
+                    return true;
+                });
 
                 // Check win/lose
                 if (baseHP <= 0) {
