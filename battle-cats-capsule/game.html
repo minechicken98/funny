@@ -663,14 +663,14 @@
                 if (baseHP <= 0) {
                     gameOver = true;
                 }
-                if (enemyHP <= 0) {
+                if (enemyHP <= 0 && !levelWon) {
                     if (level >= levels.length) {
                         gameOver = true;
                     } else {
-                        levelWon = true;
                         lastXPReward =
                             Math.floor(Math.random() * 20001) + 10000;
                         totalXP += lastXPReward;
+                        levelWon = true;
                     }
                 }
 
