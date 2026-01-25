@@ -211,7 +211,7 @@
             >
                 <div class="cooldown-bar" id="cd-cosmo"></div>
                 <img src="images/cosmo.png" alt="Cosmo" />
-                <span class="cost">5000¢</span>
+                <span class="cost">10000¢</span>
                 <span class="key">0</span>
             </button>
         </div>
@@ -328,7 +328,7 @@
                 if (totalXP >= cost) {
                     totalXP -= cost;
                     moneySpeedLevel++;
-                    moneySpeedMultiplier = 1 + moneySpeedLevel * 0.25;
+                    moneySpeedMultiplier = 1 + moneySpeedLevel * 0.1;
                     updateUI();
                 }
             }
@@ -481,7 +481,7 @@
                     range: 60,
                 },
                 cosmo: {
-                    cost: 5000,
+                    cost: 10000,
                     hp: 99999,
                     damage: 10000,
                     speed: 1.5,
@@ -739,7 +739,7 @@
                     fish: 70,
                     lizard: 70,
                     titan: 100,
-                    cosmo: 120,
+                    cosmo: 240,
                 };
                 const size = sizes[cat.type] || 70;
                 const img = catImages[cat.type];
