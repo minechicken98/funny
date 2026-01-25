@@ -124,10 +124,6 @@
 
         <div class="stats">
             <div class="stat"><span id="money">500</span>¢</div>
-            <div class="stat">🏠 Base: <span id="baseHP">1000</span></div>
-            <div class="stat">
-                👹 Enemy Base: <span id="enemyHP">1000</span>
-            </div>
         </div>
 
         <canvas id="gameCanvas" width="900" height="400"></canvas>
@@ -337,7 +333,7 @@
                     const isBird = type === "bird";
                     cats.push({
                         type: type,
-                        x: 80,
+                        x: canvas.width - 80,
                         y: isBird ? 220 : 280 + Math.random() * 40,
                         flies: isBird,
                         hp: stats.hp,
@@ -359,7 +355,7 @@
                     enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
                 enemies.push({
                     name: type.name,
-                    x: canvas.width - 80,
+                    x: 80,
                     y: 280 + Math.random() * 40,
                     hp: type.hp,
                     maxHp: type.hp,
@@ -394,22 +390,11 @@
                 ctx.fillStyle = "#333";
                 ctx.fillRect(x + 15, 280, 30, 70);
 
-                // HP bar
-                ctx.fillStyle = "#333";
-                ctx.fillRect(x - 10, 180, 80, 15);
-                ctx.fillStyle =
-                    hp > maxHp * 0.5
-                        ? "#00FF00"
-                        : hp > maxHp * 0.25
-                          ? "#FFFF00"
-                          : "#FF0000";
-                ctx.fillRect(x - 10, 180, 80 * (hp / maxHp), 15);
-
                 // HP text above base
                 ctx.fillStyle = "#000";
                 ctx.font = "bold 14px Arial";
                 ctx.textAlign = "center";
-                ctx.fillText(`${Math.floor(hp)}/${maxHp}`, x + 30, 170);
+                ctx.fillText(`${Math.floor(hp)}/${maxHp}`, x + 30, 190);
             }
 
             function drawCat(cat) {
@@ -433,7 +418,7 @@
 
                 ctx.save();
                 ctx.translate(cat.x, drawY);
-                ctx.scale(-1, 1); // Flip to face right
+                // Don't flip - cats face left now
 
                 if (img && img.complete) {
                     ctx.drawImage(img, -size / 2, -size / 2, size, size);
@@ -499,19 +484,19 @@
                 cats.forEach((cat) => {
                     cat.attacking = false;
 
-                    // Check for enemies in range
+                    // Check for enemies in range (enemies are to the left now)
                     let target = null;
                     let minDist = Infinity;
                     enemies.forEach((enemy) => {
-                        const dist = enemy.x - cat.x;
+                        const dist = cat.x - enemy.x;
                         if (dist > 0 && dist < minDist) {
                             minDist = dist;
                             target = enemy;
                         }
                     });
 
-                    // Check if can attack enemy base
-                    const distToBase = canvas.width - 60 - cat.x;
+                    // Check if can attack enemy base (on the left now)
+                    const distToBase = cat.x - 60;
 
                     if (target && minDist <= cat.range) {
                         cat.attacking = true;
@@ -526,7 +511,7 @@
                             cat.lastAttack = timestamp;
                         }
                     } else {
-                        cat.x += cat.speed;
+                        cat.x -= cat.speed;
                     }
                 });
 
@@ -534,19 +519,19 @@
                 enemies.forEach((enemy) => {
                     enemy.attacking = false;
 
-                    // Check for cats in range
+                    // Check for cats in range (cats are to the right now)
                     let target = null;
                     let minDist = Infinity;
                     cats.forEach((cat) => {
                         const dist = cat.x - enemy.x;
-                        if (dist < 0 && Math.abs(dist) < minDist) {
-                            minDist = Math.abs(dist);
+                        if (dist > 0 && dist < minDist) {
+                            minDist = dist;
                             target = cat;
                         }
                     });
 
-                    // Check if can attack player base
-                    const distToBase = enemy.x - 60;
+                    // Check if can attack player base (on the right now)
+                    const distToBase = canvas.width - 60 - enemy.x;
 
                     if (target && minDist <= enemy.range) {
                         enemy.attacking = true;
@@ -561,7 +546,7 @@
                             enemy.lastAttack = timestamp;
                         }
                     } else {
-                        enemy.x -= enemy.speed;
+                        enemy.x += enemy.speed;
                     }
                 });
 
@@ -601,8 +586,8 @@
                 ctx.stroke();
 
                 // Draw bases
-                drawBase(10, baseHP, 1000, false);
-                drawBase(canvas.width - 70, enemyHP, 1000, true);
+                drawBase(10, enemyHP, 1000, true);
+                drawBase(canvas.width - 70, baseHP, 1000, false);
 
                 // Draw units
                 cats.forEach(drawCat);
