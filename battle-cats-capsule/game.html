@@ -123,7 +123,7 @@
         <h1>🐱 Battle Cats 🐱</h1>
 
         <div class="stats">
-            <div class="stat">💰 <span id="money">100</span></div>
+            <div class="stat"><span id="money">500</span>¢</div>
             <div class="stat">🏠 Base: <span id="baseHP">1000</span></div>
             <div class="stat">
                 👹 Enemy Base: <span id="enemyHP">1000</span>
@@ -135,37 +135,37 @@
         <div class="controls">
             <button class="cat-btn" onclick="spawnCat('cat')" id="btn-cat">
                 <img src="images/cat.png" alt="Cat" />
-                <span class="cost">$50</span>
+                <span class="cost">75¢</span>
                 <span class="key">1</span>
             </button>
             <button class="cat-btn" onclick="spawnCat('tank')" id="btn-tank">
                 <img src="images/tank.png" alt="Tank" />
-                <span class="cost">$100</span>
+                <span class="cost">150¢</span>
                 <span class="key">2</span>
             </button>
             <button class="cat-btn" onclick="spawnCat('axe')" id="btn-axe">
                 <img src="images/axe.png" alt="Axe" />
-                <span class="cost">$75</span>
+                <span class="cost">300¢</span>
                 <span class="key">3</span>
             </button>
             <button class="cat-btn" onclick="spawnCat('gross')" id="btn-gross">
                 <img src="images/gross.webp" alt="Gross" />
-                <span class="cost">$150</span>
+                <span class="cost">600¢</span>
                 <span class="key">4</span>
             </button>
             <button class="cat-btn" onclick="spawnCat('cow')" id="btn-cow">
                 <img src="images/cow.webp" alt="Cow" />
-                <span class="cost">$200</span>
+                <span class="cost">750¢</span>
                 <span class="key">5</span>
             </button>
             <button class="cat-btn" onclick="spawnCat('bird')" id="btn-bird">
                 <img src="images/bird.png" alt="Bird" />
-                <span class="cost">$125</span>
+                <span class="cost">925¢</span>
                 <span class="key">6</span>
             </button>
             <button class="cat-btn" onclick="spawnCat('fish')" id="btn-fish">
                 <img src="images/fish.png" alt="Fish" />
-                <span class="cost">$175</span>
+                <span class="cost">1200¢</span>
                 <span class="key">7</span>
             </button>
             <button
@@ -174,12 +174,12 @@
                 id="btn-lizard"
             >
                 <img src="images/lizard.png" alt="Lizard" />
-                <span class="cost">$225</span>
+                <span class="cost">1500¢</span>
                 <span class="key">8</span>
             </button>
             <button class="cat-btn" onclick="spawnCat('titan')" id="btn-titan">
                 <img src="images/titan.png" alt="Titan" />
-                <span class="cost">$400</span>
+                <span class="cost">1950¢</span>
                 <span class="key">9</span>
             </button>
         </div>
@@ -188,7 +188,7 @@
             const canvas = document.getElementById("gameCanvas");
             const ctx = canvas.getContext("2d");
 
-            let money = 100;
+            let money = 500;
             let baseHP = 1000;
             let enemyHP = 1000;
             let cats = [];
@@ -197,7 +197,7 @@
 
             const catStats = {
                 cat: {
-                    cost: 50,
+                    cost: 75,
                     hp: 100,
                     damage: 20,
                     speed: 2,
@@ -205,7 +205,7 @@
                     range: 50,
                 },
                 tank: {
-                    cost: 100,
+                    cost: 150,
                     hp: 300,
                     damage: 10,
                     speed: 1,
@@ -213,7 +213,7 @@
                     range: 40,
                 },
                 axe: {
-                    cost: 75,
+                    cost: 300,
                     hp: 80,
                     damage: 35,
                     speed: 2.5,
@@ -221,7 +221,7 @@
                     range: 45,
                 },
                 gross: {
-                    cost: 150,
+                    cost: 600,
                     hp: 150,
                     damage: 25,
                     speed: 1.5,
@@ -229,7 +229,7 @@
                     range: 100,
                 },
                 cow: {
-                    cost: 200,
+                    cost: 750,
                     hp: 200,
                     damage: 40,
                     speed: 3,
@@ -237,7 +237,7 @@
                     range: 50,
                 },
                 bird: {
-                    cost: 125,
+                    cost: 925,
                     hp: 60,
                     damage: 50,
                     speed: 2,
@@ -246,7 +246,7 @@
                     flies: true,
                 },
                 fish: {
-                    cost: 175,
+                    cost: 1200,
                     hp: 180,
                     damage: 30,
                     speed: 1.8,
@@ -254,7 +254,7 @@
                     range: 60,
                 },
                 lizard: {
-                    cost: 225,
+                    cost: 1500,
                     hp: 120,
                     damage: 60,
                     speed: 1.5,
@@ -262,7 +262,7 @@
                     range: 150,
                 },
                 titan: {
-                    cost: 400,
+                    cost: 1950,
                     hp: 500,
                     damage: 80,
                     speed: 0.8,
@@ -487,7 +487,7 @@
                 if (gameOver) return;
 
                 // Money generation
-                money += 0.5;
+                money += 3.5;
 
                 // Update cats
                 cats.forEach((cat) => {
