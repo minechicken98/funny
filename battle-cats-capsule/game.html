@@ -87,6 +87,20 @@
                 padding: 2px 6px;
                 border-radius: 4px;
             }
+            .cat-btn {
+                position: relative;
+                overflow: hidden;
+            }
+            .cat-btn .cooldown-bar {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 0%;
+                background: rgba(0, 0, 0, 0.6);
+                transition: height 0.1s linear;
+                pointer-events: none;
+            }
             .stats {
                 display: flex;
                 gap: 30px;
@@ -132,36 +146,43 @@
 
         <div class="controls">
             <button class="cat-btn" onclick="spawnCat('cat')" id="btn-cat">
+                <div class="cooldown-bar" id="cd-cat"></div>
                 <img src="images/cat.png" alt="Cat" />
                 <span class="cost">75¢</span>
                 <span class="key">1</span>
             </button>
             <button class="cat-btn" onclick="spawnCat('tank')" id="btn-tank">
+                <div class="cooldown-bar" id="cd-tank"></div>
                 <img src="images/tank.png" alt="Tank" />
                 <span class="cost">150¢</span>
                 <span class="key">2</span>
             </button>
             <button class="cat-btn" onclick="spawnCat('axe')" id="btn-axe">
+                <div class="cooldown-bar" id="cd-axe"></div>
                 <img src="images/axe.png" alt="Axe" />
                 <span class="cost">300¢</span>
                 <span class="key">3</span>
             </button>
             <button class="cat-btn" onclick="spawnCat('gross')" id="btn-gross">
+                <div class="cooldown-bar" id="cd-gross"></div>
                 <img src="images/gross.webp" alt="Gross" />
                 <span class="cost">600¢</span>
                 <span class="key">4</span>
             </button>
             <button class="cat-btn" onclick="spawnCat('cow')" id="btn-cow">
+                <div class="cooldown-bar" id="cd-cow"></div>
                 <img src="images/cow.webp" alt="Cow" />
                 <span class="cost">750¢</span>
                 <span class="key">5</span>
             </button>
             <button class="cat-btn" onclick="spawnCat('bird')" id="btn-bird">
+                <div class="cooldown-bar" id="cd-bird"></div>
                 <img src="images/bird.png" alt="Bird" />
                 <span class="cost">925¢</span>
                 <span class="key">6</span>
             </button>
             <button class="cat-btn" onclick="spawnCat('fish')" id="btn-fish">
+                <div class="cooldown-bar" id="cd-fish"></div>
                 <img src="images/fish.png" alt="Fish" />
                 <span class="cost">1200¢</span>
                 <span class="key">7</span>
@@ -171,11 +192,13 @@
                 onclick="spawnCat('lizard')"
                 id="btn-lizard"
             >
+                <div class="cooldown-bar" id="cd-lizard"></div>
                 <img src="images/lizard.png" alt="Lizard" />
                 <span class="cost">1500¢</span>
                 <span class="key">8</span>
             </button>
             <button class="cat-btn" onclick="spawnCat('titan')" id="btn-titan">
+                <div class="cooldown-bar" id="cd-titan"></div>
                 <img src="images/titan.png" alt="Titan" />
                 <span class="cost">1950¢</span>
                 <span class="key">9</span>
@@ -200,6 +223,32 @@
             let lastXPReward = 0;
             let showingUpgrades = false;
             let upgradeScroll = 0;
+
+            // Cooldowns for each cat (in milliseconds)
+            const catCooldowns = {
+                cat: 5000,
+                tank: 8000,
+                axe: 7000,
+                gross: 11000,
+                cow: 9000,
+                bird: 8330,
+                fish: 13000,
+                lizard: 19000,
+                titan: 27000,
+            };
+
+            // Track when each cat was last spawned
+            const catLastSpawn = {
+                cat: 0,
+                tank: 0,
+                axe: 0,
+                gross: 0,
+                cow: 0,
+                bird: 0,
+                fish: 0,
+                lizard: 0,
+                titan: 0,
+            };
 
             // Track upgrade levels for each cat (affects hp and damage)
             const catUpgrades = {
@@ -382,10 +431,18 @@
             });
 
             function spawnCat(type) {
-                if (gameOver) return;
+                if (gameOver || paused || levelWon) return;
                 const stats = catStats[type];
+                const now = Date.now();
+                const cooldown = catCooldowns[type];
+                const timeSinceSpawn = now - catLastSpawn[type];
+
+                // Check if on cooldown
+                if (timeSinceSpawn < cooldown) return;
+
                 if (money >= stats.cost) {
                     money -= stats.cost;
+                    catLastSpawn[type] = now;
                     const isBird = type === "bird";
                     cats.push({
                         type: type,
@@ -482,10 +539,26 @@
                 document.getElementById("xpDisplay").textContent =
                     totalXP.toLocaleString();
 
-                // Update button states
+                const now = Date.now();
+
+                // Update button states and cooldowns
                 for (const [name, stats] of Object.entries(catStats)) {
                     const btn = document.getElementById(`btn-${name}`);
-                    btn.disabled = money < stats.cost;
+                    const cdBar = document.getElementById(`cd-${name}`);
+                    const timeSinceSpawn = now - catLastSpawn[name];
+                    const cooldown = catCooldowns[name];
+                    const onCooldown = timeSinceSpawn < cooldown;
+
+                    btn.disabled = money < stats.cost || onCooldown;
+
+                    // Update cooldown bar (fills from bottom up as cooldown progresses)
+                    if (onCooldown) {
+                        const remaining = cooldown - timeSinceSpawn;
+                        const percent = (remaining / cooldown) * 100;
+                        cdBar.style.height = percent + "%";
+                    } else {
+                        cdBar.style.height = "0%";
+                    }
                 }
             }
 
