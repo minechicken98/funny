@@ -739,10 +739,14 @@
                         cursor: pointer;
                         font-weight: bold;
                         text-shadow:
-                            1px 1px 0 black,
-                            -1px -1px 0 black,
-                            1px -1px 0 black,
-                            -1px 1px 0 black;
+                            1.25px 1.25px 0 black,
+                            -1.25px -1.25px 0 black,
+                            1.25px -1.25px 0 black,
+                            -1.25px 1.25px 0 black,
+                            0 1.25px 0 black,
+                            0 -1.25px 0 black,
+                            1.25px 0 0 black,
+                            -1.25px 0 0 black;
                     "
                 >
                     🔒 Legend Lock
@@ -760,10 +764,14 @@
                         text-align: center;
                         margin-bottom: 20px;
                         text-shadow:
-                            1px 1px 0 black,
-                            -1px -1px 0 black,
-                            1px -1px 0 black,
-                            -1px 1px 0 black;
+                            1.25px 1.25px 0 black,
+                            -1.25px -1.25px 0 black,
+                            1.25px -1.25px 0 black,
+                            -1.25px 1.25px 0 black,
+                            0 1.25px 0 black,
+                            0 -1.25px 0 black,
+                            1.25px 0 0 black,
+                            -1.25px 0 0 black;
                     "
                 >
                     🎰 Rare Cat Capsule
@@ -776,10 +784,14 @@
                             margin-top: 20px;
                             font-size: 1.2em;
                             text-shadow:
-                                1px 1px 0 white,
-                                -1px -1px 0 white,
-                                1px -1px 0 white,
-                                -1px 1px 0 white;
+                                1.25px 1.25px 0 white,
+                                -1.25px -1.25px 0 white,
+                                1.25px -1.25px 0 white,
+                                -1.25px 1.25px 0 white,
+                                0 1.25px 0 white,
+                                0 -1.25px 0 white,
+                                1.25px 0 0 white,
+                                -1.25px 0 0 white;
                         "
                     >
                         Ready to roll!
@@ -842,10 +854,14 @@
                         text-align: center;
                         margin-bottom: 20px;
                         text-shadow:
-                            1px 1px 0 black,
-                            -1px -1px 0 black,
-                            1px -1px 0 black,
-                            -1px 1px 0 black;
+                            1.25px 1.25px 0 black,
+                            -1.25px -1.25px 0 black,
+                            1.25px -1.25px 0 black,
+                            -1.25px 1.25px 0 black,
+                            0 1.25px 0 black,
+                            0 -1.25px 0 black,
+                            1.25px 0 0 black,
+                            -1.25px 0 0 black;
                     "
                 >
                     🐱 Normal Cat Capsule
@@ -858,10 +874,14 @@
                             margin-top: 20px;
                             font-size: 1.2em;
                             text-shadow:
-                                1px 1px 0 white,
-                                -1px -1px 0 white,
-                                1px -1px 0 white,
-                                -1px 1px 0 white;
+                                1.25px 1.25px 0 white,
+                                -1.25px -1.25px 0 white,
+                                1.25px -1.25px 0 white,
+                                -1.25px 1.25px 0 white,
+                                0 1.25px 0 white,
+                                0 -1.25px 0 white,
+                                1.25px 0 0 white,
+                                -1.25px 0 0 white;
                         "
                     >
                         Get basic cats!
@@ -1328,7 +1348,7 @@
                     display.innerHTML = `
                     <div class="result-display">
                         <div class="cat-icon">${cat.icon}</div>
-                        <div class="cat-name">${cat.name}</div>
+                        <div class="cat-name" style="text-shadow: 1.25px 1.25px 0 white, -1.25px -1.25px 0 white, 1.25px -1.25px 0 white, -1.25px 1.25px 0 white, 0 1.25px 0 white, 0 -1.25px 0 white, 1.25px 0 0 white, -1.25px 0 0 white;">${cat.name}</div>
                         <div class="rarity-badge ${cat.rarity}">${cat.rarity.toUpperCase().replace("-", " ")}</div>
                     </div>
                 `;
@@ -1339,7 +1359,7 @@
                         <div class="multi-result-card">
                             <div class="rarity ${cat.rarity}" style="padding: 3px 8px; border-radius: 5px; font-size: 0.7em; margin-bottom: 5px;">${cat.rarity.split("-")[0].toUpperCase()}</div>
                             <div style="font-size: 2.5em;">${cat.icon}</div>
-                            <div style="font-size: 0.9em; font-weight: bold; margin-top: 5px;">${cat.name}</div>
+                            <div style="font-size: 0.9em; font-weight: bold; margin-top: 5px; text-shadow: 1.25px 1.25px 0 white, -1.25px -1.25px 0 white, 1.25px -1.25px 0 white, -1.25px 1.25px 0 white, 0 1.25px 0 white, 0 -1.25px 0 white, 1.25px 0 0 white, -1.25px 0 0 white;">${cat.name}</div>
                         </div>
                     `;
                     });
