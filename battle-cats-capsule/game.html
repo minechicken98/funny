@@ -404,6 +404,12 @@
                           ? "#FFFF00"
                           : "#FF0000";
                 ctx.fillRect(x - 10, 180, 80 * (hp / maxHp), 15);
+
+                // HP text above base
+                ctx.fillStyle = "#000";
+                ctx.font = "bold 14px Arial";
+                ctx.textAlign = "center";
+                ctx.fillText(`${Math.floor(hp)}/${maxHp}`, x + 30, 170);
             }
 
             function drawCat(cat) {
