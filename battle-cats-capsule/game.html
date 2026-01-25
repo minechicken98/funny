@@ -198,6 +198,43 @@
             let enemySpawnRate = 3000;
             let totalXP = 0;
             let lastXPReward = 0;
+            let showingUpgrades = false;
+            let upgradeScroll = 0;
+
+            // Track upgrade levels for each cat (affects hp and damage)
+            const catUpgrades = {
+                cat: 0,
+                tank: 0,
+                axe: 0,
+                gross: 0,
+                cow: 0,
+                bird: 0,
+                fish: 0,
+                lizard: 0,
+                titan: 0,
+            };
+
+            function getUpgradeCost(catType) {
+                const baseCost = 1000;
+                const level = catUpgrades[catType];
+                return Math.floor(baseCost * Math.pow(1.5, level));
+            }
+
+            function upgradeCat(catType) {
+                const cost = getUpgradeCost(catType);
+                if (totalXP >= cost) {
+                    totalXP -= cost;
+                    catUpgrades[catType]++;
+                    // Increase base stats
+                    catStats[catType].hp = Math.floor(
+                        catStats[catType].hp * 1.1,
+                    );
+                    catStats[catType].damage = Math.floor(
+                        catStats[catType].damage * 1.1,
+                    );
+                    updateUI();
+                }
+            }
 
             const levels = [
                 { enemyHP: 1000, spawnRate: 3000, enemyMultiplier: 1 },
@@ -681,7 +718,7 @@
                 }
 
                 // Level won text
-                if (levelWon) {
+                if (levelWon && !showingUpgrades) {
                     ctx.fillStyle = "rgba(0,0,0,0.7)";
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
                     ctx.fillStyle = "white";
@@ -690,7 +727,7 @@
                     ctx.fillText(
                         "VICTORY!",
                         canvas.width / 2,
-                        canvas.height / 2 - 60,
+                        canvas.height / 2 - 80,
                     );
 
                     // XP reward
@@ -699,17 +736,106 @@
                     ctx.fillText(
                         "+" + lastXPReward.toLocaleString() + " XP",
                         canvas.width / 2,
-                        canvas.height / 2 - 15,
+                        canvas.height / 2 - 35,
                     );
 
-                    // Draw Next Level button
-                    const btnX = canvas.width / 2 - 80;
-                    const btnY = canvas.height / 2 + 20;
-                    ctx.fillStyle = "#4CAF50";
-                    ctx.fillRect(btnX, btnY, 160, 50);
+                    // Draw Upgrade button
+                    const upgBtnX = canvas.width / 2 - 170;
+                    const btnY = canvas.height / 2 + 10;
+                    ctx.fillStyle = "#FF9800";
+                    ctx.fillRect(upgBtnX, btnY, 150, 50);
                     ctx.fillStyle = "white";
                     ctx.font = "24px Luckiest Guy";
-                    ctx.fillText("Next Level", canvas.width / 2, btnY + 35);
+                    ctx.fillText("Upgrade", upgBtnX + 75, btnY + 35);
+
+                    // Draw Next Level button
+                    const nextBtnX = canvas.width / 2 + 20;
+                    ctx.fillStyle = "#4CAF50";
+                    ctx.fillRect(nextBtnX, btnY, 150, 50);
+                    ctx.fillStyle = "white";
+                    ctx.fillText("Next Level", nextBtnX + 75, btnY + 35);
+                }
+
+                // Upgrade screen
+                if (showingUpgrades) {
+                    ctx.fillStyle = "rgba(0,0,0,0.9)";
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    ctx.fillStyle = "white";
+                    ctx.font = "36px Luckiest Guy";
+                    ctx.textAlign = "center";
+                    ctx.fillText("UPGRADE CATS", canvas.width / 2, 40);
+
+                    ctx.font = "20px Luckiest Guy";
+                    ctx.fillStyle = "#FFD700";
+                    ctx.fillText(
+                        "XP: " + totalXP.toLocaleString(),
+                        canvas.width / 2,
+                        70,
+                    );
+
+                    // Draw cat upgrade options
+                    const startY = 100;
+                    const itemHeight = 60;
+                    catNames.forEach((name, i) => {
+                        const y = startY + i * itemHeight;
+                        const cost = getUpgradeCost(name);
+                        const lvl = catUpgrades[name];
+                        const canAfford = totalXP >= cost;
+
+                        // Background
+                        ctx.fillStyle = canAfford
+                            ? "rgba(255,255,255,0.2)"
+                            : "rgba(255,255,255,0.1)";
+                        ctx.fillRect(50, y, canvas.width - 100, 50);
+
+                        // Cat name and level
+                        ctx.fillStyle = "white";
+                        ctx.font = "18px Luckiest Guy";
+                        ctx.textAlign = "left";
+                        ctx.fillText(
+                            name.toUpperCase() + " (Lv." + lvl + ")",
+                            70,
+                            y + 32,
+                        );
+
+                        // Stats
+                        ctx.font = "14px Arial";
+                        ctx.fillStyle = "#AAA";
+                        ctx.fillText(
+                            "HP: " +
+                                catStats[name].hp +
+                                " DMG: " +
+                                catStats[name].damage,
+                            220,
+                            y + 32,
+                        );
+
+                        // Upgrade button
+                        ctx.fillStyle = canAfford ? "#4CAF50" : "#666";
+                        ctx.fillRect(canvas.width - 200, y + 5, 140, 40);
+                        ctx.fillStyle = "white";
+                        ctx.font = "16px Luckiest Guy";
+                        ctx.textAlign = "center";
+                        ctx.fillText(
+                            cost.toLocaleString() + " XP",
+                            canvas.width - 130,
+                            y + 32,
+                        );
+                    });
+
+                    // Back button
+                    ctx.fillStyle = "#f44336";
+                    ctx.fillRect(
+                        canvas.width / 2 - 60,
+                        canvas.height - 50,
+                        120,
+                        40,
+                    );
+                    ctx.fillStyle = "white";
+                    ctx.font = "20px Luckiest Guy";
+                    ctx.textAlign = "center";
+                    ctx.fillText("Back", canvas.width / 2, canvas.height - 22);
                 }
 
                 // Game over text
@@ -735,7 +861,7 @@
 
             // Spawn enemies periodically
             let enemySpawner = setInterval(() => {
-                if (!gameOver) spawnEnemy();
+                if (!gameOver && !paused && !levelWon) spawnEnemy();
             }, enemySpawnRate);
 
             // Keyboard controls
@@ -770,18 +896,59 @@
                     togglePause();
                 }
 
-                // Check if clicked on Next Level button (when level won)
-                if (levelWon) {
-                    const btnX = canvas.width / 2 - 80;
-                    const btnY = canvas.height / 2 + 20;
+                // Check if clicked on victory screen buttons
+                if (levelWon && !showingUpgrades) {
+                    const btnY = canvas.height / 2 + 10;
+
+                    // Upgrade button
+                    const upgBtnX = canvas.width / 2 - 170;
                     if (
-                        x >= btnX &&
-                        x <= btnX + 160 &&
+                        x >= upgBtnX &&
+                        x <= upgBtnX + 150 &&
+                        y >= btnY &&
+                        y <= btnY + 50
+                    ) {
+                        showingUpgrades = true;
+                    }
+
+                    // Next Level button
+                    const nextBtnX = canvas.width / 2 + 20;
+                    if (
+                        x >= nextBtnX &&
+                        x <= nextBtnX + 150 &&
                         y >= btnY &&
                         y <= btnY + 50
                     ) {
                         startNextLevel();
                     }
+                }
+
+                // Check if clicked on upgrade screen
+                if (showingUpgrades) {
+                    // Back button
+                    if (
+                        x >= canvas.width / 2 - 60 &&
+                        x <= canvas.width / 2 + 60 &&
+                        y >= canvas.height - 50 &&
+                        y <= canvas.height - 10
+                    ) {
+                        showingUpgrades = false;
+                    }
+
+                    // Upgrade buttons for each cat
+                    const startY = 100;
+                    const itemHeight = 60;
+                    catNames.forEach((name, i) => {
+                        const btnY = startY + i * itemHeight + 5;
+                        if (
+                            x >= canvas.width - 200 &&
+                            x <= canvas.width - 60 &&
+                            y >= btnY &&
+                            y <= btnY + 40
+                        ) {
+                            upgradeCat(name);
+                        }
+                    });
                 }
             });
 
