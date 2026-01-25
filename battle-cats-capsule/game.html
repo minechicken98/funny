@@ -234,6 +234,7 @@
             let lastXPReward = 0;
             let showingUpgrades = false;
             let upgradeScroll = 0;
+            let showCosmoUnlock = false;
 
             // Cooldowns for each cat (in milliseconds) - halved
             const catCooldowns = {
@@ -859,6 +860,11 @@
                             lvlData.xpMin;
                         totalXP += lastXPReward;
                         levelWon = true;
+
+                        // Unlock Cosmo popup after beating level 9
+                        if (level === 9) {
+                            showCosmoUnlock = true;
+                        }
                     }
                 }
 
@@ -1073,6 +1079,48 @@
                         canvas.height / 2,
                     );
                 }
+
+                // Cosmo unlock popup
+                if (showCosmoUnlock) {
+                    ctx.fillStyle = "rgba(0,0,0,0.85)";
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    ctx.fillStyle = "#FFD700";
+                    ctx.font = "36px Luckiest Guy";
+                    ctx.textAlign = "center";
+                    ctx.fillText("NEW CAT UNLOCKED!", canvas.width / 2, 80);
+
+                    // Draw Cosmo image
+                    const cosmoImg = catImages["cosmo"];
+                    if (cosmoImg && cosmoImg.complete) {
+                        ctx.drawImage(
+                            cosmoImg,
+                            canvas.width / 2 - 75,
+                            100,
+                            150,
+                            150,
+                        );
+                    }
+
+                    ctx.fillStyle = "white";
+                    ctx.font = "28px Luckiest Guy";
+                    ctx.fillText("SUPER NOVA COSMO", canvas.width / 2, 290);
+
+                    ctx.font = "16px Arial";
+                    ctx.fillStyle = "#AAA";
+                    ctx.fillText(
+                        "99,999 HP | 10,000 DMG | 1,000 Range",
+                        canvas.width / 2,
+                        320,
+                    );
+
+                    // OK button
+                    ctx.fillStyle = "#4CAF50";
+                    ctx.fillRect(canvas.width / 2 - 60, 340, 120, 40);
+                    ctx.fillStyle = "white";
+                    ctx.font = "20px Luckiest Guy";
+                    ctx.fillText("AWESOME!", canvas.width / 2, 368);
+                }
             }
 
             function gameLoop(timestamp) {
@@ -1112,6 +1160,19 @@
                 // Check if clicked on pause button (top left)
                 if (x >= 10 && x <= 40 && y >= 15 && y <= 45) {
                     togglePause();
+                }
+
+                // Cosmo unlock popup - AWESOME button
+                if (showCosmoUnlock) {
+                    if (
+                        x >= canvas.width / 2 - 60 &&
+                        x <= canvas.width / 2 + 60 &&
+                        y >= 340 &&
+                        y <= 380
+                    ) {
+                        showCosmoUnlock = false;
+                    }
+                    return; // Don't process other clicks while popup is showing
                 }
 
                 // Check if clicked on victory screen buttons
