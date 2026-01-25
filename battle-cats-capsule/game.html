@@ -491,8 +491,8 @@
                         }
                     });
 
-                    // Check if can attack enemy base (on the left now)
-                    const distToBase = cat.x - 60;
+                    // Check if can attack enemy base (on the left at x=10)
+                    const distToBase = cat.x - 70;
 
                     if (target && minDist <= cat.range) {
                         cat.attacking = true;
