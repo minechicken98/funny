@@ -1,760 +1,1108 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Battle Cats Capsule Machine</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #FF6B9D 0%, #C06C84 50%, #6C5B7B 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-        }
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
-            width: 100%;
-            max-width: 800px;
-            padding: 30px;
-        }
-        h1 {
-            font-size: 2.5em;
-            color: #FF6B9D;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-        .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 1.1em;
-        }
-        .currency-display {
-            background: linear-gradient(135deg, #FFD700, #FFA500);
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
-        }
-        .currency-display h2 {
-            color: white;
-            font-size: 2em;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        .currency-display .amount {
-            font-size: 3em;
-            font-weight: bold;
-            color: white;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
-        }
-        .capsule-machine {
-            background: linear-gradient(135deg, #FFD700, #FFA500);
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
-            position: relative;
-        }
-        .capsule-machine.silver {
-            background: linear-gradient(135deg, #C0C0C0, #A8A8A8);
-            box-shadow: 0 8px 25px rgba(192, 192, 192, 0.4);
-        }
-        .capsule-display {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
-            padding: 40px;
-            text-align: center;
-            min-height: 200px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .capsule-animation {
-            font-size: 5em;
-            animation: bounce 0.5s ease-in-out infinite;
-        }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-        .pull-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        .pull-btn {
-            padding: 15px 30px;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.2em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-        .pull-btn:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
-        }
-        .pull-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        .pull-1 {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-        }
-        .pull-10 {
-            background: linear-gradient(135deg, #f093fb, #f5576c);
-        }
-        .pull-11 {
-            background: linear-gradient(135deg, #FFD700, #FF8C00);
-        }
-        .inventory {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 30px;
-        }
-        .inventory h3 {
-            color: #333;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .cats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
-        }
-        .cat-card {
-            background: white;
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            position: relative;
-        }
-        .cat-card .rarity {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            padding: 3px 8px;
-            border-radius: 5px;
-            font-size: 0.8em;
-            font-weight: bold;
-            color: white;
-        }
-        .rarity.normal { background: transparent; }
-        .rarity.rare { background: transparent; color: #FFD700; }
-        .rarity.super.rare { background: transparent; color: #FFD700; }
-        .rarity.uber.super.rare { background: transparent; }
-        .rarity.legend { background: transparent; }
-        .cat-card .icon {
-            font-size: 3em;
-            margin: 10px 0;
-        }
-        .cat-card .name {
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 5px;
-        }
-        .cat-card .count {
-            color: #666;
-            font-size: 0.9em;
-        }
-        .result-display {
-            text-align: center;
-            animation: fadeIn 0.5s;
-        }
-        .result-display .cat-icon {
-            font-size: 6em;
-            margin: 20px 0;
-        }
-        .result-display .cat-name {
-            font-size: 2em;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .result-display .rarity-badge {
-            display: inline-block;
-            padding: 0;
-            border-radius: 0;
-            background: transparent;
-            font-weight: bold;
-            margin-bottom: 15px;
-            font-size: 4em;
-            font-family: Impact, "Arial Black", "Franklin Gothic Bold", sans-serif;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        .multi-results {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-        .multi-result-card {
-            background: white;
-            border-radius: 10px;
-            padding: 15px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            animation: slideIn 0.5s ease-out;
-            animation-fill-mode: both;
-        }
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Battle Cats Capsule Machine</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
             }
-            to {
+            body {
+                font-family:
+                    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                    Oxygen, Ubuntu, Cantarell, sans-serif;
+                background: linear-gradient(
+                    135deg,
+                    #87ceeb 0%,
+                    #5bb5e0 50%,
+                    #b4f080 100%
+                );
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 20px;
+            }
+            .container {
+                background: white;
+                border-radius: 20px;
+                box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+                width: 100%;
+                max-width: 800px;
+                padding: 30px;
+            }
+            h1 {
+                font-size: 2.5em;
+                color: #5bb5e0;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+            .subtitle {
+                text-align: center;
+                color: #666;
+                margin-bottom: 30px;
+                font-size: 1.1em;
+            }
+            .currency-display {
+                background: linear-gradient(135deg, #87ceeb, #5bb5e0);
+                padding: 20px;
+                border-radius: 15px;
+                text-align: center;
+                margin-bottom: 30px;
+                box-shadow: 0 4px 15px rgba(135, 206, 235, 0.3);
+            }
+            .currency-display h2 {
+                color: white;
+                font-size: 2em;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            }
+            .currency-display .amount {
+                font-size: 3em;
+                font-weight: bold;
+                color: white;
+                text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            }
+            .capsule-machine {
+                background: linear-gradient(135deg, #b4f080, #8ed860);
+                border-radius: 20px;
+                padding: 30px;
+                margin-bottom: 30px;
+                box-shadow: 0 8px 25px rgba(180, 240, 128, 0.4);
+                position: relative;
+            }
+            .capsule-machine.silver {
+                background: linear-gradient(135deg, #c0c0c0, #a8a8a8);
+                box-shadow: 0 8px 25px rgba(192, 192, 192, 0.4);
+            }
+            .capsule-display {
+                background: rgba(255, 255, 255, 0.9);
+                border-radius: 15px;
+                padding: 40px;
+                text-align: center;
+                min-height: 200px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+            .capsule-animation {
+                font-size: 5em;
+                animation: bounce 0.5s ease-in-out infinite;
+            }
+            @keyframes bounce {
+                0%,
+                100% {
+                    transform: translateY(0);
+                }
+                50% {
+                    transform: translateY(-20px);
+                }
+            }
+            .pull-buttons {
+                display: flex;
+                gap: 15px;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            .pull-btn {
+                padding: 15px 30px;
+                border: none;
+                border-radius: 12px;
+                font-size: 1.2em;
+                font-weight: bold;
+                cursor: pointer;
+                transition: all 0.3s;
+                color: white;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            }
+            .pull-btn:hover:not(:disabled) {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            }
+            .pull-btn:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+            .pull-1 {
+                background: linear-gradient(135deg, #87ceeb, #5bb5e0);
+            }
+            .pull-10 {
+                background: linear-gradient(135deg, #b4f080, #8ed860);
+            }
+            .pull-11 {
+                background: linear-gradient(135deg, #87ceeb, #b4f080);
+            }
+            .inventory {
+                background: #f8f9fa;
+                border-radius: 15px;
+                padding: 20px;
+                margin-top: 30px;
+            }
+            .inventory h3 {
+                color: #333;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+            .cats-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
+            }
+            .cat-card {
+                background: white;
+                border-radius: 12px;
+                padding: 15px;
+                text-align: center;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                position: relative;
+            }
+            .cat-card .rarity {
+                position: absolute;
+                top: 5px;
+                right: 5px;
+                padding: 3px 8px;
+                border-radius: 5px;
+                font-size: 0.8em;
+                font-weight: bold;
+                color: white;
+            }
+            .rarity.normal {
+                background: transparent;
+            }
+            .rarity.rare {
+                background: transparent;
+                color: #ffd700;
+            }
+            .rarity.super.rare {
+                background: transparent;
+                color: #ffd700;
+            }
+            .rarity.uber.super.rare {
+                background: transparent;
+            }
+            .rarity.legend {
+                background: transparent;
+            }
+            .cat-card .icon {
+                font-size: 3em;
+                margin: 10px 0;
+            }
+            .cat-card .name {
+                font-weight: bold;
+                color: #333;
+                margin-bottom: 5px;
+            }
+            .cat-card .count {
+                color: #666;
+                font-size: 0.9em;
+            }
+            .result-display {
+                text-align: center;
+                animation: fadeIn 0.5s;
+            }
+            .result-display .cat-icon {
+                font-size: 6em;
+                margin: 20px 0;
+            }
+            .result-display .cat-name {
+                font-size: 2em;
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+            .result-display .rarity-badge {
+                display: inline-block;
+                padding: 0;
+                border-radius: 0;
+                background: transparent;
+                font-weight: bold;
+                margin-bottom: 15px;
+                font-size: 4em;
+                font-family:
+                    Impact, "Arial Black", "Franklin Gothic Bold", sans-serif;
+            }
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: scale(0.8);
+                }
+                to {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            }
+            .multi-results {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 15px;
+                margin-top: 20px;
+            }
+            .multi-result-card {
+                background: white;
+                border-radius: 10px;
+                padding: 15px;
+                text-align: center;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                animation: slideIn 0.5s ease-out;
+                animation-fill-mode: both;
+            }
+            @keyframes slideIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            .multi-result-card:nth-child(1) {
+                animation-delay: 0.1s;
+            }
+            .multi-result-card:nth-child(2) {
+                animation-delay: 0.2s;
+            }
+            .multi-result-card:nth-child(3) {
+                animation-delay: 0.3s;
+            }
+            .multi-result-card:nth-child(4) {
+                animation-delay: 0.4s;
+            }
+            .multi-result-card:nth-child(5) {
+                animation-delay: 0.5s;
+            }
+            .multi-result-card:nth-child(6) {
+                animation-delay: 0.6s;
+            }
+            .multi-result-card:nth-child(7) {
+                animation-delay: 0.7s;
+            }
+            .multi-result-card:nth-child(8) {
+                animation-delay: 0.8s;
+            }
+            .multi-result-card:nth-child(9) {
+                animation-delay: 0.9s;
+            }
+            .multi-result-card:nth-child(10) {
+                animation-delay: 1s;
+            }
+            .multi-result-card:nth-child(11) {
+                animation-delay: 1.1s;
+            }
+            .stats {
+                display: flex;
+                justify-content: space-around;
+                margin-top: 20px;
+                padding-top: 20px;
+                border-top: 2px solid #ddd;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            .stat {
+                text-align: center;
+            }
+            .stat .label {
+                color: #666;
+                font-size: 0.9em;
+                margin-bottom: 5px;
+            }
+            .stat .value {
+                color: #333;
+                font-size: 1.5em;
+                font-weight: bold;
+            }
+            .password-modal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.8);
+                z-index: 2000;
+                justify-content: center;
+                align-items: center;
+            }
+            .password-modal.show {
+                display: flex;
+            }
+            .password-modal-content {
+                background: white;
+                padding: 30px;
+                border-radius: 15px;
+                max-width: 400px;
+                width: 90%;
+            }
+            .password-modal h3 {
+                margin-bottom: 15px;
+                color: #333;
+            }
+            .password-display {
+                width: 100%;
+                padding: 12px;
+                border: 2px solid #5bb5e0;
+                border-radius: 8px;
+                font-size: 1.5em;
+                margin: 10px 0;
+                text-align: center;
+                background: #f8f9fa;
+                min-height: 50px;
+                letter-spacing: 5px;
+            }
+            .password-modal button {
+                padding: 12px 24px;
+                margin: 5px;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 1em;
+            }
+            .password-modal .submit-btn {
+                background: #5bb5e0;
+                color: white;
+            }
+            .password-modal .cancel-btn {
+                background: #ddd;
+            }
+            .next-btn {
+                margin-top: 20px;
+                padding: 15px 40px;
+                background: linear-gradient(135deg, #87ceeb, #b4f080);
+                color: white;
+                border: none;
+                border-radius: 12px;
+                font-size: 1.2em;
+                font-weight: bold;
+                cursor: pointer;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+                transition: all 0.3s;
+            }
+            .next-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            }
+            .hidden-ticket {
+                position: fixed;
+                width: 30px;
+                height: auto;
+                font-size: 20px;
+                opacity: 0.05;
+                cursor: pointer;
+                transition: opacity 0.3s;
+                z-index: 10;
+            }
+            .hidden-ticket:hover {
                 opacity: 1;
-                transform: translateY(0);
+                transform: scale(1.5);
             }
-        }
-        .multi-result-card:nth-child(1) { animation-delay: 0.1s; }
-        .multi-result-card:nth-child(2) { animation-delay: 0.2s; }
-        .multi-result-card:nth-child(3) { animation-delay: 0.3s; }
-        .multi-result-card:nth-child(4) { animation-delay: 0.4s; }
-        .multi-result-card:nth-child(5) { animation-delay: 0.5s; }
-        .multi-result-card:nth-child(6) { animation-delay: 0.6s; }
-        .multi-result-card:nth-child(7) { animation-delay: 0.7s; }
-        .multi-result-card:nth-child(8) { animation-delay: 0.8s; }
-        .multi-result-card:nth-child(9) { animation-delay: 0.9s; }
-        .multi-result-card:nth-child(10) { animation-delay: 1.0s; }
-        .multi-result-card:nth-child(11) { animation-delay: 1.1s; }
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 2px solid #ddd;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .stat {
-            text-align: center;
-        }
-        .stat .label {
-            color: #666;
-            font-size: 0.9em;
-            margin-bottom: 5px;
-        }
-        .stat .value {
-            color: #333;
-            font-size: 1.5em;
-            font-weight: bold;
-        }
-        .password-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-        }
-        .password-modal.show {
-            display: flex;
-        }
-        .password-modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            max-width: 400px;
-            width: 90%;
-        }
-        .password-modal h3 {
-            margin-bottom: 15px;
-            color: #333;
-        }
-        .password-display {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #667eea;
-            border-radius: 8px;
-            font-size: 1.5em;
-            margin: 10px 0;
-            text-align: center;
-            background: #f8f9fa;
-            min-height: 50px;
-            letter-spacing: 5px;
-        }
-        .password-modal button {
-            padding: 12px 24px;
-            margin: 5px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1em;
-        }
-        .password-modal .submit-btn {
-            background: #667eea;
-            color: white;
-        }
-        .password-modal .cancel-btn {
-            background: #ddd;
-        }
-        .next-btn {
-            margin-top: 20px;
-            padding: 15px 40px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.2em;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            transition: all 0.3s;
-        }
-        .next-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
-        }
-        .hidden-ticket {
-            position: fixed;
-            width: 30px;
-            height: auto;
-            font-size: 20px;
-            opacity: 0.05;
-            cursor: pointer;
-            transition: opacity 0.3s;
-            z-index: 10;
-        }
-        .hidden-ticket:hover {
-            opacity: 1;
-            transform: scale(1.5);
-        }
-        .ticket-display {
-            background: linear-gradient(135deg, #9b59b6, #8e44ad);
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
-        }
-        .ticket-display h3 {
-            color: white;
-            font-size: 1.5em;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        .ticket-display .amount {
-            font-size: 2em;
-            font-weight: bold;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-    </style>
-</head>
-<body>
-    <!-- Hidden rare tickets scattered around the page -->
-    <div class="hidden-ticket" style="top: 5%; left: 10%;" onclick="collectTicket(this)"><img src="images/rare ticket.png" style="width: 30px; height: auto; transform: rotate(0deg);"></div>
-    <div class="hidden-ticket" style="top: 15%; right: 15%;" onclick="collectTicket(this)"><img src="images/rare ticket.png" style="width: 30px; height: auto; transform: rotate(0deg);"></div>
-    <div class="hidden-ticket" style="top: 30%; left: 5%;" onclick="collectTicket(this)"><img src="images/rare ticket.png" style="width: 30px; height: auto; transform: rotate(0deg);"></div>
-    <div class="hidden-ticket" style="top: 45%; right: 8%;" onclick="collectTicket(this)"><img src="images/rare ticket.png" style="width: 30px; height: auto; transform: rotate(0deg);"></div>
-    <div class="hidden-ticket" style="top: 60%; left: 12%;" onclick="collectTicket(this)"><img src="images/rare ticket.png" style="width: 30px; height: auto; transform: rotate(0deg);"></div>
-    <div class="hidden-ticket" style="top: 75%; right: 20%;" onclick="collectTicket(this)"><img src="images/rare ticket.png" style="width: 30px; height: auto; transform: rotate(0deg);"></div>
-    <div class="hidden-ticket" style="top: 85%; left: 25%;" onclick="collectTicket(this)"><img src="images/rare ticket.png" style="width: 30px; height: auto; transform: rotate(0deg);"></div>
-    <div class="hidden-ticket" style="top: 20%; left: 50%;" onclick="collectTicket(this)"><img src="images/rare ticket.png" style="width: 30px; height: auto; transform: rotate(0deg);"></div>
-    <div class="hidden-ticket" style="top: 50%; right: 5%;" onclick="collectTicket(this)"><img src="images/rare ticket.png" style="width: 30px; height: auto; transform: rotate(0deg);"></div>
-    <div class="hidden-ticket" style="top: 90%; left: 80%;" onclick="collectTicket(this)"><img src="images/rare ticket.png" style="width: 30px; height: auto; transform: rotate(0deg);"></div>
-
-    <!-- Password Modal -->
-    <div class="password-modal" id="passwordModal">
-        <div class="password-modal-content">
-            <h3>🔒 Enter Legend Lock Passcode</h3>
-            <div class="password-display" id="passwordDisplay"></div>
-            <div>
-                <button class="submit-btn" onclick="submitPasscode()">Submit</button>
-                <button class="cancel-btn" onclick="closePasswordModal()">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="container">
-        <h1>🐱 Battle Cats Capsule 🎰</h1>
-        <p class="subtitle">Test your luck and collect rare cats!</p>
-
-        <div class="currency-display">
-            <h2>Cat Food</h2>
-            <div class="amount" id="catFood">1500</div>
-        </div>
-
-        <div class="ticket-display">
-            <h3><img src="images/rare ticket.png" style="width: 180px; height: auto; vertical-align: middle; transform: rotate(0deg);"> Rare Tickets</h3>
-            <div class="amount" id="rareTickets">0</div>
-        </div>
-
-        <div style="text-align: center; margin-bottom: 20px;">
-            <button onclick="showLegendLock()" style="padding: 10px 20px; background: linear-gradient(to right, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3); color: white; border: none; border-radius: 10px; font-size: 1em; cursor: pointer; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">🔒 Legend Lock</button>
-            <div id="legendStatus" style="margin-top: 10px; color: white; font-weight: bold;"></div>
-        </div>
-
-        <div class="capsule-machine">
-            <h2 style="color: white; text-align: center; margin-bottom: 20px;">🎰 Rare Cat Capsule</h2>
-            <div class="capsule-display" id="capsuleDisplay">
-                <div class="capsule-animation">🎰</div>
-                <p style="color: #333; margin-top: 20px; font-size: 1.2em;">Ready to roll!</p>
-            </div>
-
-            <div class="pull-buttons">
-                <button class="pull-btn pull-1" onclick="pullCapsule(1, false)">
-                    Pull 1x<br>
-                    <small>150 Cat Food</small>
-                </button>
-                <button class="pull-btn pull-1" onclick="pullCapsule(1, false, true)" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);">
-                    Pull 1x<br>
-                    <small>1 Rare Ticket <img src="images/rare ticket.png" style="width: 120px; height: auto; vertical-align: middle; transform: rotate(0deg);"></small>
-                </button>
-                <button class="pull-btn pull-10" onclick="pullCapsule(10, false)">
-                    Pull 10x<br>
-                    <small>1500 Cat Food</small>
-                </button>
-                <button class="pull-btn pull-11" onclick="pullCapsule(11, false)">
-                    Pull 11x (GUARANTEED RARE+)<br>
-                    <small>1500 Cat Food</small>
-                </button>
-            </div>
-        </div>
-
-        <div class="capsule-machine silver" style="margin-top: 20px;">
-            <h2 style="color: white; text-align: center; margin-bottom: 20px;">🐱 Normal Cat Capsule</h2>
-            <div class="capsule-display" id="normalCapsuleDisplay">
-                <div class="capsule-animation">🎰</div>
-                <p style="color: #333; margin-top: 20px; font-size: 1.2em;">Get basic cats!</p>
-            </div>
-
-            <div class="pull-buttons">
-                <button class="pull-btn pull-1" onclick="pullCapsule(1, true)" style="background: linear-gradient(135deg, #C0C0C0, #A8A8A8);">
-                    Pull 1x<br>
-                    <small>30 Cat Food</small>
-                </button>
-                <button class="pull-btn pull-10" onclick="pullCapsule(10, true)" style="background: linear-gradient(135deg, #C0C0C0, #A8A8A8);">
-                    Pull 10x<br>
-                    <small>300 Cat Food</small>
-                </button>
-            </div>
-        </div>
-
-        <div class="inventory">
-            <h3 onclick="toggleCatStorage()" style="cursor: pointer;">⬜ Cat Storage <span id="storageToggle">▼</span></h3>
-            <div class="cats-grid" id="catsGrid" style="display: none;"></div>
-            <div class="stats">
-                <div class="stat">
-                    <div class="label">Total Pulls</div>
-                    <div class="value" id="totalPulls">0</div>
-                </div>
-                <div class="stat">
-                    <div class="label">Unique Cats</div>
-                    <div class="value" id="uniqueCats">0</div>
-                </div>
-                <div class="stat">
-                    <div class="label">Uber Rares</div>
-                    <div class="value" id="uberCount">0</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const normalCats = [
-            // Normal cats for basic capsule
-            { name: "Cat", icon: "images/cat.png", rarity: "normal", isImage: true },
-            { name: "Tank Cat", icon: "images/tank.png", rarity: "normal", isImage: true },
-            { name: "Axe Cat", icon: "images/axe.png", rarity: "normal", isImage: true },
-            { name: "Gross Cat", icon: "images/gross.webp", rarity: "normal", isImage: true },
-            { name: "Cow Cat", icon: "images/cow.webp", rarity: "normal", isImage: true },
-            { name: "Bird Cat", icon: "images/bird.png", rarity: "normal", isImage: true },
-            { name: "Fish Cat", icon: "images/fish.png", rarity: "normal", isImage: true },
-            { name: "Lizard Cat", icon: "images/lizard.png", rarity: "normal", isImage: true },
-            { name: "Titan Cat", icon: "images/titan.webp", rarity: "normal", isImage: true }
-        ];
-
-        const cats = [
-            // Rare (69.7% drop rate)
-            { name: "Paris Cat", icon: "🗼", rarity: "rare" },
-            { name: "Jurassic Cat", icon: "🦖", rarity: "rare" },
-            { name: "Viking Cat", icon: "🪓", rarity: "rare" },
-            { name: "Captain Cat", icon: "⚓", rarity: "rare" },
-            { name: "Thief Cat", icon: "🥷", rarity: "rare" },
-            { name: "Monk Cat", icon: "🧘", rarity: "rare" },
-            { name: "Fisherman Cat", icon: "🎣", rarity: "rare" },
-            { name: "Necromancer Cat", icon: "🧙", rarity: "rare" },
-            { name: "Sorceress Cat", icon: "🔮", rarity: "rare" },
-            { name: "Archer Cat", icon: "🏹", rarity: "rare" },
-            { name: "Swordsman Cat", icon: "⚔️", rarity: "rare" },
-            { name: "Stilts Cat", icon: "🦿", rarity: "rare" },
-
-            // Super Rare (25% drop rate)
-            { name: "Hacker Cat", icon: "💻", rarity: "super rare" },
-            { name: "Sushi Cat", icon: "🍣", rarity: "super rare" },
-            { name: "Nerd Cat", icon: "🤓", rarity: "super rare" },
-            { name: "Cyborg Cat", icon: "🤖", rarity: "super rare" },
-            { name: "Rocker Cat", icon: "🎸", rarity: "super rare" },
-
-            // Uber Super Rare (5% drop rate)
-            { name: "Dragon Cat", icon: "🐉", rarity: "uber super rare" },
-            { name: "Demon Cat", icon: "😈", rarity: "uber super rare" },
-            { name: "Angel Cat", icon: "😇", rarity: "uber super rare" },
-            { name: "Kamukura Cat", icon: "👑", rarity: "uber super rare" },
-            { name: "Megidora", icon: "🦁", rarity: "uber super rare" },
-
-            // Legend (0.3% drop rate)
-            { name: "Legend Cat", icon: "⭐", rarity: "legend" },
-            { name: "Mythic Cat", icon: "🌟", rarity: "legend" }
-        ];
-
-        let catFood = 1500;
-        let inventory = {};
-        let totalPulls = 0;
-        let rareTickets = 0;
-        let currentResults = [];
-        let currentResultIndex = 0;
-        let isNormalPull = false;
-        let legendLockActive = false;
-        let legendLockUsed = false;
-        let passwordInput = "";
-        let passwordTimeout = null;
-
-        function showLegendLock() {
-            if (legendLockUsed) {
-                alert("Legend Lock has already been used! It's a one-time code.");
-                return;
+            .ticket-display {
+                background: linear-gradient(135deg, #5bb5e0, #87ceeb);
+                padding: 15px;
+                border-radius: 10px;
+                text-align: center;
+                margin-bottom: 20px;
+                box-shadow: 0 4px 15px rgba(91, 181, 224, 0.3);
             }
-            passwordInput = "";
-            document.getElementById('passwordDisplay').textContent = "";
-            document.getElementById('passwordModal').classList.add('show');
+            .ticket-display h3 {
+                color: white;
+                font-size: 1.5em;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            }
+            .ticket-display .amount {
+                font-size: 2em;
+                font-weight: bold;
+                color: white;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Hidden rare tickets scattered around the page -->
+        <div
+            class="hidden-ticket"
+            style="top: 5%; left: 10%"
+            onclick="collectTicket(this)"
+        >
+            <img
+                src="images/rare ticket.png"
+                style="width: 30px; height: auto; transform: rotate(0deg)"
+            />
+        </div>
+        <div
+            class="hidden-ticket"
+            style="top: 15%; right: 15%"
+            onclick="collectTicket(this)"
+        >
+            <img
+                src="images/rare ticket.png"
+                style="width: 30px; height: auto; transform: rotate(0deg)"
+            />
+        </div>
+        <div
+            class="hidden-ticket"
+            style="top: 30%; left: 5%"
+            onclick="collectTicket(this)"
+        >
+            <img
+                src="images/rare ticket.png"
+                style="width: 30px; height: auto; transform: rotate(0deg)"
+            />
+        </div>
+        <div
+            class="hidden-ticket"
+            style="top: 45%; right: 8%"
+            onclick="collectTicket(this)"
+        >
+            <img
+                src="images/rare ticket.png"
+                style="width: 30px; height: auto; transform: rotate(0deg)"
+            />
+        </div>
+        <div
+            class="hidden-ticket"
+            style="top: 60%; left: 12%"
+            onclick="collectTicket(this)"
+        >
+            <img
+                src="images/rare ticket.png"
+                style="width: 30px; height: auto; transform: rotate(0deg)"
+            />
+        </div>
+        <div
+            class="hidden-ticket"
+            style="top: 75%; right: 20%"
+            onclick="collectTicket(this)"
+        >
+            <img
+                src="images/rare ticket.png"
+                style="width: 30px; height: auto; transform: rotate(0deg)"
+            />
+        </div>
+        <div
+            class="hidden-ticket"
+            style="top: 85%; left: 25%"
+            onclick="collectTicket(this)"
+        >
+            <img
+                src="images/rare ticket.png"
+                style="width: 30px; height: auto; transform: rotate(0deg)"
+            />
+        </div>
+        <div
+            class="hidden-ticket"
+            style="top: 20%; left: 50%"
+            onclick="collectTicket(this)"
+        >
+            <img
+                src="images/rare ticket.png"
+                style="width: 30px; height: auto; transform: rotate(0deg)"
+            />
+        </div>
+        <div
+            class="hidden-ticket"
+            style="top: 50%; right: 5%"
+            onclick="collectTicket(this)"
+        >
+            <img
+                src="images/rare ticket.png"
+                style="width: 30px; height: auto; transform: rotate(0deg)"
+            />
+        </div>
+        <div
+            class="hidden-ticket"
+            style="top: 90%; left: 80%"
+            onclick="collectTicket(this)"
+        >
+            <img
+                src="images/rare ticket.png"
+                style="width: 30px; height: auto; transform: rotate(0deg)"
+            />
+        </div>
 
-            // Listen for keyboard input
-            document.addEventListener('keydown', handlePasswordInput);
-        }
+        <!-- Password Modal -->
+        <div class="password-modal" id="passwordModal">
+            <div class="password-modal-content">
+                <h3>🔒 Enter Legend Lock Passcode</h3>
+                <div class="password-display" id="passwordDisplay"></div>
+                <div>
+                    <button class="submit-btn" onclick="submitPasscode()">
+                        Submit
+                    </button>
+                    <button class="cancel-btn" onclick="closePasswordModal()">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
 
-        function handlePasswordInput(e) {
-            if (e.key === 'Enter') {
-                submitPasscode();
-            } else if (e.key === 'Backspace') {
-                passwordInput = passwordInput.slice(0, -1);
-                updatePasswordDisplay();
-            } else if (e.key.length === 1) {
-                passwordInput += e.key;
-                const display = document.getElementById('passwordDisplay');
+        <div class="container">
+            <h1>🐱 Battle Cats Capsule 🎰</h1>
+            <p class="subtitle">Test your luck and collect rare cats!</p>
 
-                // Show the actual character briefly
-                updatePasswordDisplay(e.key);
+            <div class="currency-display">
+                <h2>Cat Food</h2>
+                <div class="amount" id="catFood">1500</div>
+            </div>
 
-                // Replace with bullet after 100ms
-                clearTimeout(passwordTimeout);
-                passwordTimeout = setTimeout(() => {
+            <div class="ticket-display">
+                <h3>
+                    <img
+                        src="images/rare ticket.png"
+                        style="
+                            width: 180px;
+                            height: auto;
+                            vertical-align: middle;
+                            transform: rotate(0deg);
+                        "
+                    />
+                    Rare Tickets
+                </h3>
+                <div class="amount" id="rareTickets">0</div>
+            </div>
+
+            <div style="text-align: center; margin-bottom: 20px">
+                <button
+                    onclick="showLegendLock()"
+                    style="
+                        padding: 10px 20px;
+                        background: linear-gradient(
+                            to right,
+                            #ff0000,
+                            #ff7f00,
+                            #ffff00,
+                            #00ff00,
+                            #0000ff,
+                            #4b0082,
+                            #9400d3
+                        );
+                        color: white;
+                        border: none;
+                        border-radius: 10px;
+                        font-size: 1em;
+                        cursor: pointer;
+                        font-weight: bold;
+                        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+                    "
+                >
+                    🔒 Legend Lock
+                </button>
+                <div
+                    id="legendStatus"
+                    style="margin-top: 10px; color: white; font-weight: bold"
+                ></div>
+            </div>
+
+            <div class="capsule-machine">
+                <h2
+                    style="
+                        color: white;
+                        text-align: center;
+                        margin-bottom: 20px;
+                    "
+                >
+                    🎰 Rare Cat Capsule
+                </h2>
+                <div class="capsule-display" id="capsuleDisplay">
+                    <div class="capsule-animation">🎰</div>
+                    <p style="color: #333; margin-top: 20px; font-size: 1.2em">
+                        Ready to roll!
+                    </p>
+                </div>
+
+                <div class="pull-buttons">
+                    <button
+                        class="pull-btn pull-1"
+                        onclick="pullCapsule(1, false)"
+                    >
+                        Pull 1x<br />
+                        <small>150 Cat Food</small>
+                    </button>
+                    <button
+                        class="pull-btn pull-1"
+                        onclick="pullCapsule(1, false, true)"
+                        style="
+                            background: linear-gradient(
+                                135deg,
+                                #9b59b6,
+                                #8e44ad
+                            );
+                        "
+                    >
+                        Pull 1x<br />
+                        <small
+                            >1 Rare Ticket
+                            <img
+                                src="images/rare ticket.png"
+                                style="
+                                    width: 120px;
+                                    height: auto;
+                                    vertical-align: middle;
+                                    transform: rotate(0deg);
+                                "
+                        /></small>
+                    </button>
+                    <button
+                        class="pull-btn pull-10"
+                        onclick="pullCapsule(10, false)"
+                    >
+                        Pull 10x<br />
+                        <small>1500 Cat Food</small>
+                    </button>
+                    <button
+                        class="pull-btn pull-11"
+                        onclick="pullCapsule(11, false)"
+                    >
+                        Pull 11x (GUARANTEED RARE+)<br />
+                        <small>1500 Cat Food</small>
+                    </button>
+                </div>
+            </div>
+
+            <div class="capsule-machine silver" style="margin-top: 20px">
+                <h2
+                    style="
+                        color: white;
+                        text-align: center;
+                        margin-bottom: 20px;
+                    "
+                >
+                    🐱 Normal Cat Capsule
+                </h2>
+                <div class="capsule-display" id="normalCapsuleDisplay">
+                    <div class="capsule-animation">🎰</div>
+                    <p style="color: #333; margin-top: 20px; font-size: 1.2em">
+                        Get basic cats!
+                    </p>
+                </div>
+
+                <div class="pull-buttons">
+                    <button
+                        class="pull-btn pull-1"
+                        onclick="pullCapsule(1, true)"
+                        style="
+                            background: linear-gradient(
+                                135deg,
+                                #c0c0c0,
+                                #a8a8a8
+                            );
+                        "
+                    >
+                        Pull 1x<br />
+                        <small>30 Cat Food</small>
+                    </button>
+                    <button
+                        class="pull-btn pull-10"
+                        onclick="pullCapsule(10, true)"
+                        style="
+                            background: linear-gradient(
+                                135deg,
+                                #c0c0c0,
+                                #a8a8a8
+                            );
+                        "
+                    >
+                        Pull 10x<br />
+                        <small>300 Cat Food</small>
+                    </button>
+                </div>
+            </div>
+
+            <div class="inventory">
+                <h3 onclick="toggleCatStorage()" style="cursor: pointer">
+                    ⬜ Cat Storage <span id="storageToggle">▼</span>
+                </h3>
+                <div
+                    class="cats-grid"
+                    id="catsGrid"
+                    style="display: none"
+                ></div>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="label">Total Pulls</div>
+                        <div class="value" id="totalPulls">0</div>
+                    </div>
+                    <div class="stat">
+                        <div class="label">Unique Cats</div>
+                        <div class="value" id="uniqueCats">0</div>
+                    </div>
+                    <div class="stat">
+                        <div class="label">Uber Rares</div>
+                        <div class="value" id="uberCount">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const normalCats = [
+                // Normal cats for basic capsule
+                {
+                    name: "Cat",
+                    icon: "images/cat.png",
+                    rarity: "normal",
+                    isImage: true,
+                },
+                {
+                    name: "Tank Cat",
+                    icon: "images/tank.png",
+                    rarity: "normal",
+                    isImage: true,
+                },
+                {
+                    name: "Axe Cat",
+                    icon: "images/axe.png",
+                    rarity: "normal",
+                    isImage: true,
+                },
+                {
+                    name: "Gross Cat",
+                    icon: "images/gross.webp",
+                    rarity: "normal",
+                    isImage: true,
+                },
+                {
+                    name: "Cow Cat",
+                    icon: "images/cow.webp",
+                    rarity: "normal",
+                    isImage: true,
+                },
+                {
+                    name: "Bird Cat",
+                    icon: "images/bird.png",
+                    rarity: "normal",
+                    isImage: true,
+                },
+                {
+                    name: "Fish Cat",
+                    icon: "images/fish.png",
+                    rarity: "normal",
+                    isImage: true,
+                },
+                {
+                    name: "Lizard Cat",
+                    icon: "images/lizard.png",
+                    rarity: "normal",
+                    isImage: true,
+                },
+                {
+                    name: "Titan Cat",
+                    icon: "images/titan.webp",
+                    rarity: "normal",
+                    isImage: true,
+                },
+            ];
+
+            const cats = [
+                // Rare (69.7% drop rate)
+                { name: "Paris Cat", icon: "🗼", rarity: "rare" },
+                { name: "Jurassic Cat", icon: "🦖", rarity: "rare" },
+                { name: "Viking Cat", icon: "🪓", rarity: "rare" },
+                { name: "Captain Cat", icon: "⚓", rarity: "rare" },
+                { name: "Thief Cat", icon: "🥷", rarity: "rare" },
+                { name: "Monk Cat", icon: "🧘", rarity: "rare" },
+                { name: "Fisherman Cat", icon: "🎣", rarity: "rare" },
+                { name: "Necromancer Cat", icon: "🧙", rarity: "rare" },
+                { name: "Sorceress Cat", icon: "🔮", rarity: "rare" },
+                { name: "Archer Cat", icon: "🏹", rarity: "rare" },
+                { name: "Swordsman Cat", icon: "⚔️", rarity: "rare" },
+                { name: "Stilts Cat", icon: "🦿", rarity: "rare" },
+
+                // Super Rare (25% drop rate)
+                { name: "Hacker Cat", icon: "💻", rarity: "super rare" },
+                { name: "Sushi Cat", icon: "🍣", rarity: "super rare" },
+                { name: "Nerd Cat", icon: "🤓", rarity: "super rare" },
+                { name: "Cyborg Cat", icon: "🤖", rarity: "super rare" },
+                { name: "Rocker Cat", icon: "🎸", rarity: "super rare" },
+
+                // Uber Super Rare (5% drop rate)
+                { name: "Dragon Cat", icon: "🐉", rarity: "uber super rare" },
+                { name: "Demon Cat", icon: "😈", rarity: "uber super rare" },
+                { name: "Angel Cat", icon: "😇", rarity: "uber super rare" },
+                { name: "Kamukura Cat", icon: "👑", rarity: "uber super rare" },
+                { name: "Megidora", icon: "🦁", rarity: "uber super rare" },
+
+                // Legend (0.3% drop rate)
+                { name: "Legend Cat", icon: "⭐", rarity: "legend" },
+                { name: "Mythic Cat", icon: "🌟", rarity: "legend" },
+            ];
+
+            let catFood = 1500;
+            let inventory = {};
+            let totalPulls = 0;
+            let rareTickets = 0;
+            let currentResults = [];
+            let currentResultIndex = 0;
+            let isNormalPull = false;
+            let legendLockActive = false;
+            let legendLockUsed = false;
+            let passwordInput = "";
+            let passwordTimeout = null;
+
+            function showLegendLock() {
+                if (legendLockUsed) {
+                    alert(
+                        "Legend Lock has already been used! It's a one-time code.",
+                    );
+                    return;
+                }
+                passwordInput = "";
+                document.getElementById("passwordDisplay").textContent = "";
+                document.getElementById("passwordModal").classList.add("show");
+
+                // Listen for keyboard input
+                document.addEventListener("keydown", handlePasswordInput);
+            }
+
+            function handlePasswordInput(e) {
+                if (e.key === "Enter") {
+                    submitPasscode();
+                } else if (e.key === "Backspace") {
+                    passwordInput = passwordInput.slice(0, -1);
                     updatePasswordDisplay();
-                }, 100);
+                } else if (e.key.length === 1) {
+                    passwordInput += e.key;
+                    const display = document.getElementById("passwordDisplay");
+
+                    // Show the actual character briefly
+                    updatePasswordDisplay(e.key);
+
+                    // Replace with bullet after 100ms
+                    clearTimeout(passwordTimeout);
+                    passwordTimeout = setTimeout(() => {
+                        updatePasswordDisplay();
+                    }, 100);
+                }
             }
-        }
 
-        function updatePasswordDisplay(lastChar = null) {
-            const display = document.getElementById('passwordDisplay');
-            if (passwordInput.length === 0) {
-                display.textContent = "";
-            } else if (lastChar) {
-                display.textContent = "•".repeat(passwordInput.length - 1) + lastChar;
-            } else {
-                display.textContent = "•".repeat(passwordInput.length);
+            function updatePasswordDisplay(lastChar = null) {
+                const display = document.getElementById("passwordDisplay");
+                if (passwordInput.length === 0) {
+                    display.textContent = "";
+                } else if (lastChar) {
+                    display.textContent =
+                        "•".repeat(passwordInput.length - 1) + lastChar;
+                } else {
+                    display.textContent = "•".repeat(passwordInput.length);
+                }
             }
-        }
 
-        function submitPasscode() {
-            document.removeEventListener('keydown', handlePasswordInput);
-            document.getElementById('passwordModal').classList.remove('show');
+            function submitPasscode() {
+                document.removeEventListener("keydown", handlePasswordInput);
+                document
+                    .getElementById("passwordModal")
+                    .classList.remove("show");
 
-            if (passwordInput === "legendz4life") {
-                legendLockActive = true;
-                legendLockUsed = true;
-                document.getElementById('legendStatus').textContent = "🌟 LEGEND LOCK ACTIVE! Next pull guaranteed Legend Rare! 🌟";
-                document.getElementById('legendStatus').style.color = "#FFD700";
+                if (passwordInput === "legendz4life") {
+                    legendLockActive = true;
+                    legendLockUsed = true;
+                    document.getElementById("legendStatus").textContent =
+                        "🌟 LEGEND LOCK ACTIVE! Next pull guaranteed Legend Rare! 🌟";
+                    document.getElementById("legendStatus").style.color =
+                        "#FFD700";
 
-                // Celebration effect
-                const celebration = document.createElement('div');
-                celebration.textContent = '🔓 LEGEND LOCK ACTIVATED!';
-                celebration.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; padding: 30px 50px; border-radius: 20px; font-size: 2em; font-weight: bold; z-index: 1000; box-shadow: 0 10px 50px rgba(0,0,0,0.5); opacity: 1;';
+                    // Celebration effect
+                    const celebration = document.createElement("div");
+                    celebration.textContent = "🔓 LEGEND LOCK ACTIVATED!";
+                    celebration.style.cssText =
+                        "position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; padding: 30px 50px; border-radius: 20px; font-size: 2em; font-weight: bold; z-index: 1000; box-shadow: 0 10px 50px rgba(0,0,0,0.5); opacity: 1;";
+                    document.body.appendChild(celebration);
+                    setTimeout(() => celebration.remove(), 2000);
+                } else {
+                    alert("❌ Wrong passcode!");
+                }
+                passwordInput = "";
+            }
+
+            function closePasswordModal() {
+                document.removeEventListener("keydown", handlePasswordInput);
+                document
+                    .getElementById("passwordModal")
+                    .classList.remove("show");
+                passwordInput = "";
+            }
+
+            function toggleCatStorage() {
+                const grid = document.getElementById("catsGrid");
+                const toggle = document.getElementById("storageToggle");
+                if (grid.style.display === "none") {
+                    grid.style.display = "grid";
+                    toggle.textContent = "▲";
+                } else {
+                    grid.style.display = "none";
+                    toggle.textContent = "▼";
+                }
+            }
+
+            function getRarityText(rarity) {
+                if (rarity === "legend")
+                    return '<span style="background: linear-gradient(135deg, #ff0000 0%, #ff7f00 15%, #ffff00 30%, #00ff00 45%, #0000ff 60%, #4b0082 75%, #9400d3 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: bold; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.5)) drop-shadow(0 0 15px rgba(255,255,255,0.9));">LEGEND</span> <span style="background: linear-gradient(180deg, #FFD700 0%, #FFE44D 50%, #FFD700 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.6)) drop-shadow(0 0 10px rgba(255,215,0,0.8));">RARE</span>';
+                if (rarity === "uber super rare")
+                    return '<span style="background: linear-gradient(180deg, #ff3333 0%, #ff8888 50%, #ff3333 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.6)) drop-shadow(0 0 10px rgba(255,100,100,0.8));">UBER</span> <span style="background: linear-gradient(180deg, #FFD700 0%, #FFE44D 50%, #FFD700 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.6)) drop-shadow(0 0 10px rgba(255,215,0,0.8));">SUPER RARE</span>';
+                if (rarity === "super rare")
+                    return '<span style="background: linear-gradient(180deg, #FFD700 0%, #FFE44D 50%, #FFD700 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.6)) drop-shadow(0 0 10px rgba(255,215,0,0.8));">SUPER RARE</span>';
+                if (rarity === "rare")
+                    return '<span style="background: linear-gradient(180deg, #FFD700 0%, #FFE44D 50%, #FFD700 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.6)) drop-shadow(0 0 10px rgba(255,215,0,0.8));">RARE</span>';
+                return '<span style="color: #666;">NORMAL</span>';
+            }
+
+            function getRarityColor(rarity) {
+                return "transparent";
+            }
+
+            function collectTicket(element) {
+                rareTickets++;
+                document.getElementById("rareTickets").textContent =
+                    rareTickets;
+                element.style.display = "none";
+
+                // Show celebration
+                const celebration = document.createElement("div");
+                celebration.innerHTML =
+                    '<img src="images/rare ticket.png" style="width: 240px; height: auto; vertical-align: middle; transform: rotate(0deg);"> Rare Ticket Found!';
+                celebration.style.cssText =
+                    "position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, #FFD700, #FFA500); color: white; padding: 30px 50px; border-radius: 20px; font-size: 2em; font-weight: bold; z-index: 1000; box-shadow: 0 10px 50px rgba(0,0,0,0.5); animation: fadeIn 0.5s;";
                 document.body.appendChild(celebration);
                 setTimeout(() => celebration.remove(), 2000);
-            } else {
-                alert("❌ Wrong passcode!");
-            }
-            passwordInput = "";
-        }
-
-        function closePasswordModal() {
-            document.removeEventListener('keydown', handlePasswordInput);
-            document.getElementById('passwordModal').classList.remove('show');
-            passwordInput = "";
-        }
-
-        function toggleCatStorage() {
-            const grid = document.getElementById('catsGrid');
-            const toggle = document.getElementById('storageToggle');
-            if (grid.style.display === 'none') {
-                grid.style.display = 'grid';
-                toggle.textContent = '▲';
-            } else {
-                grid.style.display = 'none';
-                toggle.textContent = '▼';
-            }
-        }
-
-        function getRarityText(rarity) {
-            if (rarity === "legend") return '<span style="background: linear-gradient(135deg, #ff0000 0%, #ff7f00 15%, #ffff00 30%, #00ff00 45%, #0000ff 60%, #4b0082 75%, #9400d3 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: bold; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.5)) drop-shadow(0 0 15px rgba(255,255,255,0.9));">LEGEND</span> <span style="background: linear-gradient(180deg, #FFD700 0%, #FFE44D 50%, #FFD700 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.6)) drop-shadow(0 0 10px rgba(255,215,0,0.8));">RARE</span>';
-            if (rarity === "uber super rare") return '<span style="background: linear-gradient(180deg, #ff3333 0%, #ff8888 50%, #ff3333 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.6)) drop-shadow(0 0 10px rgba(255,100,100,0.8));">UBER</span> <span style="background: linear-gradient(180deg, #FFD700 0%, #FFE44D 50%, #FFD700 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.6)) drop-shadow(0 0 10px rgba(255,215,0,0.8));">SUPER RARE</span>';
-            if (rarity === "super rare") return '<span style="background: linear-gradient(180deg, #FFD700 0%, #FFE44D 50%, #FFD700 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.6)) drop-shadow(0 0 10px rgba(255,215,0,0.8));">SUPER RARE</span>';
-            if (rarity === "rare") return '<span style="background: linear-gradient(180deg, #FFD700 0%, #FFE44D 50%, #FFD700 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.6)) drop-shadow(0 0 10px rgba(255,215,0,0.8));">RARE</span>';
-            return '<span style="color: #666;">NORMAL</span>';
-        }
-
-        function getRarityColor(rarity) {
-            return "transparent";
-        }
-
-        function collectTicket(element) {
-            rareTickets++;
-            document.getElementById('rareTickets').textContent = rareTickets;
-            element.style.display = 'none';
-
-            // Show celebration
-            const celebration = document.createElement('div');
-            celebration.innerHTML = '<img src="images/rare ticket.png" style="width: 240px; height: auto; vertical-align: middle; transform: rotate(0deg);"> Rare Ticket Found!';
-            celebration.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, #FFD700, #FFA500); color: white; padding: 30px 50px; border-radius: 20px; font-size: 2em; font-weight: bold; z-index: 1000; box-shadow: 0 10px 50px rgba(0,0,0,0.5); animation: fadeIn 0.5s;';
-            document.body.appendChild(celebration);
-            setTimeout(() => celebration.remove(), 2000);
-        }
-
-        function getRarityChance() {
-            const rand = Math.random() * 100;
-            if (rand < 0.3) return "legend";
-            if (rand < 5.3) return "uber super rare";
-            if (rand < 30.3) return "super rare";
-            return "rare";
-        }
-
-        function pullCapsule(count, isNormal, useTicket = false) {
-            let cost;
-            let guaranteedRare = false;
-
-            if (useTicket) {
-                if (rareTickets < 1) {
-                    alert("Not enough Rare Tickets!");
-                    return;
-                }
-                rareTickets--;
-                document.getElementById('rareTickets').textContent = rareTickets;
-            } else if (isNormal) {
-                cost = count === 1 ? 30 : 300;
-                if (catFood < cost) {
-                    alert("Not enough Cat Food! 😿");
-                    return;
-                }
-                catFood -= cost;
-                document.getElementById('catFood').textContent = catFood;
-            } else {
-                if (count === 1) {
-                    cost = 150;
-                } else if (count === 10) {
-                    cost = 1500;
-                } else if (count === 11) {
-                    cost = 1500;
-                    guaranteedRare = true;
-                }
-                if (catFood < cost) {
-                    alert("Not enough Cat Food! 😿");
-                    return;
-                }
-                catFood -= cost;
-                document.getElementById('catFood').textContent = catFood;
             }
 
-            const display = isNormal ? document.getElementById('normalCapsuleDisplay') : document.getElementById('capsuleDisplay');
-            display.innerHTML = '<div class="capsule-animation">🎰</div><p style="color: #333; margin-top: 20px; font-size: 1.2em;">Rolling...</p>';
+            function getRarityChance() {
+                const rand = Math.random() * 100;
+                if (rand < 0.3) return "legend";
+                if (rand < 5.3) return "uber super rare";
+                if (rand < 30.3) return "super rare";
+                return "rare";
+            }
 
-            setTimeout(() => {
-                const results = [];
+            function pullCapsule(count, isNormal, useTicket = false) {
+                let cost;
+                let guaranteedRare = false;
 
-                for (let i = 0; i < count; i++) {
-                    let pulledCat;
+                if (useTicket) {
+                    if (rareTickets < 1) {
+                        alert("Not enough Rare Tickets!");
+                        return;
+                    }
+                    rareTickets--;
+                    document.getElementById("rareTickets").textContent =
+                        rareTickets;
+                } else if (isNormal) {
+                    cost = count === 1 ? 30 : 300;
+                    if (catFood < cost) {
+                        alert("Not enough Cat Food! 😿");
+                        return;
+                    }
+                    catFood -= cost;
+                    document.getElementById("catFood").textContent = catFood;
+                } else {
+                    if (count === 1) {
+                        cost = 150;
+                    } else if (count === 10) {
+                        cost = 1500;
+                    } else if (count === 11) {
+                        cost = 1500;
+                        guaranteedRare = true;
+                    }
+                    if (catFood < cost) {
+                        alert("Not enough Cat Food! 😿");
+                        return;
+                    }
+                    catFood -= cost;
+                    document.getElementById("catFood").textContent = catFood;
+                }
 
-                    if (isNormal) {
-                        // Normal capsule - just pick random normal cat
-                        pulledCat = normalCats[Math.floor(Math.random() * normalCats.length)];
-                    } else {
-                        // Rare capsule - use rarity system
-                        let targetRarity;
+                const display = isNormal
+                    ? document.getElementById("normalCapsuleDisplay")
+                    : document.getElementById("capsuleDisplay");
+                display.innerHTML =
+                    '<div class="capsule-animation">🎰</div><p style="color: #333; margin-top: 20px; font-size: 1.2em;">Rolling...</p>';
 
-                        // Check for legend lock on first pull
-                        if (legendLockActive && i === 0) {
-                            targetRarity = "legend";
-                            legendLockActive = false;
-                            document.getElementById('legendStatus').textContent = "";
-                        }
-                        // Guaranteed rare or better on 11th pull (at least super rare)
-                        else if (guaranteedRare && i === count - 1) {
-                            const rand = Math.random() * 100;
-                            if (rand < 1) targetRarity = "legend";
-                            else if (rand < 20) targetRarity = "uber super rare";
-                            else targetRarity = "super rare";
+                setTimeout(() => {
+                    const results = [];
+
+                    for (let i = 0; i < count; i++) {
+                        let pulledCat;
+
+                        if (isNormal) {
+                            // Normal capsule - just pick random normal cat
+                            pulledCat =
+                                normalCats[
+                                    Math.floor(
+                                        Math.random() * normalCats.length,
+                                    )
+                                ];
                         } else {
-                            targetRarity = getRarityChance();
+                            // Rare capsule - use rarity system
+                            let targetRarity;
+
+                            // Check for legend lock on first pull
+                            if (legendLockActive && i === 0) {
+                                targetRarity = "legend";
+                                legendLockActive = false;
+                                document.getElementById(
+                                    "legendStatus",
+                                ).textContent = "";
+                            }
+                            // Guaranteed rare or better on 11th pull (at least super rare)
+                            else if (guaranteedRare && i === count - 1) {
+                                const rand = Math.random() * 100;
+                                if (rand < 1) targetRarity = "legend";
+                                else if (rand < 20)
+                                    targetRarity = "uber super rare";
+                                else targetRarity = "super rare";
+                            } else {
+                                targetRarity = getRarityChance();
+                            }
+
+                            const availableCats = cats.filter(
+                                (c) => c.rarity === targetRarity,
+                            );
+                            pulledCat =
+                                availableCats[
+                                    Math.floor(
+                                        Math.random() * availableCats.length,
+                                    )
+                                ];
                         }
 
-                        const availableCats = cats.filter(c => c.rarity === targetRarity);
-                        pulledCat = availableCats[Math.floor(Math.random() * availableCats.length)];
+                        results.push(pulledCat);
+
+                        if (!inventory[pulledCat.name]) {
+                            inventory[pulledCat.name] = {
+                                ...pulledCat,
+                                count: 0,
+                            };
+                        }
+                        inventory[pulledCat.name].count++;
+                        totalPulls++;
                     }
 
-                    results.push(pulledCat);
-
-                    if (!inventory[pulledCat.name]) {
-                        inventory[pulledCat.name] = { ...pulledCat, count: 0 };
-                    }
-                    inventory[pulledCat.name].count++;
-                    totalPulls++;
-                }
-
-                currentResults = results;
-                currentResultIndex = 0;
-                isNormalPull = isNormal;
-                showNextResult();
-            }, 1500);
-        }
-
-        function showNextResult() {
-            if (currentResultIndex >= currentResults.length) {
-                updateInventory();
-                updateStats();
-                return;
+                    currentResults = results;
+                    currentResultIndex = 0;
+                    isNormalPull = isNormal;
+                    showNextResult();
+                }, 1500);
             }
 
-            const cat = currentResults[currentResultIndex];
-            const display = isNormalPull ? document.getElementById('normalCapsuleDisplay') : document.getElementById('capsuleDisplay');
+            function showNextResult() {
+                if (currentResultIndex >= currentResults.length) {
+                    updateInventory();
+                    updateStats();
+                    return;
+                }
 
-            const catDisplay = cat.isImage ? `<img src="${cat.icon}" style="width: 200px; height: 200px; object-fit: contain;">` : cat.icon;
+                const cat = currentResults[currentResultIndex];
+                const display = isNormalPull
+                    ? document.getElementById("normalCapsuleDisplay")
+                    : document.getElementById("capsuleDisplay");
 
-            display.innerHTML = `
+                const catDisplay = cat.isImage
+                    ? `<img src="${cat.icon}" style="width: 200px; height: 200px; object-fit: contain;">`
+                    : cat.icon;
+
+                display.innerHTML = `
                 <div class="result-display">
                     <div class="rarity-badge" style="background: ${getRarityColor(cat.rarity)};">${getRarityText(cat.rarity)}</div>
                     <div class="cat-icon">${catDisplay}</div>
@@ -763,60 +1111,74 @@
                     ${currentResultIndex < currentResults.length - 1 ? '<button class="next-btn" onclick="nextCat()">Next Cat →</button>' : '<button class="next-btn" onclick="finishPull()">Done! ✓</button>'}
                 </div>
             `;
-        }
+            }
 
-        function nextCat() {
-            currentResultIndex++;
-            showNextResult();
-        }
+            function nextCat() {
+                currentResultIndex++;
+                showNextResult();
+            }
 
-        function finishPull() {
-            const display = isNormalPull ? document.getElementById('normalCapsuleDisplay') : document.getElementById('capsuleDisplay');
-            display.innerHTML = '<div class="capsule-animation">🎰</div><p style="color: #333; margin-top: 20px; font-size: 1.2em;">Ready to roll!</p>';
-            updateInventory();
-            updateStats();
-        }
+            function finishPull() {
+                const display = isNormalPull
+                    ? document.getElementById("normalCapsuleDisplay")
+                    : document.getElementById("capsuleDisplay");
+                display.innerHTML =
+                    '<div class="capsule-animation">🎰</div><p style="color: #333; margin-top: 20px; font-size: 1.2em;">Ready to roll!</p>';
+                updateInventory();
+                updateStats();
+            }
 
-        function displayResults(results, isNormal) {
-            const display = isNormal ? document.getElementById('normalCapsuleDisplay') : document.getElementById('capsuleDisplay');
+            function displayResults(results, isNormal) {
+                const display = isNormal
+                    ? document.getElementById("normalCapsuleDisplay")
+                    : document.getElementById("capsuleDisplay");
 
-            if (results.length === 1) {
-                const cat = results[0];
-                display.innerHTML = `
+                if (results.length === 1) {
+                    const cat = results[0];
+                    display.innerHTML = `
                     <div class="result-display">
                         <div class="cat-icon">${cat.icon}</div>
                         <div class="cat-name">${cat.name}</div>
-                        <div class="rarity-badge ${cat.rarity}">${cat.rarity.toUpperCase().replace('-', ' ')}</div>
+                        <div class="rarity-badge ${cat.rarity}">${cat.rarity.toUpperCase().replace("-", " ")}</div>
                     </div>
                 `;
-            } else {
-                let html = '<div class="multi-results">';
-                results.forEach(cat => {
-                    html += `
+                } else {
+                    let html = '<div class="multi-results">';
+                    results.forEach((cat) => {
+                        html += `
                         <div class="multi-result-card">
-                            <div class="rarity ${cat.rarity}" style="padding: 3px 8px; border-radius: 5px; font-size: 0.7em; margin-bottom: 5px;">${cat.rarity.split('-')[0].toUpperCase()}</div>
+                            <div class="rarity ${cat.rarity}" style="padding: 3px 8px; border-radius: 5px; font-size: 0.7em; margin-bottom: 5px;">${cat.rarity.split("-")[0].toUpperCase()}</div>
                             <div style="font-size: 2.5em;">${cat.icon}</div>
                             <div style="font-size: 0.9em; font-weight: bold; margin-top: 5px;">${cat.name}</div>
                         </div>
                     `;
-                });
-                html += '</div>';
-                display.innerHTML = html;
+                    });
+                    html += "</div>";
+                    display.innerHTML = html;
+                }
             }
-        }
 
-        function updateInventory() {
-            const grid = document.getElementById('catsGrid');
+            function updateInventory() {
+                const grid = document.getElementById("catsGrid");
 
-            const sortedCats = Object.values(inventory).sort((a, b) => {
-                const rarityOrder = { "legend": 0, "uber super rare": 1, "super rare": 2, "rare": 3, "normal": 4 };
-                return rarityOrder[a.rarity] - rarityOrder[b.rarity];
-            });
+                const sortedCats = Object.values(inventory).sort((a, b) => {
+                    const rarityOrder = {
+                        legend: 0,
+                        "uber super rare": 1,
+                        "super rare": 2,
+                        rare: 3,
+                        normal: 4,
+                    };
+                    return rarityOrder[a.rarity] - rarityOrder[b.rarity];
+                });
 
-            grid.innerHTML = sortedCats.map(cat => {
-                const catDisplay = cat.isImage ? `<img src="${cat.icon}" style="width: 60px; height: 60px; object-fit: contain;">` : cat.icon;
-                const rarityDisplay = getRarityText(cat.rarity);
-                return `
+                grid.innerHTML = sortedCats
+                    .map((cat) => {
+                        const catDisplay = cat.isImage
+                            ? `<img src="${cat.icon}" style="width: 60px; height: 60px; object-fit: contain;">`
+                            : cat.icon;
+                        const rarityDisplay = getRarityText(cat.rarity);
+                        return `
                     <div class="cat-card">
                         <div class="rarity ${cat.rarity}" style="font-size: 0.8em;">${rarityDisplay}</div>
                         <div class="icon">${catDisplay}</div>
@@ -824,22 +1186,26 @@
                         <div class="count">x${cat.count}</div>
                     </div>
                 `;
-            }).join('');
-        }
+                    })
+                    .join("");
+            }
 
-        function updateStats() {
-            document.getElementById('totalPulls').textContent = totalPulls;
-            document.getElementById('uniqueCats').textContent = Object.keys(inventory).length;
+            function updateStats() {
+                document.getElementById("totalPulls").textContent = totalPulls;
+                document.getElementById("uniqueCats").textContent =
+                    Object.keys(inventory).length;
 
-            const uberCount = Object.values(inventory).filter(cat =>
-                cat.rarity === "uber super rare" || cat.rarity === "legend"
-            ).length;
-            document.getElementById('uberCount').textContent = uberCount;
-        }
+                const uberCount = Object.values(inventory).filter(
+                    (cat) =>
+                        cat.rarity === "uber super rare" ||
+                        cat.rarity === "legend",
+                ).length;
+                document.getElementById("uberCount").textContent = uberCount;
+            }
 
-        // Initialize
-        updateInventory();
-        updateStats();
-    </script>
-</body>
+            // Initialize
+            updateInventory();
+            updateStats();
+        </script>
+    </body>
 </html>
