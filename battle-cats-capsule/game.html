@@ -215,6 +215,9 @@
                 <span class="key">0</span>
             </button>
         </div>
+        <audio id="audio">
+            <source src="https://thirtydollar.website/sounds/doorbellcat.wav">
+        </audio>
 
         <script>
             const canvas = document.getElementById("gameCanvas");
@@ -552,12 +555,14 @@
 
             function spawnCat(type) {
                 if (gameOver || paused || levelWon) return;
+                const audio = document.getElementById("audio");
                 const stats = catStats[type];
                 const now = Date.now();
                 const cooldown = catCooldowns[type];
                 const timeSinceSpawn = now - catLastSpawn[type];
 
                 // Check if on cooldown
+                audio.play();
                 if (timeSinceSpawn < cooldown) return;
 
                 if (money >= stats.cost) {
